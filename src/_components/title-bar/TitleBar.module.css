@@ -1,0 +1,33 @@
+.container {
+    display: flex;
+    justify-content: flex-end;
+    position: sticky;
+
+    height: var(--title-bar-height);
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    background: var(--background);
+}
+
+.button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    width: var(--title-bar-height);
+    height: var(--title-bar-height);
+}
+
+.button svg {
+    height: var(--title-bar-icon-size);
+    width: var(--title-bar-icon-size);
+
+    fill: var(--window-icon)
+}
+
+.button:hover {
+    background: var(--element-hover);
+}

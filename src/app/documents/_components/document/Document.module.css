@@ -1,0 +1,30 @@
+.container {
+    --size: 10px;
+    padding-top: var(--size);
+    padding-bottom: var(--size);
+
+    background-color: var(--button);
+
+    border: none;
+    border-radius: 10px;
+
+    display: grid;
+    grid-template-columns: 50px auto;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+
+    align-items: center;
+}
+
+.container:hover {
+    background: var(--element-hover);
+}
+
+.text {
+    color: var(--foreground);
+    font-size: 16px;
+    text-align: left;
+}

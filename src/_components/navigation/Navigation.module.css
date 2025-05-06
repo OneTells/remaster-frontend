@@ -1,0 +1,30 @@
+.container {
+    display: flex;
+    flex-direction: column;
+
+    width: fit-content;
+}
+
+.button {
+    margin-left: 10px;
+    margin-right: 10px;
+
+    padding: 10px;
+}
+
+.button svg {
+    --size: 35px;
+
+    height: var(--size);
+    width: var(--size);
+}
+
+.button:hover {
+    background: var(--element-hover);
+    border-radius: 10px;
+}
+
+.settings {
+    position: fixed;
+    bottom: 10px;
+}

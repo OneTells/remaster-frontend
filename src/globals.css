@@ -1,0 +1,48 @@
+:root {
+    --title-bar-height: 40px;
+    --title-bar-icon-size: 20px;
+
+    --background: #2c2d32;
+    --background-content: #323339;
+
+    --button: #28292e;
+
+    --foreground: #FFFFFF;
+
+    --window-icon: #fdfdfd;
+    --element-hover: #45464f;
+}
+
+html {
+    background: var(--background);
+
+    color: var(--foreground);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+.content-container {
+    background: var(--background-content);
+    border-radius: 20px 0 0 0;
+
+    --padding-size: 20px;
+
+    width: 100vw;
+
+    box-sizing: border-box;
+    height: calc(100vh - var(--title-bar-height));
+    max-height: calc(100vh - var(--title-bar-height));
+
+    padding: var(--padding-size);
+
+    display: flex;
+    flex-direction: column;
+}
