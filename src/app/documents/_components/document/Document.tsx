@@ -1,7 +1,7 @@
 import styles from "./Document.module.css";
 
-import {Dispatch, SetStateAction} from "react";
-import {Link} from "react-router";
+import {Dispatch, MouseEvent, SetStateAction, useRef} from "react";
+import {useNavigate} from "react-router";
 
 import {CheckBox} from "@/app/documents/_components/check-box/CheckBox.tsx";
 import {DocumentType} from "@/app/documents/_types.tsx";
@@ -14,6 +14,9 @@ type Props = {
 }
 
 export function Document(props: Props) {
+    const ref = useRef<HTMLDivElement>(null)
+    const navigate = useNavigate();
+
     const onChange = () => {
         props.setSelectIDs((value) => {
             const newSet = new Set(value);
@@ -28,14 +31,19 @@ export function Document(props: Props) {
         });
     }
 
+    const onDoubleClick = (event: MouseEvent<HTMLInputElement>) => {
+        if (event.target === ref.current || ref.current!.contains(event.target as Node))
+            return
+
+        navigate(`/_documents/${props.document.id}`);
+    }
+
     return (
-        <div className={styles['container']}>
-            <CheckBox onChange={onChange} checked={props.selectIDs.has(props.document.id)}/>
-            <Link to={`/_documents/${props.document.id}`}>
-                <div className={styles['text']}>
-                    {props.document.title}
-                </div>
-            </Link>
+        <div className={styles['container']} onDoubleClick={onDoubleClick}>
+            <CheckBox onChange={onChange} checked={props.selectIDs.has(props.document.id)} ref={ref}/>
+            <div className={styles['text']}>
+                {props.document.title}
+            </div>
         </div>
 
     )

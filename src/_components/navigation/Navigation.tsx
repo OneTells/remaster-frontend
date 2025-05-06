@@ -8,7 +8,7 @@ import {useNavigate} from "react-router";
 
 
 export function Navigation() {
-    let navigate = useNavigate();
+    const navigate = useNavigate();
 
     return (
         <nav className={styles["container"]}>
