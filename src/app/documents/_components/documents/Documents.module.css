@@ -9,10 +9,7 @@
 
     margin-top: 10px;
     padding-right: 10px;
-
-    /*scroll-behavior: smooth;*/
 }
-
 
 .scroll-container {
     overflow-y: scroll;
@@ -20,10 +17,10 @@
 
     height: 100%;
 
-    --scrollbarBg: #f1f1f1;
-    --scrollbarThumb: #888;
-    --scrollbarWidth: 15px;
-    --scrollbarBorder: 3px solid var(--scrollbarBg);
+    --scrollbarBg: #28292e;
+    --scrollbarThumb: #686868;
+    --scrollbarWidth: 12px;
+    /*--scrollbarBorder: 4px solid var(--scrollbarBg);*/
     --scrollbarBorderRadius: calc(var(--scrollbarWidth) / 2);
 }
 
@@ -39,7 +36,7 @@
 .scroll-container::-webkit-scrollbar-thumb {
     background-color: var(--scrollbarThumb);
     border-radius: var(--scrollbarBorderRadius);
-    border: var(--scrollbarBorder);
+    /*border: var(--scrollbarBorder);*/
 }
 
 .scroll-container::-webkit-scrollbar-thumb:hover {
