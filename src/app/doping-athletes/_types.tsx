@@ -1,4 +1,4 @@
-export type DopingType = {
+export type DopingAthleteType = {
     id: number,
     fullName: string,
     sportType: string,

@@ -1,15 +1,16 @@
-import { useState } from "react";
 import styles from "./ActionBar.module.css";
-import { Input } from "../input/Input";
 
-interface ActionBarProps {
+import React, { useState } from "react";
+
+
+type Props = {
     onNameChange: (name: string) => void;
     onDateChange: (date: Date | null) => void;
 }
 
-function ActionBar({ onNameChange, onDateChange }: ActionBarProps) {
+export function ActionBar({ onNameChange, onDateChange }: Props) {
     const [name, setName] = useState('');
-    const [date, setDate] = useState<Date | null>(null);
+    const [_, setDate] = useState<Date | null>(null);
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newName = e.target.value;
@@ -41,5 +42,3 @@ function ActionBar({ onNameChange, onDateChange }: ActionBarProps) {
         </div>
     );
 }
-
-export default ActionBar;

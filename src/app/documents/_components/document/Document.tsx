@@ -35,7 +35,7 @@ export function Document(props: Props) {
         if (event.target === ref.current || ref.current!.contains(event.target as Node))
             return
 
-        navigate(`/_documents/${props.document.id}`);
+        navigate(`/documents/${props.document.id}`);
     }
 
     return (

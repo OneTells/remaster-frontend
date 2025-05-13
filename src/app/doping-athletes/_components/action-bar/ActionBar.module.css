@@ -1,6 +1,6 @@
 .container {
     display: grid;
-    justify-content: flex;
+    /*justify-content: flex;*/
 
     gap: 5px;
 
@@ -9,7 +9,7 @@
 
 .container div {
     display: flex;
-    justify-content: flex;
+    /*justify-content: flex;*/
 
     gap: 5px;
 

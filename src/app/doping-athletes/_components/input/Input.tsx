@@ -1,4 +1,4 @@
-// import styles from "./Input.moule.css";
+// import styles from "./Input.moules.css";
 
 import {ChangeEvent} from "react";
 

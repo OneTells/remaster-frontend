@@ -1,17 +1,18 @@
-'use client'
 import styles from "./Doping.module.css";
-import { DopingType } from "@/app/doping/_types"
 
-interface DopingProps {
-    dopings: DopingType[];
+import {DopingAthleteType} from "@/app/doping-athletes/_types.tsx";
+
+
+type Props = {
+    dopingAthletes: DopingAthleteType[];
 }
 
-export function Doping({ dopings }: DopingProps) {
+export function Doping({dopingAthletes}: Props) {
     // const formatPeriod = (period: PeriodType) => {
     //     return `${period.period} ${getUnitName(period.unit)}`;
     // };
 
-    if (dopings.length === 0) {
+    if (dopingAthletes.length === 0) {
         return (
             <div className="text-center py-8 text-gray-500 text-lg">
                 Нет данных для отображения
@@ -23,19 +24,19 @@ export function Doping({ dopings }: DopingProps) {
         <div className={styles["container"]}>
             <table>
                 <thead>
-                    <tr>
-                        <th>№</th>
-                        <th>ФИО</th>
-                        <th>Вид спорта</th>
-                        <th>Дата рождения</th>
-                        <th>Вид нарушения / класс запрещённой субстанции</th>
-                        <th>Срок дисквалификации</th>
-                        <th>Дата начала дисквалификации</th>
-                        <th>Дата окончания дисквалификации</th>
-                    </tr>
+                <tr>
+                    <th>№</th>
+                    <th>ФИО</th>
+                    <th>Вид спорта</th>
+                    <th>Дата рождения</th>
+                    <th>Вид нарушения / класс запрещённой субстанции</th>
+                    <th>Срок дисквалификации</th>
+                    <th>Дата начала дисквалификации</th>
+                    <th>Дата окончания дисквалификации</th>
+                </tr>
                 </thead>
                 <tbody>
-                    {dopings.map((doping) => (
+                {dopingAthletes.map((doping) => (
                     <tr key={doping.id}>
                         <td>{doping.id}</td>
                         <td>{doping.fullName}</td>
@@ -66,7 +67,7 @@ export function Doping({ dopings }: DopingProps) {
                             })}
                         </td>
                     </tr>
-                    ))}
+                ))}
                 </tbody>
             </table>
         </div>

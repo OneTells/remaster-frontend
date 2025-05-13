@@ -18,10 +18,10 @@ export function Navigation() {
             <div className={styles['button']} onClick={() => navigate("/doping")}>
                 <DopingIcon/>
             </div>
-            <div className={styles['button']}>
+            <div className={styles['button']} onClick={() => navigate("/sport-result")}>
                 <SportResultIcon/>
             </div>
-            <div className={`${styles['button']} ${styles['settings']}`}>
+            <div className={`${styles['button']} ${styles['settings']}`} onClick={() => navigate("/settings")}>
                 <SettingsIcon/>
             </div>
         </nav>

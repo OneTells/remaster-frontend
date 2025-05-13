@@ -1,13 +1,15 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { getDopings } from "@/app/doping/_api.tsx";
-import { DopingType } from "./_types";
-import ActionBar from "@/app/doping/_components/action-bar/ActionBar.tsx";
-import { Doping } from "@/app/doping/_components/doping/Doping.tsx";
+
+import {DopingAthleteType} from "@/app/doping-athletes/_types.tsx";
+import {getDopingAthletes} from "@/app/doping-athletes/_api.tsx";
+import {ActionBar} from "@/app/doping-athletes/_components/action-bar/ActionBar.tsx";
+import {Doping} from "@/app/doping-athletes/_components/doping/Doping.tsx";
+
 
 export default function Page() {
-    const [dopings, setDopings] = useState<DopingType[]>([]);
+    const [dopings, setDopings] = useState<DopingAthleteType[]>([]);
     const [filters, setFilters] = useState({
         fullName: '',
         birthDate: null as Date | null
@@ -15,7 +17,7 @@ export default function Page() {
 
     useEffect(() => {
         (async () => {
-            const data = await getDopings();
+            const data = await getDopingAthletes();
             setDopings(data);
         })();
     }, []);
@@ -33,7 +35,7 @@ export default function Page() {
                 onNameChange={(name) => setFilters(prev => ({...prev, fullName: name}))}
                 onDateChange={(date) => setFilters(prev => ({...prev, birthDate: date}))}
             />
-            <Doping dopings={filteredDopings} />
+            <Doping dopingAthletes={filteredDopings} />
         </div>
     );
 }
