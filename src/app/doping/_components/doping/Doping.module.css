@@ -1,0 +1,14 @@
+.container table {
+   border-collapse: collapse;
+   /*убираем пустые промежутки между ячейками*/
+   border: 1px solid grey;
+   /*устанавливаем для таблицы внешнюю границу серого цвета толщиной 1px*/
+}
+
+.container th, td {
+   border: 1px solid grey;
+   padding: 0;
+   margin: 0;
+   font: 500 16px Montserrat, sans-serif;
+   color: white;
+}
