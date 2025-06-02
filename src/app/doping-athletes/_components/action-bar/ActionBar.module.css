@@ -1,18 +1,11 @@
 .container {
-    display: grid;
-    /*justify-content: flex;*/
-
-    gap: 5px;
-
-    --size: 20px;
+    display: flex;
+    gap: 50px;
 }
 
 .container div {
     display: flex;
-    /*justify-content: flex;*/
-
-    gap: 5px;
-
+    gap: 15px;
     --size: 20px;
 }
 
@@ -20,13 +13,13 @@
     flex: 0 0 auto;
     padding: 0;
     margin: 0;
-    font: 500 20px Montserrat, sans-serif;
+    font: 20px Montserrat, sans-serif;
     color: var(--foreground);
 
     display: flex;
     align-items: center; /* Центрирование по вертикали */
     justify-content: center; /* Центрирование по горизонтали (опционально) */
-    height: 38px; /* Пример высоты */
+
 }
 
 .container input {
@@ -44,7 +37,11 @@
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    color-scheme: dark;
+    height: 24px;
 }
+
+
 
 .container input:hover {
     background: var(--element-hover);

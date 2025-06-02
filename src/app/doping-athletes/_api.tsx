@@ -4,99 +4,99 @@ import {DopingAthleteType} from "@/app/doping-athletes/_types.tsx";
 let dopingAthletes = [
     {
         id: 1, fullName: 'Тимохов Кирилл', sportType: 'Баскетбол',
-        birthDate: new Date(2004, 4, 26),
+        birthDate: '31.12.2001',
         violationType: 'Героин',
-        ineligibilityPeriod: {period: 3, unit: 'дня'},
-        ineligibilityStart: new Date(2025, 5, 12),
-        ineligibilityEnd: new Date(2025, 5, 15)
+        ineligibilityPeriod: '2 дня',
+        ineligibilityStart: '31.12.2001',
+        ineligibilityEnd: '31.12.2001'
     },
     {
         id: 2, fullName: 'Егор Копытов', sportType: 'Лёгкая атлетика',
-        birthDate: new Date(2004, 2, 13),
+        birthDate: '31.12.2001',
         violationType: 'Амфетомин',
-        ineligibilityPeriod: {period: 2, unit: 'дня'},
-        ineligibilityStart: new Date(2025, 5, 17),
-        ineligibilityEnd: new Date(2025, 5, 19)
+        ineligibilityPeriod: '2 дня',
+        ineligibilityStart: '31.12.2001',
+        ineligibilityEnd: '31.12.2001'
     },
     {
         id: 3, fullName: 'Артём Мяконьких', sportType: 'Тяжёлая атлетика',
-        birthDate: new Date(2004, 6, 7),
+        birthDate: '31.12.2001',
         violationType: 'Спайс',
-        ineligibilityPeriod: {period: 22, unit: 'года'},
-        ineligibilityStart: new Date(2025, 6, 3),
-        ineligibilityEnd: new Date(2047, 6, 3)
+        ineligibilityPeriod: '2 дня',
+        ineligibilityStart: '31.12.2001',
+        ineligibilityEnd: '31.12.2001'
     },
     {
         id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
-        birthDate: new Date(2004, 12, 1),
+        birthDate: '31.12.2001',
         violationType: 'Виагра',
-        ineligibilityPeriod: {period: 1, unit: 'месяц'},
-        ineligibilityStart: new Date(2026, 6, 22),
-        ineligibilityEnd: new Date(2026, 7, 22)
+        ineligibilityPeriod: '2 дня',
+        ineligibilityStart: '31.12.2001',
+        ineligibilityEnd: '31.12.2001'
     },
     {
-        id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
-        birthDate: new Date(2004, 12, 1),
+        id: 5, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
+        birthDate: '31.12.2001',
         violationType: 'Виагра',
-        ineligibilityPeriod: {period: 1, unit: 'месяц'},
-        ineligibilityStart: new Date(2026, 6, 22),
-        ineligibilityEnd: new Date(2026, 7, 22)
+        ineligibilityPeriod: '2 дня',
+        ineligibilityStart: '31.12.2001',
+        ineligibilityEnd: '31.12.2001'
     },
     {
-        id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
-        birthDate: new Date(2004, 12, 1),
+        id: 6, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
+        birthDate: '31.12.2001',
         violationType: 'Виагра',
-        ineligibilityPeriod: {period: 1, unit: 'месяц'},
-        ineligibilityStart: new Date(2026, 6, 22),
-        ineligibilityEnd: new Date(2026, 7, 22)
+        ineligibilityPeriod: '2 дня',
+        ineligibilityStart: '31.12.2001',
+        ineligibilityEnd: '31.12.2001'
     },
     {
-        id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
-        birthDate: new Date(2004, 12, 1),
+        id: 7, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
+        birthDate: '31.12.2001',
         violationType: 'Виагра',
-        ineligibilityPeriod: {period: 1, unit: 'месяц'},
-        ineligibilityStart: new Date(2026, 6, 22),
-        ineligibilityEnd: new Date(2026, 7, 22)
+        ineligibilityPeriod: '2 дня',
+        ineligibilityStart: '31.12.2001',
+        ineligibilityEnd: '31.12.2001'
     },
     {
-        id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
-        birthDate: new Date(2004, 12, 1),
+        id: 8, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
+        birthDate: '31.12.2001',
         violationType: 'Виагра',
-        ineligibilityPeriod: {period: 1, unit: 'месяц'},
-        ineligibilityStart: new Date(2026, 6, 22),
-        ineligibilityEnd: new Date(2026, 7, 22)
+        ineligibilityPeriod: '2 дня',
+        ineligibilityStart: '31.12.2001',
+        ineligibilityEnd: '31.12.2001'
     },
     {
-        id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
-        birthDate: new Date(2004, 12, 1),
+        id: 9, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
+        birthDate: '31.12.2001',
         violationType: 'Виагра',
-        ineligibilityPeriod: {period: 1, unit: 'месяц'},
-        ineligibilityStart: new Date(2026, 6, 22),
-        ineligibilityEnd: new Date(2026, 7, 22)
+        ineligibilityPeriod: '2 дня',
+        ineligibilityStart: '31.12.2001',
+        ineligibilityEnd: '31.12.2001'
     },
     {
-        id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
-        birthDate: new Date(2004, 12, 1),
+        id: 10, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
+        birthDate: '31.12.2001',
         violationType: 'Виагра',
-        ineligibilityPeriod: {period: 1, unit: 'месяц'},
-        ineligibilityStart: new Date(2026, 6, 22),
-        ineligibilityEnd: new Date(2026, 7, 22)
+        ineligibilityPeriod: '2 дня',
+        ineligibilityStart: '31.12.2001',
+        ineligibilityEnd: '31.12.2001'
     },
     {
-        id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
-        birthDate: new Date(2004, 12, 1),
+        id: 11, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
+        birthDate: '31.12.2001',
         violationType: 'Виагра',
-        ineligibilityPeriod: {period: 1, unit: 'месяц'},
-        ineligibilityStart: new Date(2026, 6, 22),
-        ineligibilityEnd: new Date(2026, 7, 22)
+        ineligibilityPeriod: '2 дня',
+        ineligibilityStart: '31.12.2001',
+        ineligibilityEnd: '31.12.2001'
     },
     {
-        id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
-        birthDate: new Date(2004, 12, 1),
+        id: 12, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
+        birthDate: '31.12.2001',
         violationType: 'Виагра',
-        ineligibilityPeriod: {period: 1, unit: 'месяц'},
-        ineligibilityStart: new Date(2026, 6, 22),
-        ineligibilityEnd: new Date(2026, 7, 22)
+        ineligibilityPeriod: '2 дня',
+        ineligibilityStart: '31.12.2001',
+        ineligibilityEnd: '31.12.2001'
     }
 ]
 
