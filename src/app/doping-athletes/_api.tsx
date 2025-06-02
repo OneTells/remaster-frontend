@@ -33,6 +33,70 @@ let dopingAthletes = [
         ineligibilityPeriod: {period: 1, unit: 'месяц'},
         ineligibilityStart: new Date(2026, 6, 22),
         ineligibilityEnd: new Date(2026, 7, 22)
+    },
+    {
+        id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
+        birthDate: new Date(2004, 12, 1),
+        violationType: 'Виагра',
+        ineligibilityPeriod: {period: 1, unit: 'месяц'},
+        ineligibilityStart: new Date(2026, 6, 22),
+        ineligibilityEnd: new Date(2026, 7, 22)
+    },
+    {
+        id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
+        birthDate: new Date(2004, 12, 1),
+        violationType: 'Виагра',
+        ineligibilityPeriod: {period: 1, unit: 'месяц'},
+        ineligibilityStart: new Date(2026, 6, 22),
+        ineligibilityEnd: new Date(2026, 7, 22)
+    },
+    {
+        id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
+        birthDate: new Date(2004, 12, 1),
+        violationType: 'Виагра',
+        ineligibilityPeriod: {period: 1, unit: 'месяц'},
+        ineligibilityStart: new Date(2026, 6, 22),
+        ineligibilityEnd: new Date(2026, 7, 22)
+    },
+    {
+        id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
+        birthDate: new Date(2004, 12, 1),
+        violationType: 'Виагра',
+        ineligibilityPeriod: {period: 1, unit: 'месяц'},
+        ineligibilityStart: new Date(2026, 6, 22),
+        ineligibilityEnd: new Date(2026, 7, 22)
+    },
+    {
+        id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
+        birthDate: new Date(2004, 12, 1),
+        violationType: 'Виагра',
+        ineligibilityPeriod: {period: 1, unit: 'месяц'},
+        ineligibilityStart: new Date(2026, 6, 22),
+        ineligibilityEnd: new Date(2026, 7, 22)
+    },
+    {
+        id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
+        birthDate: new Date(2004, 12, 1),
+        violationType: 'Виагра',
+        ineligibilityPeriod: {period: 1, unit: 'месяц'},
+        ineligibilityStart: new Date(2026, 6, 22),
+        ineligibilityEnd: new Date(2026, 7, 22)
+    },
+    {
+        id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
+        birthDate: new Date(2004, 12, 1),
+        violationType: 'Виагра',
+        ineligibilityPeriod: {period: 1, unit: 'месяц'},
+        ineligibilityStart: new Date(2026, 6, 22),
+        ineligibilityEnd: new Date(2026, 7, 22)
+    },
+    {
+        id: 4, fullName: 'Куплевацкий Дмитрий', sportType: 'Плаванье',
+        birthDate: new Date(2004, 12, 1),
+        violationType: 'Виагра',
+        ineligibilityPeriod: {period: 1, unit: 'месяц'},
+        ineligibilityStart: new Date(2026, 6, 22),
+        ineligibilityEnd: new Date(2026, 7, 22)
     }
 ]
 

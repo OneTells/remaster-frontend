@@ -1,6 +1,6 @@
 export function RemoveIcon() {
     return (
-        <svg fill="none" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <svg fill="none" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style={{height: "fit-content", width: "fit-content"}}>
             <path
                 id="Vector_9"
                 d="M26.67,11.6h-21.34c-0.26,0 -0.52,-0.1054 -0.7,-0.2929c-0.19,-0.1875 -0.3,-0.4419 -0.3,-0.7071c0,-0.2652 0.11,-0.5196 0.3,-0.7071c0.18,-0.1875 0.44,-0.2929 0.7,-0.2929h21.34c0.26,0 0.52,0.1054 0.7,0.2929c0.19,0.1875 0.3,0.4419 0.3,0.7071c0,0.2652 -0.11,0.5196 -0.3,0.7071c-0.18,0.1875 -0.44,0.2929 -0.7,0.2929z"

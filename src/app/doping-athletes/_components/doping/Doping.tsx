@@ -12,13 +12,13 @@ export function Doping({dopingAthletes}: Props) {
     //     return `${period.period} ${getUnitName(period.unit)}`;
     // };
 
-    if (dopingAthletes.length === 0) {
-        return (
-            <div className="text-center py-8 text-gray-500 text-lg">
-                Нет данных для отображения
-            </div>
-        );
-    }
+    // if (dopingAthletes.length === 0) {
+    //     return (
+    //         <div className="text-center py-8 text-gray-500 text-lg">
+    //             Нет данных для отображения
+    //         </div>
+    //     );
+    // }
 
     return (
         <div className={styles["container"]}>
@@ -29,7 +29,6 @@ export function Doping({dopingAthletes}: Props) {
                     <th>ФИО</th>
                     <th>Вид спорта</th>
                     <th>Дата рождения</th>
-                    <th>Вид нарушения / класс запрещённой субстанции</th>
                     <th>Срок дисквалификации</th>
                     <th>Дата начала дисквалификации</th>
                     <th>Дата окончания дисквалификации</th>
@@ -48,7 +47,6 @@ export function Doping({dopingAthletes}: Props) {
                                 year: 'numeric'
                             })}
                         </td>
-                        <td>{doping.violationType}</td>
                         <td>
                             {doping.ineligibilityPeriod.period + " " + doping.ineligibilityPeriod.unit}
                         </td>

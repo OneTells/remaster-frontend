@@ -1,0 +1,49 @@
+.container {
+    position: relative;
+    width: 160px;
+}
+
+.input {
+    height: 28px;
+
+    background: var(--button);
+
+    padding: 8px;
+
+    border: none;
+    border-radius: 10px;
+
+    cursor: pointer;
+    color: white;
+
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+.modal {
+    margin-top: 5px;
+
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+
+    border: none;
+    border-radius: 10px;
+
+    background: var(--button);
+    z-index: 3;
+}
+
+.modal-label {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.modal-label:hover {
+    background: var(--element-hover);
+
+    border: none;
+    border-radius: 10px;
+}

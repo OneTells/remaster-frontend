@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 
 import {DopingAthleteType} from "@/app/doping-athletes/_types.tsx";
 import {getDopingAthletes} from "@/app/doping-athletes/_api.tsx";
@@ -30,12 +30,12 @@ export default function Page() {
     });
 
     return (
-        <div>
-            <ActionBar 
+        <>
+            <ActionBar
                 onNameChange={(name) => setFilters(prev => ({...prev, fullName: name}))}
                 onDateChange={(date) => setFilters(prev => ({...prev, birthDate: date}))}
             />
-            <Doping dopingAthletes={filteredDopings} />
-        </div>
+            <Doping dopingAthletes={filteredDopings}/>
+        </>
     );
 }

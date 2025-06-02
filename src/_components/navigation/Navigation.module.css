@@ -3,6 +3,8 @@
     flex-direction: column;
 
     width: fit-content;
+
+    z-index: 100;
 }
 
 .button {
@@ -10,13 +12,16 @@
     margin-right: 10px;
 
     padding: 10px;
-}
 
-.button svg {
     --size: 35px;
 
     height: var(--size);
     width: var(--size);
+}
+
+.button svg {
+    height: fit-content;
+    width: fit-content;
 }
 
 .button:hover {

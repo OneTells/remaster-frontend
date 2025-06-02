@@ -1,0 +1,18 @@
+.button {
+    background-color: var(--button);
+
+    border: none;
+    border-radius: 10px;
+
+    font-size: 16px;
+    color: var(--foreground);
+
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.button:hover {
+    background: var(--element-hover);
+}

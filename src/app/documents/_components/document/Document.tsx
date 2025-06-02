@@ -5,6 +5,7 @@ import {useNavigate} from "react-router";
 
 import {CheckBox} from "@/app/documents/_components/check-box/CheckBox.tsx";
 import {DocumentType} from "@/app/documents/_types.tsx";
+import {Button} from "@/_ui/button/Button.tsx";
 
 
 type Props = {
@@ -39,12 +40,11 @@ export function Document(props: Props) {
     }
 
     return (
-        <div className={styles['container']} onDoubleClick={onDoubleClick}>
+        <Button style={{padding: '10px'}} className={styles['container']} onDoubleClick={onDoubleClick}>
             <CheckBox onChange={onChange} checked={props.selectIDs.has(props.document.id)} ref={ref}/>
             <div className={styles['text']}>
                 {props.document.title}
             </div>
-        </div>
-
+        </Button>
     )
 }

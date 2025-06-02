@@ -1,16 +1,17 @@
 .checkbox-wrapper {
-    margin-left: 10px;
+    /*margin-left: 10px;*/
 
     display: inline-block;
     position: relative;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
+    padding-left: 3px;
 }
 
 .checkbox-wrapper input {
     opacity: 0;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
 
     margin: 0;
     position: absolute;
@@ -22,10 +23,11 @@
 }
 
 .custom-checkbox {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
 
-    background-color: #807f7f;
+    /*background-color: #53545a;*/
+    background-color: #60636b;
 
     border-radius: 5px;
 
@@ -35,11 +37,11 @@
 }
 
 .checkbox-wrapper input:checked + .custom-checkbox {
-    background-color: #807f7f;
+    background-color: #53545a;
 }
 
 .checkbox-wrapper input:checked + .custom-checkbox::after {
     content: "✓";
-    color: white;
+    color: var(--foreground);
     font-size: 15px;
 }

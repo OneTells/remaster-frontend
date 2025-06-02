@@ -3,45 +3,4 @@
     justify-content: flex-end;
 
     gap: 5px;
-
-    --size: 20px;
-}
-
-.container svg {
-    display: flex;
-    flex: 0 0 auto;
-
-    width: var(--size);
-    height: var(--size);
-
-    color: var(--foreground);
-    background-color: var(--button);
-
-    border-radius: 10px;
-    padding: 10px;
-}
-
-.container svg:hover {
-    background: var(--element-hover);
-}
-
-.container button {
-    color: var(--foreground);
-    background-color: var(--button);
-
-    padding: 10px var(--size);
-
-    border: none;
-    border-radius: 10px;
-
-    font-size: 16px;
-
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-
-.container button:hover {
-    background: var(--element-hover);
 }

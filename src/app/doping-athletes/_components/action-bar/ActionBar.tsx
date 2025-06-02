@@ -28,8 +28,7 @@ export function ActionBar({ onNameChange, onDateChange }: Props) {
         <div className={styles["container"]}>
             <div>
                 <p>ФИО</p>
-                <input 
-                    placeholder="Крапов Николай" 
+                <input
                     type="text" 
                     value={name}
                     onChange={handleNameChange}
