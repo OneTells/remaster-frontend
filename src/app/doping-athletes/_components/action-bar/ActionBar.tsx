@@ -5,12 +5,12 @@ import React, { useState } from "react";
 
 type Props = {
     onNameChange: (name: string) => void;
-    onDateChange: (date: Date | null) => void;
+    onDateChange: (date: string) => void;
 }
 
 export function ActionBar({ onNameChange, onDateChange }: Props) {
     const [name, setName] = useState('');
-    const [_, setDate] = useState<Date | null>(null);
+    const [_, setDate] = useState('');
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newName = e.target.value;
@@ -19,7 +19,7 @@ export function ActionBar({ onNameChange, onDateChange }: Props) {
     };
 
     const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newDate = e.target.value ? new Date(e.target.value) : null;
+        const newDate = e.target.value;
         setDate(newDate);
         onDateChange(newDate);
     };

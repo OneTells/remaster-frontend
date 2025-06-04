@@ -12,7 +12,7 @@ export default function Page() {
     const [dopings, setDopings] = useState<DopingAthleteType[]>([]);
     const [filters, setFilters] = useState({
         fullName: '',
-        birthDate: null as Date | null
+        birthDate: ''
     });
 
     useEffect(() => {
