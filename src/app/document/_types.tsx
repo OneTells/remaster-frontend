@@ -1,19 +1,20 @@
 export type AthleteType = {
     id: number,
 
-    fullName: string,
-    sportName: string,
+    full_name: string,
+    birth_date: string,
+    sport_name: string,
 
     municipality: string,
     organization: string,
 
-    isSportsCategoryGranted: boolean,
-    isDopingCheckPassed: boolean,
+    is_sports_category_granted: boolean,
+    is_doping_check_passed: boolean,
 }
 
 export type DocumentType = {
     id: number,
     title: string,
-    sportsRankId: number,
+    sports_category_id: number,
     athletes: AthleteType[],
 }

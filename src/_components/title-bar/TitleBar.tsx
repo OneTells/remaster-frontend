@@ -9,11 +9,14 @@ import {invoke} from "@tauri-apps/api/core";
 import {WindowMinimizeIcon} from "@/_assets/window_minimize_icon";
 import {WindowMaximizeIcon} from "@/_assets/window_maximize_icon";
 import {WindowCloseIcon} from "@/_assets/window_close_icon";
+import {useNavigation} from "@/_hook/useNavigation.tsx";
 
 
 export function TitleBar() {
     const [appWindow, setAppWindow] = useState<Window | undefined>(undefined)
     const ref = useRef<HTMLDivElement | null>(null)
+
+    const navigate = useNavigation();
 
     useEffect(() => {
         // const listener = (event: MouseEvent) => event.preventDefault()
@@ -27,6 +30,7 @@ export function TitleBar() {
         setAppWindow(window);
 
         (async () => {
+            await navigate("/documents")
             await invoke("show_window", {window})
         })()
     }, [])

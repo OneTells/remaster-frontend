@@ -1,11 +1,11 @@
 import styles from "./Document.module.css";
 
 import {Dispatch, MouseEvent, SetStateAction, useRef} from "react";
-import {useNavigate} from "react-router";
 
 import {CheckBox} from "@/app/documents/_components/check-box/CheckBox.tsx";
 import {DocumentType} from "@/app/documents/_types.tsx";
 import {Button} from "@/_ui/button/Button.tsx";
+import {useNavigation} from "@/_hook/useNavigation.tsx";
 
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
 
 export function Document(props: Props) {
     const ref = useRef<HTMLDivElement>(null)
-    const navigate = useNavigate();
+    const navigate = useNavigation();
 
     const onChange = () => {
         props.setSelectIDs((value) => {
@@ -32,11 +32,11 @@ export function Document(props: Props) {
         });
     }
 
-    const onDoubleClick = (event: MouseEvent<HTMLInputElement>) => {
+    const onDoubleClick = async (event: MouseEvent<HTMLInputElement>) => {
         if (event.target === ref.current || ref.current!.contains(event.target as Node))
             return
 
-        navigate(`/documents/${props.document.id}`);
+        await navigate(`/documents/${props.document.id}`, {'id': props.document.id});
     }
 
     return (

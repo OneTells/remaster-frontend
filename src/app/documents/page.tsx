@@ -1,17 +1,18 @@
 'use client'
 
-import {use, useEffect, useState} from "react";
+import {memo, useEffect, useState} from "react";
 
 import {getDocuments} from "@/app/documents/_api.tsx";
 import {DocumentType} from "@/app/documents/_types.tsx";
 import {ActionBar} from "@/app/documents/_components/action-bar/ActionBar.tsx";
 import {Documents} from "@/app/documents/_components/documents/Documents.tsx";
+import {useNavigationData} from "@/_hook/useNavigationData.tsx";
 
 
-export default function Page() {
-    const documents = use(getDocuments());
-    return <Menu documents={documents}/>
-}
+export const DocumentsPage = memo(function DocumentsPage() {
+    const data = useNavigationData();
+    return <Menu documents={data as DocumentType[]}/>
+})
 
 function Menu(props: { documents: DocumentType[] }) {
     const [documents, setDocuments] = useState<DocumentType[]>(props.documents);

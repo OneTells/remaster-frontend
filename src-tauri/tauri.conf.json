@@ -37,16 +37,18 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "resources": {
-      "../resources/*": "resources/"
-    },
+    "externalBin": [
+      "../binaries/api"
+    ],
     "windows": {
       "webviewInstallMode": {
         "type": "offlineInstaller"
       },
       "nsis": {
         "installerIcon": "icons/icon.ico",
-        "languages": ["Russian"]
+        "languages": [
+          "Russian"
+        ]
       }
     }
   }

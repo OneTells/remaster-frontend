@@ -1,11 +1,11 @@
 export type DopingAthleteType = {
     id: number,
-    fullName: string,
-    sportType: string,
-    birthDate: string,
-    violationType: string,
-    ineligibilityPeriod: string
-    ineligibilityStart: string,
-    ineligibilityEnd: string,
+    full_name: string,
+    sport: string,
+    birth_date: string,
+    violation_description: string,
+    disqualification_duration: string
+    disqualification_start: string,
+    disqualification_end: string,
 }
 

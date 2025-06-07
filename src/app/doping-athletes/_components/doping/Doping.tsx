@@ -60,23 +60,26 @@ export function Doping({dopingAthletes}: Props) {
                                 <td className={`${styles.tableCell} ${styles.center}`}>
                                     {dopingAthlete?.id || ''}
                                 </td>
-                                <td className={styles.tableCell}>
-                                    {dopingAthlete?.fullName || ''}
+                                <td className={styles.tableCell} title={dopingAthlete?.full_name || ''}>
+                                    {dopingAthlete?.full_name || ''}
                                 </td>
                                 <td className={styles.tableCell}>
-                                    {dopingAthlete?.sportType || ''}
+                                    {dopingAthlete?.sport || ''}
                                 </td>
                                 <td className={`${styles.tableCell} ${styles.center}`}>
-                                    {dopingAthlete?.birthDate || ''}
+                                    {dopingAthlete?.birth_date || ''}
+                                </td>
+                                <td
+                                    className={`${styles.tableCell} ${styles.center}`}
+                                    title={dopingAthlete?.disqualification_duration || ''}
+                                >
+                                    {dopingAthlete?.disqualification_duration || ''}
                                 </td>
                                 <td className={`${styles.tableCell} ${styles.center}`}>
-                                    {dopingAthlete?.ineligibilityPeriod || ''}
+                                     {dopingAthlete?.disqualification_start || ''}
                                 </td>
                                 <td className={`${styles.tableCell} ${styles.center}`}>
-                                     {dopingAthlete?.ineligibilityStart || ''}
-                                </td>
-                                <td className={`${styles.tableCell} ${styles.center}`}>
-                                    {dopingAthlete?.ineligibilityEnd || ''}
+                                    {dopingAthlete?.disqualification_end.replace('None', 'Пожизненно') || ''}
                                 </td>
                             </tr>
                         );

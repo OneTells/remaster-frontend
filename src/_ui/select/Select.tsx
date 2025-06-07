@@ -9,10 +9,11 @@ import {ShowMore} from "@/_assets/show_more.tsx";
 type Props = {
     options: SelectOptionType[],
     selectedOptionId: number | null,
-    setSelectedOptionId: React.Dispatch<React.SetStateAction<number>>
+    setSelectedOptionId: (id: number | null) => void,
+    style?: React.CSSProperties
 }
 
-export function Select({options, selectedOptionId, setSelectedOptionId}: Props) {
+export function Select({options, selectedOptionId, setSelectedOptionId, style}: Props) {
     const ref = useRef<HTMLDivElement>(null);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -33,7 +34,7 @@ export function Select({options, selectedOptionId, setSelectedOptionId}: Props) 
     };
 
     return (
-        <div className={styles['container']}>
+        <div className={styles['container']} style={style}>
             <div ref={ref} className={styles['input']} onClick={() => setIsOpen(!isOpen)}>
                 {selectedOptionId ? (options.find((option) => option.id === selectedOptionId)?.label) : 'Не выбрано'}
                 <div style={{justifyContent: 'flex-end', display: 'flex', flex: 1, marginRight: '3px'}}>

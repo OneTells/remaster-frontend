@@ -1,0 +1,50 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+}
+
+.leftSection {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+    background: var(--button);
+
+    height: 60px;
+    padding: 0 20px;
+    border-radius: 15px;
+}
+
+.title {
+    font: 500 16px Montserrat, sans-serif;
+    color: var(--foreground);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.date {
+    font: 400 12px Montserrat, sans-serif;
+    color: rgba(255, 255, 255, 0.5);
+    white-space: nowrap;
+    margin-left: auto;
+}
+
+.buttons {
+    display: flex;
+    gap: 8px;
+    margin-left: 16px;
+}
+
+.button {
+    height: 60px;
+    width: 60px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}

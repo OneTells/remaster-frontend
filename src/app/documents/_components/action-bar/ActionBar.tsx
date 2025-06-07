@@ -1,13 +1,14 @@
 import styles from "./ActionBar.module.css";
 
 import {Dispatch, SetStateAction} from "react";
-import {useNavigate} from "react-router";
 
 import {UploadIcon} from "@/_assets/upload_icon";
 import {RemoveIcon} from "@/_assets/remove_icon";
-import {deleteDocument} from "@/app/documents/_api.tsx";
+import {createDocumentFromFile, deleteDocument} from "@/app/documents/_api.tsx";
 import {Button} from "@/_ui/button/Button.tsx";
 import {Tooltip} from "@/_ui/tooltip/Tooltip.tsx";
+import {useNavigation} from "@/_hook/useNavigation.tsx";
+import {open} from "@tauri-apps/plugin-dialog";
 
 
 type Props = {
@@ -17,15 +18,20 @@ type Props = {
 }
 
 export function ActionBar(props: Props) {
-    const navigate = useNavigate();
+    const navigate = useNavigation();
 
     const createDocument = async () => {
-        navigate(`/documents/new`);
+        await navigate(`/documents/new`);
     }
 
     const uploadDocument = async () => {
-        // TODO Получение пути файла и передача его на backend
+        const path = await open({multiple: false, directory: false});
 
+        if (!path) {
+            return;
+        }
+
+        await createDocumentFromFile(path);
         props.setSelectIDs(new Set());
         props.setNeedUpdate(true);
     }

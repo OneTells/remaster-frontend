@@ -1,15 +1,18 @@
 import {DocumentType} from "@/app/documents/_types.tsx";
+import {API_URL} from "@/config.tsx";
 
-
-let documents = Array.from({length: 30}, (_, index) => ({
-    id: index + 1,
-    title: `Документ №${index + 1} от ${new Date().toLocaleDateString()}`
-}))
 
 export async function deleteDocument(ids: Set<number>): Promise<void> {
-    documents = documents.filter((document) => !ids.has(document.id))
+    for (const id of ids) {
+        await fetch(`${API_URL}/documents/${id}`, {method: 'DELETE'});
+    }
 }
 
 export async function getDocuments(): Promise<DocumentType[]> {
-    return documents
+    const response = await fetch(`${API_URL}/documents`)
+    return (await response.json()).data
+}
+
+export async function createDocumentFromFile(path: string): Promise<void> {
+    console.log(path)
 }

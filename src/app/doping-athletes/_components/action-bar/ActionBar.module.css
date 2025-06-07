@@ -26,7 +26,8 @@
     color: var(--foreground);
     background-color: var(--button);
 
-    padding: 10px var(--size);
+    /*padding: 10px var(--size);*/
+    padding-left: 10px;
 
     border: none;
     border-radius: 10px;
@@ -38,7 +39,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
     color-scheme: dark;
-    height: 24px;
+    height: 42px;
 }
 
 

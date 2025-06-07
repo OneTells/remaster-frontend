@@ -36,7 +36,7 @@ export function ActionBar({ onNameChange, onDateChange }: Props) {
             </div>
             <div>
                 <p>Дата рождения</p>
-                <input type="date" onChange={handleDateChange}/>
+                <input type="date" onChange={handleDateChange} style={{height: "44px", paddingRight: "10px"}}/>
             </div>
         </div>
     );

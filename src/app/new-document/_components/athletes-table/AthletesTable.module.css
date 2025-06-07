@@ -1,0 +1,110 @@
+/* Layout */
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin-top: 10px;
+    /*padding-right: 10px;*/
+}
+
+.tableWrapper {
+    flex: 1;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+/* Table Structure */
+.table {
+    width: 100%;
+    height: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* Table Header */
+.tableHeader {
+    height: 50px;
+    padding: 8px 6px;
+    /*background-color: var(--button);*/
+    color: white;
+    font: 500 15px Montserrat, sans-serif;
+    text-align: left;
+    vertical-align: middle;
+    border: 1px solid #dddfe1;
+}
+
+/* Table Rows & Cells */
+.tableRow {
+    height: 28px;
+}
+
+.tableRow:not(.empty) {
+    cursor: pointer;
+}
+
+.tableRow:not(.empty):hover {
+    background-color: var(--element-hover);
+}
+
+.tableRow.empty {
+    cursor: default;
+}
+
+.tableCell {
+    /*background-color: var(--button);*/
+
+    padding: 4px 6px;
+    border: 1px solid #dddfe1;
+    margin: 0;
+    font: 500 13px Montserrat, sans-serif;
+    color: white;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+
+    height: 55px;
+    box-sizing: border-box;
+}
+
+/*!* Interactive Elements *!*/
+/*.selectableCell {*/
+/*    cursor: pointer;*/
+/*    transition: background-color 0.2s ease;*/
+/*    display: block;*/
+/*    height: 100%;*/
+/*    width: 100%;*/
+/*}*/
+
+/* Status Indicators */
+.statusGranted {
+    color: #4CAF50;
+}
+
+.statusNotGranted {
+    color: #F44336;
+}
+
+/* Alignment Helpers */
+.center {
+    text-align: center !important;
+}
+
+/* Border Radius */
+.table thead th:first-child {
+    border-radius: 20px 0 0 0;
+}
+
+.table thead th:last-child {
+    border-radius: 0 20px 0 0;
+}
+
+tbody tr:last-child td:first-child {
+    border-radius: 0 0 0 20px;
+}
+
+tbody tr:last-child td:last-child {
+    border-radius: 0 0 20px 0;
+}
