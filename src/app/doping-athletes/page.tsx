@@ -18,7 +18,7 @@ export function Menu(props: {dopingAthletes: DopingAthleteType[]}) {
     const [dopingAthletes, setDopingAthletes] = useState<DopingAthleteType[]>(props.dopingAthletes);
     const [filters, setFilters] = useState({
         fullName: '',
-        birthDate: null as Date | null
+        birthDate: ''
     });
 
     useEffect(() => {

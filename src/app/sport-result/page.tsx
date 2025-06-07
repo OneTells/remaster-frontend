@@ -1,8 +1,14 @@
 'use client'
 
-import {memo} from "react";
+import { DownBar } from "./_components/down-bar/DownBar"
+import { UpBar } from "./_components/up-bar/UpBar"
 
-export const SportResultPage = memo(function SportResultPage() {
-    return <div>sport-result</div>
-})
+export default function Page() {
+    return(
+        <>
+        <UpBar/>
+        <DownBar/>
+        </>
+    )
+}
 
