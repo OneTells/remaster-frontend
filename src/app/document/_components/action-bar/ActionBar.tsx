@@ -1,7 +1,6 @@
 import styles from "./ActionBar.module.css";
 
-import {use} from "react";
-import {Dispatch, SetStateAction} from "react";
+import {Dispatch, SetStateAction, use} from "react";
 
 import {Button} from "@/_ui/button/Button.tsx";
 import {DownloadIcon} from "@/_assets/download_icon.tsx";
@@ -13,15 +12,16 @@ import {RemoveIcon} from "@/_assets/remove_icon.tsx";
 import {open, save} from "@tauri-apps/plugin-dialog";
 import {createOrder} from "@/app/document/_api.tsx";
 import {ModalContext} from "@/app/document/_context/modal-context.tsx";
+import {ActionBarUIDocumentType, DocumentType} from "@/app/document/_types.tsx";
+
 
 type Props = {
-    id: number,
-    name: string,
-    setName: Dispatch<SetStateAction<string>>,
-    sportsRankId: number | null,
-    setSportsRankId: Dispatch<SetStateAction<number | null>>,
+    document: DocumentType
+    setDocument: Dispatch<SetStateAction<DocumentType>>
+
     selectIDs: Set<number>,
     setSelectIDs: Dispatch<SetStateAction<Set<number>>>
+
     setNeedUpdate: Dispatch<SetStateAction<boolean>>
 }
 
@@ -44,12 +44,12 @@ export function ActionBar(props: Props) {
             return;
         }
 
-        await createOrder(props.id, path)
+        await createOrder(props.document.id!, path)
     }
 
-    const createAthlete = () => {
+    const createAthlete = async () => {
         // Open modal in create mode (no athlete data)
-        modalDispatch({ type: 'OPEN', data: null });
+        modalDispatch({type: 'OPEN', data: null});
     }
 
     const uploadAthletes = async () => {
@@ -76,6 +76,48 @@ export function ActionBar(props: Props) {
         props.setNeedUpdate(true);
     }
 
+    const titleChange = (value: string) => {
+        props.setDocument((document) => ({...document, title: value}));
+    }
+
+    const sportsCategoryIdChange = (id: number) => {
+        props.setDocument((document) => ({...document, sports_category_id: id}));
+    }
+
+    return (
+        <ActionBarUI
+            document={props.document}
+            titleChange={titleChange}
+            sportsCategoryIdChange={sportsCategoryIdChange}
+            downloadDocument={downloadDocument}
+            createOrder={createOrderOnClick}
+            createAthlete={createAthlete}
+            uploadAthletes={uploadAthletes}
+            downloadAthletes={downloadAthletes}
+            removeAthletes={removeAthletes}
+            createOrderOnClick={createOrderOnClick}
+        />
+    );
+}
+
+
+type ActionBarUIProps = {
+    document: ActionBarUIDocumentType,
+
+    titleChange: (value: string) => void,
+    sportsCategoryIdChange: (id: number) => void,
+
+    downloadDocument?: () => void,
+    createOrder?: () => void,
+    createAthlete?: () => void,
+    uploadAthletes?: () => void,
+    downloadAthletes?: () => void,
+    removeAthletes?: () => void,
+    createOrderOnClick?: () => void,
+
+}
+
+export function ActionBarUI(props: ActionBarUIProps) {
     const options = [
         {id: 1, label: '1 спортивный'},
         {id: 2, label: 'КМС'},
@@ -87,18 +129,18 @@ export function ActionBar(props: Props) {
                 <p className={styles["title"]}>Название документа:</p>
                 <input
                     className={styles["input"]}
-                    value={props.name}
-                    onChange={(e) => props.setName(e.currentTarget.value)}
+                    value={props.document.title}
+                    onChange={(e) => props.titleChange(e.target.value)}
                     type="text"
                 />
                 <div className={styles['container']}>
                     <Tooltip text={'Выгрузить документ в файл'} position={'left'}>
-                        <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={downloadDocument}>
+                        <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={props.downloadDocument}>
                             <DownloadIcon/>
                         </Button>
                     </Tooltip>
                     <Tooltip text={'Сформировать приказ'} position={'bottom'} align={'start'}>
-                        <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={createOrderOnClick}>
+                        <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={props.createOrderOnClick}>
                             <DocumentIcon/>
                         </Button>
                     </Tooltip>
@@ -106,23 +148,27 @@ export function ActionBar(props: Props) {
             </div>
             <div className={styles["document-title-container"]}>
                 <p className={styles["title"]}>Спортивный разряд:</p>
-                <Select options={options} selectedOptionId={props.sportsRankId} setSelectedOptionId={props.setSportsRankId}/>
+                <Select
+                    options={options}
+                    selectedOptionId={props.document.sports_category_id}
+                    setSelectedOptionId={props.sportsCategoryIdChange}
+                />
                 <div style={{display: 'flex', justifyContent: 'flex-end', flex: 1, gap: '5px'}}>
-                    <Button style={{height: '44px', padding: '10px 20px'}} onClick={createAthlete}>
+                    <Button style={{height: '44px', padding: '10px 20px'}} onClick={props.createAthlete}>
                         Новый участник
                     </Button>
                     <Tooltip text={'Добавить участников из файла'}>
-                        <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={uploadAthletes}>
+                        <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={props.uploadAthletes}>
                             <UploadIcon/>
                         </Button>
                     </Tooltip>
                     <Tooltip text={'Выгрузить участников в файл'}>
-                        <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={downloadAthletes}>
+                        <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={props.downloadAthletes}>
                             <DownloadIcon/>
                         </Button>
                     </Tooltip>
                     <Tooltip text={'Удалить участников'} align={'start'}>
-                        <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={removeAthletes}>
+                        <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={props.removeAthletes}>
                             <RemoveIcon/>
                         </Button>
                     </Tooltip>

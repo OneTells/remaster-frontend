@@ -1,26 +1,27 @@
 import styles from "./AthletesTable.module.css";
 
-import {Dispatch, SetStateAction, use, useState} from "react";
+import {Dispatch, SetStateAction, useState} from "react";
 
 import {Pagination} from "@/_ui/pagination/Pagination.tsx";
-import {AthleteType} from "@/app/document/_types.tsx";
+import {AthleteType, SportType} from "@/app/document/_types.tsx";
 import {CheckBox} from "@/app/document/_components/check-box/CheckBox.tsx";
 import {EditIcon} from "@/_assets/edit_icon.tsx";
-import {ModalContext} from "@/app/document/_context/modal-context.tsx";
 
 
 type Props = {
     athletes: AthleteType[],
+    sports: SportType[]
+
     selectIDs: Set<number>,
-    setSelectIDs: Dispatch<SetStateAction<Set<number>>>
+    setSelectIDs: Dispatch<SetStateAction<Set<number>>>,
+
+    athleteModalOpen?: (id: number) => () => void,
 };
 
-export function AthletesTable({athletes, selectIDs, setSelectIDs}: Props) {
+export function AthletesTable({athletes, selectIDs, setSelectIDs, athleteModalOpen, sports}: Props) {
     const itemsPerPage = 8;
 
     const [currentPage, setCurrentPage] = useState(1);
-
-    const [_, modalDispatch] = use(ModalContext);
 
     const getDisplayItems = (): AthleteType[] => {
         const paginatedItems = athletes.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -31,13 +32,6 @@ export function AthletesTable({athletes, selectIDs, setSelectIDs}: Props) {
         }
 
         return paginatedItems;
-    };
-
-    const openModal = (id: number) => {
-        return () => {
-            modalDispatch({type: 'OPEN', data: athletes.find((athlete) => athlete.id === id)});
-            console.log('openModal');
-        }
     };
 
     return (
@@ -74,6 +68,8 @@ export function AthletesTable({athletes, selectIDs, setSelectIDs}: Props) {
                             !doping && styles.empty
                         ].filter(Boolean).join(' ');
 
+                        const sportName = (doping && sports.find(sport => sport.id === doping.sport_id)?.name) && '';
+
                         return (
                             <tr key={doping ? `row-${doping.id}` : `empty-${index}`} className={rowClasses}>
                                 <td className={`${styles.tableCell} ${styles.center}`}>
@@ -96,7 +92,7 @@ export function AthletesTable({athletes, selectIDs, setSelectIDs}: Props) {
                                     {doping?.full_name || ''}
                                 </td>
                                 <td className={styles.tableCell}>
-                                    {doping?.sport_name || ''}
+                                    {sportName}
                                 </td>
                                 <td className={styles.tableCell}>
                                     {doping?.municipality || ''}
@@ -114,7 +110,8 @@ export function AthletesTable({athletes, selectIDs, setSelectIDs}: Props) {
                                 }`}>
                                     {doping ? (doping.is_doping_check_passed ? 'Отр.' : 'Пол.') : ''}
                                 </td>
-                                <td className={`${styles.tableCell} ${styles.center}`} onClick={doping ? openModal(doping.id) : undefined}>
+                                <td className={`${styles.tableCell} ${styles.center}`}
+                                    onClick={(doping && athleteModalOpen) ? athleteModalOpen(doping.id) : undefined}>
                                     {doping ? <EditIcon/> : ''}
                                 </td>
                             </tr>

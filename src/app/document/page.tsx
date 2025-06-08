@@ -1,10 +1,9 @@
 'use client'
 
-import {useParams} from "react-router";
 import {memo, use, useEffect, useState} from "react";
 
 import {getDocument, updateDocument} from "@/app/document/_api.tsx";
-import {AthleteType, DocumentType} from "@/app/document/_types.tsx";
+import {DocumentType, SportType} from "@/app/document/_types.tsx";
 import {ActionBar} from "@/app/document/_components/action-bar/ActionBar.tsx";
 import {AthletesTable} from "@/app/document/_components/athletes-table/AthletesTable.tsx";
 import ComponentYouSelected from "@/app/document/_modal/components/ComponentYouSelected";
@@ -13,35 +12,30 @@ import {useNavigationData} from "@/_hook/useNavigationData.tsx";
 
 
 export const DocumentPage = memo(function DocumentPage() {
-    const {id} = useParams()
-    const data = useNavigationData();
+    const data = useNavigationData<{ sports: SportType[], document: DocumentType }>();
 
     return (
         <ModalContextProvider>
-            <Menu id={parseInt(id!)} document={data as DocumentType}/>
+            <Menu document={data.document} sports={data.sports}/>
         </ModalContextProvider>
     )
 })
 
-function Menu(props: { id: number, document: DocumentType }) {
-    const [name, setName] = useState<string>(props.document.title);
-    const [sportsRankId, setSportsRankId] = useState<number | null>(props.document.sports_category_id);
-    const [athletes, setAthletes] = useState<AthleteType[]>(props.document.athletes);
+function Menu(props: { document: DocumentType, sports: SportType[] }) {
+    const [document, setDocument] = useState<DocumentType>(props.document);
 
     const [selectIDs, setSelectIDs] = useState<Set<number>>(new Set());
     const [needUpdate, setNeedUpdate] = useState<boolean>(false);
 
-    const [modalState] = use(ModalContext)
+    const [modalState, modalDispatch] = use(ModalContext)
 
     useEffect(() => {
         if (!needUpdate)
             return
 
         (async () => {
-            const document = await getDocument(props.id)
-            setName(document.title)
-            setSportsRankId(document.sports_category_id)
-            setAthletes(document.athletes)
+            const document_ = await getDocument(document.id)
+            setDocument(document_)
 
             setNeedUpdate(false);
         })()
@@ -50,31 +44,34 @@ function Menu(props: { id: number, document: DocumentType }) {
     useEffect(() => {
         const timer = setTimeout(() => {
             (async () => {
-                await updateDocument(props.id, name, sportsRankId!);
+                await updateDocument(document.id, document.title, document.sports_category_id!);
             })();
-        }, 1000);
-        
+        }, 100);
+
         return () => clearTimeout(timer);
-    }, [name, sportsRankId, props.id]);
+    }, [document.title, document.sports_category_id]);
+
+    const athleteModalOpen = (id: number) => {
+        return () => modalDispatch({type: 'OPEN', data: document.athletes.find((athlete) => athlete.id === id)})
+    };
 
     return (
         <>
             <ActionBar
-                id={props.id}
-                name={name}
-                setName={setName}
-                sportsRankId={sportsRankId}
-                setSportsRankId={setSportsRankId}
+                document={document}
+                setDocument={setDocument}
                 selectIDs={selectIDs}
                 setSelectIDs={setSelectIDs}
                 setNeedUpdate={setNeedUpdate}
             />
             <AthletesTable
-                athletes={athletes}
+                athletes={document.athletes}
+                sports={props.sports}
                 selectIDs={selectIDs}
                 setSelectIDs={setSelectIDs}
+                athleteModalOpen={athleteModalOpen}
             />
-            {modalState.isOpen && <ComponentYouSelected setNeedUpdate={setNeedUpdate} documentId={props.id}/>}
+            {modalState.isOpen && <ComponentYouSelected setNeedUpdate={setNeedUpdate} documentId={props.document.id}/>}
         </>
     );
 }

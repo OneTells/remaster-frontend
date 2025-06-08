@@ -1,27 +1,21 @@
 import styles from "./ActionBar.module.css";
 
-import React, { useState } from "react";
+import React from "react";
+import {FiltersType} from "@/app/doping-athletes/_types.tsx";
 
 
 type Props = {
-    onNameChange: (name: string) => void;
-    onDateChange: (date: string) => void;
+    filters: FiltersType;
+    setFilters: React.Dispatch<React.SetStateAction<FiltersType>>;
 }
 
-export function ActionBar({ onNameChange, onDateChange }: Props) {
-    const [name, setName] = useState('');
-    const [_, setDate] = useState('');
-
+export function ActionBar({filters, setFilters}: Props) {
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newName = e.target.value;
-        setName(newName);
-        onNameChange(newName);
+        setFilters(prev => ({...prev, name: e.target.value}));
     };
 
     const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newDate = e.target.value;
-        setDate(newDate);
-        onDateChange(newDate);
+        setFilters(prev => ({...prev, date: e.target.value}));
     };
 
     return (
@@ -29,8 +23,8 @@ export function ActionBar({ onNameChange, onDateChange }: Props) {
             <div>
                 <p>ФИО</p>
                 <input
-                    type="text" 
-                    value={name}
+                    type="text"
+                    value={filters.name}
                     onChange={handleNameChange}
                 />
             </div>

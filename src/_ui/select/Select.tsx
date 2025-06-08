@@ -9,7 +9,7 @@ import {ShowMore} from "@/_assets/show_more.tsx";
 type Props = {
     options: SelectOptionType[],
     selectedOptionId: number | null,
-    setSelectedOptionId: (id: number | null) => void,
+    setSelectedOptionId: (id: number) => void,
     style?: React.CSSProperties
 }
 

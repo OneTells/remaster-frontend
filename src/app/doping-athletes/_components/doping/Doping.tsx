@@ -1,8 +1,9 @@
 import styles from "./Doping.module.css";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 import {DopingAthleteType} from "@/app/doping-athletes/_types.tsx";
 import {Pagination} from "@/_ui/pagination/Pagination.tsx";
+
 
 type Props = {
     dopingAthletes: DopingAthleteType[];
@@ -10,8 +11,12 @@ type Props = {
 
 export function Doping({dopingAthletes}: Props) {
     const itemsPerPage = 9;
-    
+
     const [currentPage, setCurrentPage] = useState(1);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [dopingAthletes]);
 
     const getDisplayItems = (): DopingAthleteType[] => {
         const paginatedItems = dopingAthletes.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -71,12 +76,12 @@ export function Doping({dopingAthletes}: Props) {
                                 </td>
                                 <td
                                     className={`${styles.tableCell} ${styles.center}`}
-                                    title={dopingAthlete?.disqualification_duration || ''}
+                                    title={dopingAthlete?.disqualification_duration.replace('Пожизненно', 'Ꝏ') || ''}
                                 >
-                                    {dopingAthlete?.disqualification_duration || ''}
+                                    {dopingAthlete?.disqualification_duration.replace('Пожизненно', 'Ꝏ') || ''}
                                 </td>
                                 <td className={`${styles.tableCell} ${styles.center}`}>
-                                     {dopingAthlete?.disqualification_start || ''}
+                                    {dopingAthlete?.disqualification_start || ''}
                                 </td>
                                 <td className={`${styles.tableCell} ${styles.center}`}>
                                     {dopingAthlete?.disqualification_end.replace('None', 'Пожизненно') || ''}

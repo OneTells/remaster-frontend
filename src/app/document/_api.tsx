@@ -1,4 +1,4 @@
-import {AthleteType, DocumentType} from "@/app/document/_types.tsx";
+import {AthleteType, DocumentType, SportType} from "@/app/document/_types.tsx";
 import {API_URL} from "@/config.tsx";
 
 
@@ -73,4 +73,9 @@ export async function createAthlete(documentId: number, data: AthleteType): Prom
             )
         }
     );
+}
+
+export async function getSports(): Promise<SportType[]> {
+    const response = await fetch(`${API_URL}/sports`)
+    return (await response.json()).data
 }

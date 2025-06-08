@@ -18,7 +18,7 @@ export function Databases(props: { data: DatabasesType[] }) {
     const download = (slug: string, name: string, extensions: string[]) => {
         return (
             async () => {
-                const path = await save({filters: [{name: name, extensions: extensions}]});
+                const path = await save({title: 'Сохранить как', filters: [{name: name, extensions: extensions}]});
 
                 if (!path) {
                     return;
@@ -30,10 +30,17 @@ export function Databases(props: { data: DatabasesType[] }) {
 
     };
 
-    const upload = (slug: string) => {
+    const upload = (slug: string, name: string, extensions: string[]) => {
         return (
             async () => {
-                const path = await open({ multiple: false, directory: false});
+                const path = await open(
+                    {
+                        title: 'Открытие файла',
+                        multiple: false,
+                        directory: false,
+                        filters: [{name: name, extensions: extensions}]
+                    }
+                );
 
                 if (!path) {
                     return;
@@ -50,14 +57,14 @@ export function Databases(props: { data: DatabasesType[] }) {
             <Panel
                 date={dataById['order'].date}
                 title="Шаблон приказа"
-                upload={upload('order')}
-                download={download('order', dataById['order'].title, ['doc', 'docx'])}
+                upload={upload('order','Документ Word', ['doc', 'docx'])}
+                download={download('order', 'Документ Word', ['doc', 'docx'])}
             />
             <Panel
                 date={dataById['doping-athletes'].date}
                 title="(База) Русадо"
-                upload={upload('doping-athletes')}
-                download={download('doping-athletes', dataById['doping-athletes'].title, ['xlsx'])}
+                upload={upload('doping-athletes', 'Документ Excel', ['xls', 'xlsx'])}
+                download={download('doping-athletes', 'Документ Excel', ['xls','xlsx'])}
             />
             <Panel
                 date={dataById['athletics'].date}

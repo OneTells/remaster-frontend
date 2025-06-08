@@ -11,5 +11,5 @@ export async function createDocument(title: string, sportsRankId: number): Promi
         }
     );
 
-    return (await response.json()).data
+    return (await response.json()).data.id
 }

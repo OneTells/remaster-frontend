@@ -30,6 +30,7 @@ export function TitleBar() {
         setAppWindow(window);
 
         (async () => {
+            await new Promise(resolve => setTimeout(resolve, 100));
             await navigate("/documents")
             await invoke("show_window", {window})
         })()
