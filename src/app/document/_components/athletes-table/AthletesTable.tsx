@@ -9,13 +9,13 @@ import {EditIcon} from "@/_assets/edit_icon.tsx";
 
 
 type Props = {
-    athletes: AthleteType[],
-    sports: SportType[]
+    athletes: AthleteType[];
+    sports: SportType[];
 
-    selectIDs: Set<number>,
-    setSelectIDs: Dispatch<SetStateAction<Set<number>>>,
+    selectIDs: Set<number>;
+    setSelectIDs: Dispatch<SetStateAction<Set<number>>>;
 
-    athleteModalOpen?: (id: number) => () => void,
+    athleteModalOpen?: (id: number) => () => void;
 };
 
 export function AthletesTable({athletes, selectIDs, setSelectIDs, athleteModalOpen, sports}: Props) {
@@ -68,7 +68,7 @@ export function AthletesTable({athletes, selectIDs, setSelectIDs, athleteModalOp
                             !doping && styles.empty
                         ].filter(Boolean).join(' ');
 
-                        const sportName = (doping && sports.find(sport => sport.id === doping.sport_id)?.name) && '';
+                        const sportName = (doping && sports.find(sport => sport.id === doping.sport_id)?.name) || '';
 
                         return (
                             <tr key={doping ? `row-${doping.id}` : `empty-${index}`} className={rowClasses}>
@@ -88,16 +88,16 @@ export function AthletesTable({athletes, selectIDs, setSelectIDs, athleteModalOp
                                         />
                                     )}
                                 </td>
-                                <td className={styles.tableCell}>
+                                <td className={styles.tableCell} title={doping?.full_name}>
                                     {doping?.full_name || ''}
                                 </td>
-                                <td className={styles.tableCell}>
+                                <td className={styles.tableCell} title={sportName}>
                                     {sportName}
                                 </td>
-                                <td className={styles.tableCell}>
+                                <td className={styles.tableCell} title={doping?.municipality}>
                                     {doping?.municipality || ''}
                                 </td>
-                                <td className={styles.tableCell}>
+                                <td className={styles.tableCell} title={doping?.organization}>
                                     {doping?.organization || ''}
                                 </td>
                                 <td className={`${styles.tableCell} ${styles.center} ${
@@ -110,8 +110,10 @@ export function AthletesTable({athletes, selectIDs, setSelectIDs, athleteModalOp
                                 }`}>
                                     {doping ? (doping.is_doping_check_passed ? 'Отр.' : 'Пол.') : ''}
                                 </td>
-                                <td className={`${styles.tableCell} ${styles.center}`}
-                                    onClick={(doping && athleteModalOpen) ? athleteModalOpen(doping.id) : undefined}>
+                                <td
+                                    className={`${styles.tableCell} ${styles.center}`}
+                                    onClick={(doping && athleteModalOpen) ? athleteModalOpen(doping.id) : undefined}
+                                >
                                     {doping ? <EditIcon/> : ''}
                                 </td>
                             </tr>

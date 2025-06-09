@@ -3,7 +3,7 @@
     flex: 0 0 auto;
     flex-direction: column;
     gap: 13px;
-    align-items: center;
+    /*align-items: center;*/
     justify-content: center;
 }
 
@@ -29,8 +29,9 @@
 .hierarchical-text-container {
     box-sizing: border-box;
     flex: 0 0 auto;
-    min-width: 197px;
-    width: 200px;
+    /*min-width: 300px;*/
+
+    width: 100%;
     color: white;
 }
 

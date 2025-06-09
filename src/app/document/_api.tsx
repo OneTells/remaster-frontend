@@ -40,12 +40,11 @@ export async function updateAthletes(athlete_id: number, data: AthleteType): Pro
                 {
                     "full_name": data.full_name,
                     "birth_date": data.birth_date,
-                    "sport_id": 1,
+                    "sport_id": data.sport_id,
                     "municipality": data.municipality,
                     "organization": data.organization,
                     "is_sports_category_granted": data.is_sports_category_granted,
                     "is_doping_check_passed": data.is_doping_check_passed,
-                    "created_at": "23"
                 }
             )
         }
@@ -78,4 +77,43 @@ export async function createAthlete(documentId: number, data: AthleteType): Prom
 export async function getSports(): Promise<SportType[]> {
     const response = await fetch(`${API_URL}/sports`)
     return (await response.json()).data
+}
+
+export async function downloadDocument(documentId: number, path: string): Promise<void> {
+    await fetch(
+        `${API_URL}/documents/${documentId}/file`,
+        {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({'path': path})
+        }
+    );
+}
+
+export async function removeAthletes(athleteIds: number[]): Promise<void> {
+    for (const athleteId of athleteIds) {
+        await fetch(`${API_URL}/athletes/${athleteId}`, {method: 'DELETE'});
+    }
+}
+
+export async function downloadAthletes(athleteIDs: number[], path: string): Promise<void> {
+    await fetch(
+        `${API_URL}/athletes/file`,
+        {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({'athlete_ids': athleteIDs, 'path': path})
+        }
+    );
+}
+
+export async function uploadAthletes(documentId: number, path: string): Promise<void> {
+    await fetch(
+        `${API_URL}/documents/${documentId}/athletes/file`,
+        {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({'path': path})
+        }
+    );
 }

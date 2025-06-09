@@ -5,8 +5,8 @@ import {memo, useEffect, useState} from "react";
 import {useNavigation} from "@/_hook/useNavigation.tsx";
 import {createDocument} from "@/app/new-document/_api.tsx";
 import {AthletesTable} from "@/app/document/_components/athletes-table/AthletesTable.tsx";
-import {ActionBarUI} from "@/app/document/_components/action-bar/ActionBar.tsx";
-import {ActionBarUIDocumentType, SportType} from "@/app/document/_types.tsx";
+import {ActionBar} from "@/app/document/_components/action-bar/ActionBar.tsx";
+import {ActionBarDocumentType, SportType} from "@/app/document/_types.tsx";
 import {useNavigationData} from "@/_hook/useNavigationData.tsx";
 
 
@@ -18,7 +18,7 @@ export const NewDocumentPage = memo(function NewDocumentPage() {
 function Menu({sports}: { sports: SportType[] }) {
     const navigate = useNavigation();
 
-    const [document, setDocument] = useState<ActionBarUIDocumentType>({
+    const [document, setDocument] = useState<ActionBarDocumentType>({
         title: '',
         sports_category_id: null
     });
@@ -43,7 +43,7 @@ function Menu({sports}: { sports: SportType[] }) {
 
     return (
         <>
-            <ActionBarUI
+            <ActionBar
                 document={document}
                 titleChange={titleChange}
                 sportsCategoryIdChange={sportsCategoryIdChange}

@@ -46,7 +46,7 @@
     /*flex-direction: column;*/
 
 
-    display: none;
+    /*display: none;*/
     position: fixed;
     /*top: 0;*/
     /*left: 0;*/
@@ -88,9 +88,15 @@
     display: flex;
     flex: 0 0 auto;
     align-self: flex-end;
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     color: #ffffff;
+
+
+}
+
+.svg-container svg{
+    fill: #ffffff;
 }
 
 .athlete-info-card1 {

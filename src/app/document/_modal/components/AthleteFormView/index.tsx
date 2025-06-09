@@ -1,150 +1,133 @@
 import "./style.css";
-import {AthleteType} from "@/app/document/_types.tsx";
+
 import React from "react";
+
+import {AthleteType, SportType} from "@/app/document/_types.tsx";
 import {Select} from "@/_ui/select/Select.tsx";
+import {DefaultAthleteType} from "@/app/document/_context/modal-context.tsx";
 
-type AthleteFormViewProps = {
-    athlete: AthleteType | null;
-    setAthleteData: React.Dispatch<React.SetStateAction<AthleteType | null>>;
-    isEditMode?: boolean;
+
+type Props = {
+    athlete: DefaultAthleteType | AthleteType;
+    setAthleteData: React.Dispatch<React.SetStateAction<DefaultAthleteType | AthleteType>>;
+
+    mode: 'EDIT' | 'NEW';
+    saveOnClick: () => void;
+
+    sports: SportType[];
 };
 
-const defaultAthlete: Omit<AthleteType, 'id'> = {
-    full_name: '',
-    birth_date: new Date().toISOString().split('T')[0],
-    sport_name: '',
-    municipality: '',
-    organization: '',
-    is_sports_category_granted: false,
-    is_doping_check_passed: false,
-};
-
-function AthleteFormView({ athlete, setAthleteData }: AthleteFormViewProps) {
-    const currentAthlete = athlete || { ...defaultAthlete, id: 0 };
-
-    const handleChange = (field: keyof AthleteType, value: any) => {
-        setAthleteData(prev => ({
-            ...(prev || { ...defaultAthlete, id: 0 }),
-            [field]: value
-        }));
-    };
-
+export default function AthleteFormView({athlete, setAthleteData, mode, saveOnClick, sports}: Props) {
     return (
-        <div className="center-column-with-gaps">
-            <div className="info-block">
-                <p className="header-text-container">ФИО</p>
-                <div className="hierarchical-text-container">
-                    <input
-                        value={currentAthlete.full_name}
-                        onChange={(e) => handleChange('full_name', e.target.value)}
-                        type="text"
-                        className="input-field-with-border-radius input-style-f62::placeholder"
-                        // disabled={!isEditMode}
-                    />
+        <div className="athlete-info-card1">
+            <div className="center-column-with-gaps">
+                <div className="info-block">
+                    <p className="header-text-container">ФИО</p>
+                    <div className="hierarchical-text-container">
+                        <input
+                            value={athlete.full_name}
+                            onChange={(e) => setAthleteData(prev => ({...prev, 'full_name': e.target.value}))}
+                            type="text"
+                            className="input-field-with-border-radius input-style-f62::placeholder"
+                        />
+                    </div>
                 </div>
-            </div>
-            <div className="personal-info-container">
-                <p className="profile-info-heading">Дата рождения</p>
-                <div className="hierarchical-text-container">
-                    <input
-                        type="date"
-                        className="input-field-with-border-radius input-style-f62::placeholder"
-                        style={{height: "44px", paddingRight: "10px"}}
-                        value={currentAthlete.birth_date}
-                        onChange={(e) => handleChange('birth_date', e.target.value)}
-                        // disabled={!isEditMode}
-                    />
+                <div className="personal-info-container">
+                    <p className="profile-info-heading">Дата рождения</p>
+                    <div className="hierarchical-text-container">
+                        <input
+                            type="date"
+                            className="input-field-with-border-radius input-style-f62::placeholder"
+                            style={{height: "44px", paddingRight: "10px", colorScheme: 'dark'}}
+                            value={athlete.birth_date}
+                            onChange={(e) => setAthleteData(prev => ({...prev, 'birth_date': e.target.value}))}
+                        />
+                    </div>
                 </div>
-            </div>
-            <div className="sport-info-container">
-                <p className="profile-info-heading">Вид спорта</p>
-                <div className="hierarchical-text-container">
-                    <div>
+                <div className="sport-info-container">
+                    <p className="profile-info-heading">Вид спорта</p>
+                    <div className="hierarchical-text-container">
+                        <div>
+                            <Select
+                                options={sports.map(({name, ...rest}) => ({...rest, label: name}))}
+                                selectedOptionId={athlete.sport_id}
+                                setSelectedOptionId={(id) => setAthleteData(prev => ({...prev, 'sport_id': id}))}
+                                style={{width: '100%'}}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className="municipality-education-section">
+                    <p className="municipal-education-heading">
+                        Муницип.
+                        <br/>
+                        образование
+                    </p>
+                    <div className="hierarchical-text-container">
+                        <input
+                            value={athlete.municipality}
+                            type="text"
+                            className="input-field-with-border-radius input-style-f62::placeholder"
+                            onChange={(e) => setAthleteData(prev => ({...prev, 'municipality': e.target.value}))}
+                        />
+                    </div>
+                </div>
+                <div className="organization-info-container">
+                    <p className="header-text-container">Организация</p>
+                    <div className="hierarchical-text-container">
+                        <input
+                            value={athlete.organization}
+                            type="text"
+                            className="input-field-with-border-radius input-style-f62::placeholder"
+                            onChange={(e) => setAthleteData(prev => ({...prev, 'organization': e.target.value}))}
+                        />
+                    </div>
+                </div>
+                <div className="info-block">
+                    <p className="header-text-container">Присвоить разряд</p>
+                    <div className="hierarchical-text-container">
                         <Select
                             options={[
-                                {id: 1, label: currentAthlete.sport_name || 'Выберите вид спорта'},
-                                {id: 2, label: 'Спортивное программирование'},
-                                {id: 3, label: 'Компьютерный спорт'},
+                                {id: 1, label: 'Да'},
+                                {id: 2, label: 'Нет'},
                             ]}
-                            selectedOptionId={1}
-                            setSelectedOptionId={(id) => {
-                                if (id) {
-                                    handleChange('sport_name', 
-                                        id === 1 ? currentAthlete.sport_name : 
-                                        id === 2 ? 'Спортивное программирование' : 'Компьютерный спорт'
-                                    );
-                                }
-                            }}
+                            selectedOptionId={
+                                athlete.is_sports_category_granted !== null ? (athlete.is_sports_category_granted ? 1 : 2) : null
+                            }
+                            setSelectedOptionId={(id) => setAthleteData(prev => ({
+                                ...prev,
+                                'is_sports_category_granted': id === 1
+                            }))}
                             style={{width: '100%'}}
-                            // disabled={!isEditMode}
+                        />
+                    </div>
+                </div>
+                <div className="flex-row-with-spacing">
+                    <p className="header-text-container">Тест на допинг</p>
+                    <div className="hierarchical-text-container">
+                        <Select
+                            options={[
+                                {id: 1, label: 'Отрицательно'},
+                                {id: 2, label: 'Положительно'},
+                            ]}
+                            selectedOptionId={
+                                athlete.is_doping_check_passed !== null ? (athlete.is_doping_check_passed ? 1 : 2) : null
+                            }
+                            setSelectedOptionId={(id) => setAthleteData(prev => ({
+                                ...prev,
+                                'is_doping_check_passed': id === 1
+                            }))}
+                            style={{width: '100%'}}
                         />
                     </div>
                 </div>
             </div>
-            <div className="municipality-education-section">
-                <p className="municipal-education-heading">
-                    Муницип.
-                    <br/>
-                    образование
-                </p>
-                <div className="hierarchical-text-container">
-                    <input
-                        value={currentAthlete.municipality}
-                        type="text"
-                        className="input-field-with-border-radius input-style-f62::placeholder"
-                        onChange={(e) => handleChange('municipality', e.target.value)}
-                        // disabled={!isEditMode}
-                    />
-                </div>
-            </div>
-            <div className="organization-info-container">
-                <p className="header-text-container">Организация</p>
-                <div className="hierarchical-text-container">
-                    <input 
-                        value={currentAthlete.organization} 
-                        type="text"
-                        className="input-field-with-border-radius input-style-f62::placeholder"
-                        onChange={(e) => handleChange('organization', e.target.value)}
-                        // disabled={!isEditMode}
-                    />
-                </div>
-            </div>
-            <div className="info-block">
-                <p className="header-text-container">Присвоить</p>
-                <div className="hierarchical-text-container">
-                    <Select
-                        options={[
-                            {id: 1, label: 'Да'},
-                            {id: 2, label: 'Нет'},
-                        ]}
-                        selectedOptionId={currentAthlete.is_sports_category_granted ? 1 : 2}
-                        setSelectedOptionId={(number: number | null) => {
-                            handleChange('is_sports_category_granted', number === 1);
-                        }}
-                        style={{width: '100%'}}
-                        // disabled={!isEditMode}
-                    />
-                </div>
-            </div>
-            <div className="flex-row-with-spacing">
-                <p className="header-text-container">Доппинг</p>
-                <div className="hierarchical-text-container">
-                    <Select
-                        options={[
-                            {id: 1, label: 'Отрицательно'},
-                            {id: 2, label: 'Положительно'},
-                        ]}
-                        selectedOptionId={currentAthlete.is_doping_check_passed ? 1 : 2}
-                        setSelectedOptionId={(number: number | null) => {
-                            handleChange('is_doping_check_passed', number === 1);
-                        }}
-                        style={{width: '100%'}}
-                        // disabled={!isEditMode}
-                    />
-                </div>
+            <div className="doping-check-controls">
+                <button className="save-button-style" onClick={saveOnClick}>
+                    {mode === 'EDIT' ? 'Сохранить' : 'Создать'}
+                </button>
             </div>
         </div>
     );
 }
 
-export default AthleteFormView;

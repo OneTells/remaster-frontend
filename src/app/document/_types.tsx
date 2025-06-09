@@ -24,7 +24,7 @@ export type SportType = {
     name: string
 }
 
-export type ActionBarUIDocumentType = {
+export type ActionBarDocumentType = {
     title: string,
     sports_category_id: number | null
 }

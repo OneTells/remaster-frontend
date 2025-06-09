@@ -2,23 +2,46 @@
 
 import styles from "./Databases.module.css";
 
-import {open, save} from '@tauri-apps/plugin-dialog';
+import {DialogFilter, open, save} from '@tauri-apps/plugin-dialog';
+import {useEffect, useState} from "react";
 
 import {Panel} from "@/app/databases/_components/panel/Panel";
 import {DatabasesType} from "@/app/databases/_types.tsx";
-import {downloadDatabase, uploadDatabase} from "@/app/databases/_api.tsx";
+import {downloadDatabase, getDatabases, uploadDatabase} from "@/app/databases/_api.tsx";
 
 
 export function Databases(props: { data: DatabasesType[] }) {
-    const dataById = props.data.reduce<Record<string, DatabasesType>>((acc, item) => {
+    const [data, setData] = useState<DatabasesType[]>(props.data);
+
+    const [needUpdate, setNeedUpdate] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (!needUpdate)
+            return
+
+        (async () => {
+            const data_ = await getDatabases()
+            setData(data_)
+
+            setNeedUpdate(false);
+        })()
+    }, [needUpdate]);
+
+    const dataById = data.reduce<Record<string, DatabasesType>>((acc, item) => {
         acc[item.slug] = item;
         return acc;
     }, {});
 
-    const download = (slug: string, name: string, extensions: string[]) => {
+    const download = (slug: string, title: string, filters: DialogFilter[]) => {
         return (
             async () => {
-                const path = await save({title: 'Сохранить как', filters: [{name: name, extensions: extensions}]});
+                const path = await save(
+                    {
+                        title: 'Сохранить как',
+                        defaultPath: title,
+                        filters: filters
+                    }
+                );
 
                 if (!path) {
                     return;
@@ -30,7 +53,7 @@ export function Databases(props: { data: DatabasesType[] }) {
 
     };
 
-    const upload = (slug: string, name: string, extensions: string[]) => {
+    const upload = (slug: string, filters: DialogFilter[]) => {
         return (
             async () => {
                 const path = await open(
@@ -38,7 +61,7 @@ export function Databases(props: { data: DatabasesType[] }) {
                         title: 'Открытие файла',
                         multiple: false,
                         directory: false,
-                        filters: [{name: name, extensions: extensions}]
+                        filters: filters
                     }
                 );
 
@@ -46,7 +69,8 @@ export function Databases(props: { data: DatabasesType[] }) {
                     return;
                 }
 
-                await uploadDatabase(slug, path)
+                await uploadDatabase(slug, path);
+                setNeedUpdate(true);
             }
         )
 
@@ -55,20 +79,25 @@ export function Databases(props: { data: DatabasesType[] }) {
     return (
         <div className={styles.container}>
             <Panel
-                date={dataById['order'].date}
-                title="Шаблон приказа"
-                upload={upload('order','Документ Word', ['doc', 'docx'])}
-                download={download('order', 'Документ Word', ['doc', 'docx'])}
+                date={dataById['orders'].date}
+                title={dataById['orders'].title}
+                upload={upload('orders', [{name: 'Документ Word', extensions: ['docx']}])}
+                download={download('orders', dataById['orders'].title, [{name: 'Документ Word', extensions: ['docx']}])}
             />
             <Panel
                 date={dataById['doping-athletes'].date}
-                title="(База) Русадо"
-                upload={upload('doping-athletes', 'Документ Excel', ['xls', 'xlsx'])}
-                download={download('doping-athletes', 'Документ Excel', ['xls','xlsx'])}
+                title={dataById['doping-athletes'].title}
+                upload={upload('doping-athletes', [{name: 'Документ Excel', extensions: ['xls', 'xlsx']}])}
+                download={
+                    download(
+                        'doping-athletes', dataById['doping-athletes'].title,
+                        [{name: 'Документ Excel', extensions: ['xls', 'xlsx']}]
+                    )
+                }
             />
             <Panel
                 date={dataById['athletics'].date}
-                title="(База) Легкая атлетика"
+                title={dataById['athletics'].title}
                 upload={() => {
                 }}
                 download={() => {
@@ -76,7 +105,7 @@ export function Databases(props: { data: DatabasesType[] }) {
             />
             <Panel
                 date={dataById['programming'].date}
-                title="(База) Спортивное программирование"
+                title={dataById['programming'].title}
                 upload={() => {
                 }}
                 download={() => {
@@ -84,7 +113,7 @@ export function Databases(props: { data: DatabasesType[] }) {
             />
             <Panel
                 date={dataById['computer-sport'].date}
-                title="(База) Компьютерный спорт"
+                title={dataById['computer-sport'].title}
                 upload={() => {
                 }}
                 download={() => {
