@@ -7,7 +7,7 @@ import {useNavigationData} from "@/_hook/useNavigationData.tsx";
 import {DatabasesType} from "@/app/databases/_types.tsx";
 
 
-export const DatabasesPage = memo( function DatabasesPage() {
-    const data = useNavigationData();
-    return <Databases data={data as DatabasesType[]}/>
+export const DatabasesPage = memo(function DatabasesPage() {
+    const data = useNavigationData<DatabasesType[]>();
+    return <Databases data={data}/>
 })

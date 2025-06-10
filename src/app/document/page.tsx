@@ -1,47 +1,51 @@
 'use client'
 
-import {useParams} from "react-router";
 import {memo, use, useEffect, useState} from "react";
+import {open, save} from "@tauri-apps/plugin-dialog";
 
-import {getDocument, updateDocument} from "@/app/document/_api.tsx";
-import {AthleteType, DocumentType} from "@/app/document/_types.tsx";
+import {
+    createOrder,
+    downloadAthletes,
+    downloadDocument,
+    getDocument,
+    removeAthletes,
+    updateDocument,
+    uploadAthletes
+} from "@/app/document/_api.tsx";
+import {DocumentType, SportType} from "@/app/document/_types.tsx";
 import {ActionBar} from "@/app/document/_components/action-bar/ActionBar.tsx";
 import {AthletesTable} from "@/app/document/_components/athletes-table/AthletesTable.tsx";
-import ComponentYouSelected from "@/app/document/_modal/components/ComponentYouSelected";
 import ModalContextProvider, {ModalContext} from "@/app/document/_context/modal-context.tsx";
 import {useNavigationData} from "@/_hook/useNavigationData.tsx";
+import {Modal} from "@/app/document/_modal/Modal/Modal.tsx";
+import {DopingAthleteType} from "@/app/doping-athletes/_types.tsx";
 
 
 export const DocumentPage = memo(function DocumentPage() {
-    const {id} = useParams()
-    const data = useNavigationData();
+    const data = useNavigationData<{ sports: SportType[], document: DocumentType, dopingAthletes: DopingAthleteType[] }>();
 
     return (
         <ModalContextProvider>
-            <Menu id={parseInt(id!)} document={data as DocumentType}/>
+            <Menu document={data.document} sports={data.sports} dopingAthletes={data.dopingAthletes}/>
         </ModalContextProvider>
     )
 })
 
-function Menu(props: { id: number, document: DocumentType }) {
-    const [name, setName] = useState<string>(props.document.title);
-    const [sportsRankId, setSportsRankId] = useState<number | null>(props.document.sports_category_id);
-    const [athletes, setAthletes] = useState<AthleteType[]>(props.document.athletes);
+function Menu(props: { document: DocumentType, sports: SportType[], dopingAthletes: DopingAthleteType[] }) {
+    const [document, setDocument] = useState<DocumentType>(props.document);
 
     const [selectIDs, setSelectIDs] = useState<Set<number>>(new Set());
     const [needUpdate, setNeedUpdate] = useState<boolean>(false);
 
-    const [modalState] = use(ModalContext)
+    const [modalState, modalDispatch] = use(ModalContext)
 
     useEffect(() => {
         if (!needUpdate)
             return
 
         (async () => {
-            const document = await getDocument(props.id)
-            setName(document.title)
-            setSportsRankId(document.sports_category_id)
-            setAthletes(document.athletes)
+            const document_ = await getDocument(document.id)
+            setDocument(document_)
 
             setNeedUpdate(false);
         })()
@@ -50,31 +54,106 @@ function Menu(props: { id: number, document: DocumentType }) {
     useEffect(() => {
         const timer = setTimeout(() => {
             (async () => {
-                await updateDocument(props.id, name, sportsRankId!);
+                await updateDocument(document.id, document.title, document.sports_category_id!);
             })();
-        }, 1000);
-        
+        }, 100);
+
         return () => clearTimeout(timer);
-    }, [name, sportsRankId, props.id]);
+    }, [document.title, document.sports_category_id]);
+
+    const athleteModalOpen = (id: number) => {
+        return () => modalDispatch({mode: 'OPEN_MODAL', athlete: document.athletes.find((athlete) => athlete.id === id)!})
+    };
+
+    const downloadDocumentOnClick = async () => {
+        const path = await save(
+            {
+                title: 'Сохранить как',
+                defaultPath: document.title,
+                filters: [{name: 'Файл JSON', extensions: ['json']}]
+            }
+        );
+        if (!path) return
+
+        await downloadDocument(props.document.id, path)
+    }
+
+    const createOrderOnClick = async () => {
+        const path = await save({title: 'Сохранить как', filters: [{name: 'Документ Word', extensions: ['docx']}]});
+        if (!path) return
+
+        await createOrder(props.document.id, path)
+    }
+
+    const createAthleteOnClick = () => {
+        modalDispatch({mode: 'CREATE_NEW_ATHLETE'});
+    }
+
+    const uploadAthletesOnClick = async () => {
+        const path = await open({multiple: false, directory: false});
+        if (!path) return
+
+        await uploadAthletes(document.id, path)
+        setNeedUpdate(true);
+    }
+
+    const downloadAthletesOnClick = async () => {
+        const path = await save(
+            {
+                title: 'Сохранить как',
+                defaultPath: `${document.title} (Атлеты)`,
+                filters: [{name: 'Файл JSON', extensions: ['json']}]
+            }
+        );
+        if (!path) return
+
+        await downloadAthletes(Array.from(selectIDs), path)
+        setSelectIDs(new Set());
+    }
+
+    const removeAthletesOnClick = async () => {
+        await removeAthletes(Array.from(selectIDs));
+        setSelectIDs(new Set());
+        setNeedUpdate(true);
+    }
+
+    const titleChange = (value: string) => {
+        setDocument((document) => ({...document, title: value}));
+    }
+
+    const sportsCategoryIdChange = (id: number) => {
+        setDocument((document) => ({...document, sports_category_id: id}));
+    }
 
     return (
         <>
             <ActionBar
-                id={props.id}
-                name={name}
-                setName={setName}
-                sportsRankId={sportsRankId}
-                setSportsRankId={setSportsRankId}
-                selectIDs={selectIDs}
-                setSelectIDs={setSelectIDs}
-                setNeedUpdate={setNeedUpdate}
+                document={document}
+                titleChange={titleChange}
+                sportsCategoryIdChange={sportsCategoryIdChange}
+                downloadDocument={downloadDocumentOnClick}
+                createOrder={createOrderOnClick}
+                createAthlete={createAthleteOnClick}
+                uploadAthletes={uploadAthletesOnClick}
+                downloadAthletes={downloadAthletesOnClick}
+                removeAthletes={removeAthletesOnClick}
+                createOrderOnClick={createOrderOnClick}
             />
             <AthletesTable
-                athletes={athletes}
+                athletes={document.athletes}
+                sports={props.sports}
                 selectIDs={selectIDs}
                 setSelectIDs={setSelectIDs}
+                athleteModalOpen={athleteModalOpen}
             />
-            {modalState.isOpen && <ComponentYouSelected setNeedUpdate={setNeedUpdate} documentId={props.id}/>}
+            {
+                (modalState.mode !== 'CLOSE') && <Modal
+                    setNeedUpdate={setNeedUpdate}
+                    documentId={props.document.id}
+                    sports={props.sports}
+                    dopingAthletes={props.dopingAthletes}
+                />
+            }
         </>
     );
 }

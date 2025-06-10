@@ -78,7 +78,7 @@ export function Tooltip(
             lineHeight: '1.4',
             visibility: visible ? 'visible' : 'hidden',
             opacity: visible ? 1 : 0,
-            transition: 'opacity 0.2s ease, visibility 0.2s ease',
+            transition: 'opacity 0.2s ease, visibility 0s ease',
             width: typeof width === 'number' ? `${width}px` : width,
             maxWidth: typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth,
             wordWrap: 'break-word',

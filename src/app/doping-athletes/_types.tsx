@@ -3,9 +3,12 @@ export type DopingAthleteType = {
     full_name: string,
     sport: string,
     birth_date: string,
-    violation_description: string,
     disqualification_duration: string
     disqualification_start: string,
     disqualification_end: string,
 }
 
+export type FiltersType = {
+    name: string,
+    date: string
+}

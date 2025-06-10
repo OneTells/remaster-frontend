@@ -1,24 +1,45 @@
 'use client'
 
 import React, {createContext, ReactNode, useReducer} from 'react'
+import {AthleteType} from "@/app/document/_types.tsx";
 
+
+type NullableFields<T, K extends keyof T> = {
+    [P in K]: null | T[P];
+};
+
+export type DefaultAthleteType = (
+    Omit<AthleteType, 'id' | 'sport_id' | 'is_sports_category_granted' | 'is_doping_check_passed'>
+    & NullableFields<AthleteType, 'sport_id' | 'is_sports_category_granted' | 'is_doping_check_passed'>
+    );
 
 type State = {
-    isOpen: boolean;
-    data: any | null;
+    mode: 'EDIT_MENU';
+    athlete: AthleteType | DefaultAthleteType;
+} | {
+    mode: 'CHECK_DOPING_MENU';
+    athlete: AthleteType | DefaultAthleteType
+} | {
+    mode: 'CHECK_RESULT_MENU';
+    athlete: AthleteType | DefaultAthleteType
+} | {
+    mode: 'CLOSE';
 };
 
-type OpenAction = {
-    type: 'OPEN';
-    data: any | null;
+type Action = {
+    mode: 'OPEN_MODAL';
+    athlete: AthleteType;
+} | {
+    mode: 'CREATE_NEW_ATHLETE';
+} | {
+    mode: 'OPEN_EDIT_MENU';
+} | {
+    mode: 'OPEN_CHECK_DOPING_MENU';
+} | {
+    mode: 'OPEN_CHECK_RESULT_MENU';
+} | {
+    mode: 'CLOSE';
 };
-
-type CloseAction = {
-    type: 'CLOSE';
-};
-
-
-type Action = OpenAction | CloseAction;
 
 type ModalContextType = [State, React.ActionDispatch<[action: Action]>]
 
@@ -26,18 +47,45 @@ type ModalContextType = [State, React.ActionDispatch<[action: Action]>]
 // @ts-expect-error
 export const ModalContext = createContext<ModalContextType>(undefined);
 
-function reducer(state: State, action: Action) {
-    if (action.type === 'OPEN') {
-        return {isOpen: true, data: action.data}
-    } else if (action.type === 'CLOSE') {
-        return {isOpen: false, data: null}
+function reducer(state: State, action: Action): State {
+    if (action.mode === 'OPEN_MODAL') {
+        return {mode: 'EDIT_MENU', athlete: action.athlete}
+    } else if (action.mode === 'CREATE_NEW_ATHLETE') {
+        return {
+            mode: 'EDIT_MENU', athlete: {
+                full_name: '',
+                birth_date: '',
+                sport_id: null,
+                municipality: '',
+                organization: '',
+                is_sports_category_granted: null,
+                is_doping_check_passed: null,
+            }
+        }
+    } else if (action.mode === 'OPEN_EDIT_MENU') {
+        if (state.mode === 'CLOSE')
+            throw new Error('Unexpected mode: ' + state.mode);
+
+        return {mode: 'EDIT_MENU', athlete: state.athlete}
+    } else if (action.mode === 'OPEN_CHECK_DOPING_MENU') {
+        if (state.mode === 'CLOSE')
+            throw new Error('Unexpected mode: ' + state.mode);
+
+        return {mode: 'CHECK_DOPING_MENU', athlete: state.athlete}
+    } else if (action.mode === 'OPEN_CHECK_RESULT_MENU') {
+        if (state.mode === 'CLOSE')
+            throw new Error('Unexpected mode: ' + state.mode);
+
+        return {mode: 'CHECK_RESULT_MENU', athlete: state.athlete}
+    } else if (action.mode === 'CLOSE') {
+        return action
     }
 
     return state
 }
 
 export default function ModalContextProvider({children}: { children: ReactNode }) {
-    const [state, dispatch] = useReducer(reducer, {isOpen: false, data: null});
+    const [state, dispatch] = useReducer(reducer, {mode: 'CLOSE'});
 
     return (
         <ModalContext.Provider value={[state, dispatch]}>

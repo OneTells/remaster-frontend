@@ -4,7 +4,7 @@ import {Dispatch, SetStateAction} from "react";
 
 import {UploadIcon} from "@/_assets/upload_icon";
 import {RemoveIcon} from "@/_assets/remove_icon";
-import {createDocumentFromFile, deleteDocument} from "@/app/documents/_api.tsx";
+import {createDocumentFromFile, deleteDocuments} from "@/app/documents/_api.tsx";
 import {Button} from "@/_ui/button/Button.tsx";
 import {Tooltip} from "@/_ui/tooltip/Tooltip.tsx";
 import {useNavigation} from "@/_hook/useNavigation.tsx";
@@ -25,7 +25,14 @@ export function ActionBar(props: Props) {
     }
 
     const uploadDocument = async () => {
-        const path = await open({multiple: false, directory: false});
+        const path = await open(
+            {
+                title: 'Открытие файла',
+                multiple: false,
+                directory: false,
+                filters: [{name: 'Файл JSON', extensions: ['json']}]
+            }
+        );
 
         if (!path) {
             return;
@@ -37,7 +44,7 @@ export function ActionBar(props: Props) {
     }
 
     const removeDocument = async () => {
-        await deleteDocument(props.selectIDs);
+        await deleteDocuments(props.selectIDs);
         props.setSelectIDs(new Set());
         props.setNeedUpdate(true);
     }

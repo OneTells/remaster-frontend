@@ -10,7 +10,7 @@ import {useNavigationData} from "@/_hook/useNavigationData.tsx";
 
 
 export const DocumentsPage = memo(function DocumentsPage() {
-    const data = useNavigationData();
+    const data = useNavigationData<DocumentType[]>();
     return <Menu documents={data as DocumentType[]}/>
 })
 

@@ -1,16 +1,20 @@
 import styles from "./Doping.module.css";
-import {useEffect, useState} from "react";
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
 
 import {DopingAthleteType} from "@/app/doping-athletes/_types.tsx";
 import {Pagination} from "@/_ui/pagination/Pagination.tsx";
+import {CheckBox} from "@/app/document/_components/check-box/CheckBox.tsx";
 
 
 type Props = {
     dopingAthletes: DopingAthleteType[];
+
+    selectId: number | null;
+    setSelectId: Dispatch<SetStateAction<number | null>>;
 }
 
-export function Doping({dopingAthletes}: Props) {
-    const itemsPerPage = 9;
+export function Doping({dopingAthletes, selectId, setSelectId}: Props) {
+    const itemsPerPage = 7;
 
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -44,7 +48,7 @@ export function Doping({dopingAthletes}: Props) {
                     </colgroup>
                     <thead>
                     <tr>
-                        <th className={`${styles.tableHeader} ${styles.center}`}>№</th>
+                        <th className={`${styles.tableHeader} ${styles.center}`}></th>
                         <th className={`${styles.tableHeader} ${styles.center}`}>ФИО</th>
                         <th className={`${styles.tableHeader} ${styles.center}`}>Вид спорта</th>
                         <th className={`${styles.tableHeader} ${styles.center}`}>Дата рождения</th>
@@ -63,7 +67,14 @@ export function Doping({dopingAthletes}: Props) {
                         return (
                             <tr key={dopingAthlete ? `row-${dopingAthlete?.id}` : `empty-${index}`} className={rowClasses}>
                                 <td className={`${styles.tableCell} ${styles.center}`}>
-                                    {dopingAthlete?.id || ''}
+                                    {dopingAthlete && (
+                                        <CheckBox
+                                            checked={selectId == dopingAthlete.id}
+                                            onChange={
+                                                () => setSelectId(value => value === dopingAthlete.id ? null : dopingAthlete.id)
+                                            }
+                                        />
+                                    )}
                                 </td>
                                 <td className={styles.tableCell} title={dopingAthlete?.full_name || ''}>
                                     {dopingAthlete?.full_name || ''}

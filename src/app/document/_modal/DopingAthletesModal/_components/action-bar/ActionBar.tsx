@@ -23,6 +23,7 @@ export function ActionBar({filters, setFilters}: Props) {
             <div>
                 <p>ФИО</p>
                 <input
+                    style={{width: "340px"}}
                     type="text"
                     value={filters.name}
                     onChange={handleNameChange}
@@ -30,7 +31,13 @@ export function ActionBar({filters, setFilters}: Props) {
             </div>
             <div>
                 <p>Дата рождения</p>
-                <input type="date" onChange={handleDateChange} style={{height: "44px", paddingRight: "10px"}}/>
+                <input
+                    type="date"
+                    value={filters.date}
+                    onChange={handleDateChange}
+                    style={{height: "44px", paddingRight: "10px"}}
+                    disabled
+                />
             </div>
         </div>
     );
