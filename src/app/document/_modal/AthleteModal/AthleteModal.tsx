@@ -54,6 +54,7 @@ export function AthleteModal({documentId, setNeedUpdate, sports, athlete, setAth
                     <div className={styles["hierarchical-text-container"]}>
                         <input
                             type="date"
+                            max={new Date().toISOString().split('T')[0]}
                             className={styles["input-field-with-border-radius"]}
                             style={{height: "44px", paddingRight: "10px", colorScheme: 'dark'}}
                             value={athlete.birth_date}

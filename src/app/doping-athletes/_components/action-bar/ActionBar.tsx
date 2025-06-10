@@ -30,7 +30,11 @@ export function ActionBar({filters, setFilters}: Props) {
             </div>
             <div>
                 <p>Дата рождения</p>
-                <input type="date" onChange={handleDateChange} style={{height: "44px", paddingRight: "10px"}}/>
+                <input
+                    type="date"
+                    max={new Date().toISOString().split('T')[0]}
+                    onChange={handleDateChange} style={{height: "44px", paddingRight: "10px"}}
+                />
             </div>
         </div>
     );

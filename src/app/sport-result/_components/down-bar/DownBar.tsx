@@ -4,8 +4,8 @@ import {Dispatch, SetStateAction} from "react";
 // import React, { useState } from "react";
 
 const options = [
-    {id: 1, label: '1 спортивный'},
-    {id: 2, label: 'КМС'},
+    {id: 2, label: '1 спортивный'},
+    {id: 1, label: 'КМС'},
 ];
 
 type Props = {

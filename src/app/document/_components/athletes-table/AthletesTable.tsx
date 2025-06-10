@@ -1,6 +1,6 @@
 import styles from "./AthletesTable.module.css";
 
-import {Dispatch, SetStateAction, useState} from "react";
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
 
 import {Pagination} from "@/_ui/pagination/Pagination.tsx";
 import {AthleteType, SportType} from "@/app/document/_types.tsx";
@@ -22,6 +22,10 @@ export function AthletesTable({athletes, selectIDs, setSelectIDs, athleteModalOp
     const itemsPerPage = 8;
 
     const [currentPage, setCurrentPage] = useState(1);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [athletes]);
 
     const getDisplayItems = (): AthleteType[] => {
         const paginatedItems = athletes.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);

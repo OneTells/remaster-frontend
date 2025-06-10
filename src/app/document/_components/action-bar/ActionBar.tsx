@@ -27,8 +27,8 @@ type Props = {
 
 export function ActionBar(props: Props) {
     const options = [
-        {id: 1, label: '1 спортивный'},
-        {id: 2, label: 'КМС'},
+        {id: 2, label: '1 спортивный'},
+        {id: 1, label: 'КМС'},
     ];
 
     return (

@@ -79,7 +79,16 @@ function Menu(props: { document: DocumentType, sports: SportType[], dopingAthlet
     }
 
     const createOrderOnClick = async () => {
-        const path = await save({title: 'Сохранить как', filters: [{name: 'Документ Word', extensions: ['docx']}]});
+        const options = [
+            {id: 2, label: 'Первый спортивный'},
+            {id: 1, label: 'КМС'},
+        ];
+
+        const path = await save({
+            title: 'Сохранить как',
+            defaultPath: `${document.title} (${options.find((option) => option.id === document.sports_category_id)?.label})`,
+            filters: [{name: 'Документ Word', extensions: ['docx']}]
+        });
         if (!path) return
 
         await createOrder(props.document.id, path)
@@ -90,7 +99,14 @@ function Menu(props: { document: DocumentType, sports: SportType[], dopingAthlet
     }
 
     const uploadAthletesOnClick = async () => {
-        const path = await open({multiple: false, directory: false});
+        const path = await open(
+            {
+                title: 'Открытие файла',
+                multiple: false,
+                directory: false,
+                filters: [{name: 'Файл JSON', extensions: ['json']}]
+            }
+        );
         if (!path) return
 
         await uploadAthletes(document.id, path)
