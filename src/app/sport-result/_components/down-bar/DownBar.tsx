@@ -9,9 +9,8 @@ const options = [
 ];
 
 type Props = {
-    name: string,
-    sportsRankId: number,
-    setSportsRankId: Dispatch<SetStateAction<number>>,
+    sportsRankId: number | null,
+    setSportsRankId: Dispatch<SetStateAction<number | null>>,
 }
 
 export function DownBar(props: Props) {
@@ -21,12 +20,6 @@ export function DownBar(props: Props) {
             <div>
                 <p>Спортивный разряд</p>
                 <Select options={options} selectedOptionId={props.sportsRankId} setSelectedOptionId={props.setSportsRankId}/>
-            </div>
-            <div>
-                <p>Причина отказа</p>
-                <input
-                    type="text" 
-                />
             </div>
         </div>
     );
