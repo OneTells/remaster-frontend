@@ -15,22 +15,23 @@ import {
 import {DocumentType, SportType} from "@/app/document/_types.tsx";
 import {ActionBar} from "@/app/document/_components/action-bar/ActionBar.tsx";
 import {AthletesTable} from "@/app/document/_components/athletes-table/AthletesTable.tsx";
-import {AthleteModal} from "@/app/document/_modal/components/AthleteModal/AthleteModal.tsx";
 import ModalContextProvider, {ModalContext} from "@/app/document/_context/modal-context.tsx";
 import {useNavigationData} from "@/_hook/useNavigationData.tsx";
+import {Modal} from "@/app/document/_modal/Modal/Modal.tsx";
+import {DopingAthleteType} from "@/app/doping-athletes/_types.tsx";
 
 
 export const DocumentPage = memo(function DocumentPage() {
-    const data = useNavigationData<{ sports: SportType[], document: DocumentType }>();
+    const data = useNavigationData<{ sports: SportType[], document: DocumentType, dopingAthletes: DopingAthleteType[] }>();
 
     return (
         <ModalContextProvider>
-            <Menu document={data.document} sports={data.sports}/>
+            <Menu document={data.document} sports={data.sports} dopingAthletes={data.dopingAthletes}/>
         </ModalContextProvider>
     )
 })
 
-function Menu(props: { document: DocumentType, sports: SportType[] }) {
+function Menu(props: { document: DocumentType, sports: SportType[], dopingAthletes: DopingAthleteType[] }) {
     const [document, setDocument] = useState<DocumentType>(props.document);
 
     const [selectIDs, setSelectIDs] = useState<Set<number>>(new Set());
@@ -61,7 +62,7 @@ function Menu(props: { document: DocumentType, sports: SportType[] }) {
     }, [document.title, document.sports_category_id]);
 
     const athleteModalOpen = (id: number) => {
-        return () => modalDispatch({type: 'OPEN', data: document.athletes.find((athlete) => athlete.id === id)!})
+        return () => modalDispatch({mode: 'OPEN_MODAL', athlete: document.athletes.find((athlete) => athlete.id === id)!})
     };
 
     const downloadDocumentOnClick = async () => {
@@ -85,7 +86,7 @@ function Menu(props: { document: DocumentType, sports: SportType[] }) {
     }
 
     const createAthleteOnClick = () => {
-        modalDispatch({type: 'NEW'});
+        modalDispatch({mode: 'CREATE_NEW_ATHLETE'});
     }
 
     const uploadAthletesOnClick = async () => {
@@ -93,6 +94,7 @@ function Menu(props: { document: DocumentType, sports: SportType[] }) {
         if (!path) return
 
         await uploadAthletes(document.id, path)
+        setNeedUpdate(true);
     }
 
     const downloadAthletesOnClick = async () => {
@@ -145,10 +147,11 @@ function Menu(props: { document: DocumentType, sports: SportType[] }) {
                 athleteModalOpen={athleteModalOpen}
             />
             {
-                ['NEW', 'EDIT'].includes(modalState.mode) && <AthleteModal
+                (modalState.mode !== 'CLOSE') && <Modal
                     setNeedUpdate={setNeedUpdate}
                     documentId={props.document.id}
                     sports={props.sports}
+                    dopingAthletes={props.dopingAthletes}
                 />
             }
         </>

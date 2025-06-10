@@ -1,0 +1,64 @@
+.athlete-info-card {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 20px;
+    align-items: stretch;
+    justify-content: flex-start;
+
+    /*margin-top: 10px;*/
+    /*margin-right: 20px;*/
+    /*margin-left: 20px;*/
+
+    padding: 15px;
+
+    width: 500px;
+}
+
+.center-column-with-gaps {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 13px;
+    /*align-items: center;*/
+    justify-content: center;
+}
+
+.info-block {
+    box-sizing: border-box;
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 346px;
+}
+
+.text {
+    flex: 0 0 auto;
+    padding: 0;
+    margin: 0;
+    font: 500 16px Montserrat, sans-serif;
+    color: white;
+
+    width: 150px;
+}
+
+.hierarchical-text-container {
+    box-sizing: border-box;
+    width: 100%;
+    color: white;
+}
+
+.input-field-with-border-radius {
+    box-sizing: border-box;
+    width: 100%;
+    height: 44px;
+    padding-left: 9px;
+    font: 500 16px Montserrat, sans-serif;
+    background: var(--button);
+    border: none;
+    border-radius: 10px;
+    color: var(--foreground);
+}

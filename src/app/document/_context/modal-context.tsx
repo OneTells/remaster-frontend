@@ -14,30 +14,32 @@ export type DefaultAthleteType = (
     );
 
 type State = {
-    mode: 'EDIT';
-    data: AthleteType;
+    mode: 'EDIT_MENU';
+    athlete: AthleteType | DefaultAthleteType;
+} | {
+    mode: 'CHECK_DOPING_MENU';
+    athlete: AthleteType | DefaultAthleteType
+} | {
+    mode: 'CHECK_RESULT_MENU';
+    athlete: AthleteType | DefaultAthleteType
 } | {
     mode: 'CLOSE';
-    data: null;
+};
+
+type Action = {
+    mode: 'OPEN_MODAL';
+    athlete: AthleteType;
 } | {
-    mode: 'NEW';
-    data: DefaultAthleteType;
+    mode: 'CREATE_NEW_ATHLETE';
+} | {
+    mode: 'OPEN_EDIT_MENU';
+} | {
+    mode: 'OPEN_CHECK_DOPING_MENU';
+} | {
+    mode: 'OPEN_CHECK_RESULT_MENU';
+} | {
+    mode: 'CLOSE';
 };
-
-type OpenAction = {
-    type: 'OPEN';
-    data: AthleteType;
-};
-
-type CloseAction = {
-    type: 'CLOSE';
-};
-
-type NewAction = {
-    type: 'NEW';
-};
-
-type Action = OpenAction | CloseAction | NewAction;
 
 type ModalContextType = [State, React.ActionDispatch<[action: Action]>]
 
@@ -46,15 +48,13 @@ type ModalContextType = [State, React.ActionDispatch<[action: Action]>]
 export const ModalContext = createContext<ModalContextType>(undefined);
 
 function reducer(state: State, action: Action): State {
-    if (action.type === 'OPEN') {
-        return {mode: 'EDIT', data: action.data}
-    } else if (action.type === 'CLOSE') {
-        return {mode: 'CLOSE', data: null}
-    } else if (action.type === 'NEW') {
+    if (action.mode === 'OPEN_MODAL') {
+        return {mode: 'EDIT_MENU', athlete: action.athlete}
+    } else if (action.mode === 'CREATE_NEW_ATHLETE') {
         return {
-            mode: 'NEW', data: {
+            mode: 'EDIT_MENU', athlete: {
                 full_name: '',
-                birth_date: new Date().toLocaleDateString('ru-RU'),
+                birth_date: '',
                 sport_id: null,
                 municipality: '',
                 organization: '',
@@ -62,13 +62,30 @@ function reducer(state: State, action: Action): State {
                 is_doping_check_passed: null,
             }
         }
+    } else if (action.mode === 'OPEN_EDIT_MENU') {
+        if (state.mode === 'CLOSE')
+            throw new Error('Unexpected mode: ' + state.mode);
+
+        return {mode: 'EDIT_MENU', athlete: state.athlete}
+    } else if (action.mode === 'OPEN_CHECK_DOPING_MENU') {
+        if (state.mode === 'CLOSE')
+            throw new Error('Unexpected mode: ' + state.mode);
+
+        return {mode: 'CHECK_DOPING_MENU', athlete: state.athlete}
+    } else if (action.mode === 'OPEN_CHECK_RESULT_MENU') {
+        if (state.mode === 'CLOSE')
+            throw new Error('Unexpected mode: ' + state.mode);
+
+        return {mode: 'CHECK_RESULT_MENU', athlete: state.athlete}
+    } else if (action.mode === 'CLOSE') {
+        return action
     }
 
     return state
 }
 
 export default function ModalContextProvider({children}: { children: ReactNode }) {
-    const [state, dispatch] = useReducer(reducer, {mode: 'CLOSE', data: null});
+    const [state, dispatch] = useReducer(reducer, {mode: 'CLOSE'});
 
     return (
         <ModalContext.Provider value={[state, dispatch]}>

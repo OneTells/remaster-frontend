@@ -14,7 +14,11 @@ type DataType = (
         | typeof getDatabases
         )>>
     | { sports: SportType[] }
-    | { sports: SportType[], document: Awaited<ReturnType<typeof getDocument>> }
+    | {
+    sports: SportType[],
+    document: Awaited<ReturnType<typeof getDocument>>,
+    dopingAthletes: Awaited<ReturnType<typeof getDopingAthletes>>
+}
     )
 
 export function useNavigationData<T extends DataType>(): T {

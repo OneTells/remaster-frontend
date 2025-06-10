@@ -27,7 +27,8 @@ export const useNavigation = () => {
             } else if (to.startsWith('/documents/')) {
                 const document = await getDocument(params['id'])
                 const sports = await getSports();
-                state = {sports: sports, document: document};
+                const dopingAthletes = await getDopingAthletes()
+                state = {sports: sports, document: document, dopingAthletes: dopingAthletes};
             }
 
             await navigate(to, {state: state});
