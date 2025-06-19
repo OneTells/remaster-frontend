@@ -1,12 +1,14 @@
 import styles from './Documents.module.css';
 
-
-import {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import {Dispatch, SetStateAction, useState} from 'react';
 
 import {DocumentType} from '@/app/documents/_types';
 import {Document} from '@/app/documents/_components/document/Document';
 import {Pagination} from '@/_ui/pagination/Pagination';
+import {useEffectIgnoreFirstRender} from "@/_hook/useEffectIgnoreFirstRender.tsx";
 
+
+const itemsPerPage = 18
 
 type Props = {
     documents: DocumentType[];
@@ -15,25 +17,20 @@ type Props = {
 };
 
 export function Documents({documents, selectIDs, setSelectIDs}: Props) {
-    const itemsPerPage = 18
-
     const [currentPage, setCurrentPage] = useState(1);
-    const [currentItems, setCurrentItems] = useState<DocumentType[]>(
-        documents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-    );
 
-    useEffect(() => {
+    useEffectIgnoreFirstRender(() => {
         setCurrentPage(1);
     }, [documents]);
 
-    useEffect(() => {
-        setCurrentItems(documents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
-    }, [currentPage, documents]);
+    const getDisplayItems = (): DocumentType[] => {
+        return documents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    };
 
     return (
         <div className={styles.container}>
             <div className={styles.documentContainer}>
-                {currentItems.map((document) => (
+                {getDisplayItems().map((document) => (
                     <Document
                         key={document.id}
                         document={document}

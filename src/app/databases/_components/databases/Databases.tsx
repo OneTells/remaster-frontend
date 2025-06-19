@@ -3,7 +3,7 @@
 import styles from "./Databases.module.css";
 
 import {DialogFilter, open, save} from '@tauri-apps/plugin-dialog';
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
 import {Panel} from "@/app/databases/_components/panel/Panel";
 import {DatabasesType} from "@/app/databases/_types.tsx";
@@ -13,19 +13,10 @@ import {downloadDatabase, getDatabases, uploadDatabase} from "@/app/databases/_a
 export function Databases(props: { data: DatabasesType[] }) {
     const [data, setData] = useState<DatabasesType[]>(props.data);
 
-    const [needUpdate, setNeedUpdate] = useState<boolean>(false);
-
-    useEffect(() => {
-        if (!needUpdate)
-            return
-
-        (async () => {
-            const data_ = await getDatabases()
-            setData(data_)
-
-            setNeedUpdate(false);
-        })()
-    }, [needUpdate]);
+    const update = async () => {
+        const databases_data = await getDatabases()
+        setData(databases_data)
+    }
 
     const dataById = data.reduce<Record<string, DatabasesType>>((acc, item) => {
         acc[item.slug] = item;
@@ -70,7 +61,7 @@ export function Databases(props: { data: DatabasesType[] }) {
                 }
 
                 await uploadDatabase(slug, path);
-                setNeedUpdate(true);
+                await update()
             }
         )
 

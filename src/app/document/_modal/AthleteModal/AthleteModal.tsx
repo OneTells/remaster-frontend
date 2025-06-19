@@ -1,25 +1,27 @@
 import styles from "./AthleteModal.module.css";
 
-import React, {Dispatch, SetStateAction, use} from "react";
+import React, {use} from "react";
 
 import {DefaultAthleteType, ModalContext} from "@/app/document/_context/modal-context.tsx";
-import {AthleteType, SportType} from "@/app/document/_types.tsx";
-import {createAthlete} from "@/app/document/_api.tsx";
+import {AthleteType, DocumentType, SportType} from "@/app/document/_types.tsx";
+import {createAthlete, getDopingCheckerData, getResultCheckerData} from "@/app/document/_api.tsx";
 import {Select} from "@/_ui/select/Select.tsx";
 import {Button} from "@/_ui/button/Button.tsx";
+import {useNavigationData} from "@/_hook/useNavigationData.tsx";
+import {DopingAthleteType} from "@/app/doping-athletes/_types.tsx";
 
 
 type Props = {
     documentId: number;
-    setNeedUpdate: Dispatch<SetStateAction<boolean>>;
-
-    sports: SportType[];
+    update: () => Promise<void>;
 
     athlete: DefaultAthleteType | AthleteType;
     setAthlete: React.Dispatch<React.SetStateAction<DefaultAthleteType | AthleteType>>;
 }
 
-export function AthleteModal({documentId, setNeedUpdate, sports, athlete, setAthlete}: Props) {
+export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
+    const data = useNavigationData<{ sports: SportType[], document: DocumentType, dopingAthletes: DopingAthleteType[] }>();
+
     const [state, modalDispatch] = use(ModalContext);
 
     if (state.mode !== 'EDIT_MENU')
@@ -30,9 +32,9 @@ export function AthleteModal({documentId, setNeedUpdate, sports, athlete, setAth
             return;
 
         await createAthlete(documentId, athlete as AthleteType);
+        await update();
 
         modalDispatch({mode: 'CLOSE'});
-        setNeedUpdate(true);
     };
 
     return (
@@ -66,7 +68,7 @@ export function AthleteModal({documentId, setNeedUpdate, sports, athlete, setAth
                     <p className={styles["text"]}>Вид спорта</p>
                     <div className={styles["hierarchical-text-container"]}>
                         <Select
-                            options={sports.map(({name, ...rest}) => ({...rest, label: name}))}
+                            options={data.sports.map(({name, ...rest}) => ({...rest, label: name}))}
                             selectedOptionId={athlete.sport_id}
                             setSelectedOptionId={(id) => setAthlete(prev => ({...prev, 'sport_id': id}))}
                             style={{width: '100%'}}
@@ -143,12 +145,43 @@ export function AthleteModal({documentId, setNeedUpdate, sports, athlete, setAth
                 </div>
             </div>
             <div style={{flexDirection: 'row', display: 'flex', gap: '10px', marginTop: '5px'}}>
-                <Button style={{height: '44px', padding: '10px 20px', width: '100%'}}
-                        onClick={() => modalDispatch({mode: 'OPEN_CHECK_DOPING_MENU'})}>
+                <Button
+                    style={{height: '44px', padding: '10px 20px', width: '100%'}}
+                    onClick={async () => {
+                        let dopingCheckerData = null;
+
+                        if (('id' in state.athlete)) {
+                            dopingCheckerData = await getDopingCheckerData((athlete as AthleteType).id)
+                        }
+
+                        if (dopingCheckerData === null) {
+                            dopingCheckerData = {full_name: '', selectId: null}
+                        }
+
+                        modalDispatch({
+                            mode: 'OPEN_CHECK_DOPING_MENU',
+                            dopingCheckerData: dopingCheckerData
+                        })
+                    }}
+                >
                     Проверить на допинг
                 </Button>
-                <Button style={{height: '44px', padding: '10px 20px', width: '100%'}}
-                        onClick={() => modalDispatch({mode: 'OPEN_CHECK_RESULT_MENU'})}>
+                <Button
+                    style={{height: '44px', padding: '10px 20px', width: '100%'}}
+                    onClick={async () => {
+                        let resultCheckerData = null;
+
+                        if (('id' in state.athlete)) {
+                            resultCheckerData = await getResultCheckerData((athlete as AthleteType).id)
+                        }
+
+                        if (resultCheckerData === null) {
+                            resultCheckerData = {}
+                        }
+
+                        modalDispatch({mode: 'OPEN_CHECK_RESULT_MENU', resultCheckerData: resultCheckerData});
+                    }}
+                >
                     Проверить по результату
                 </Button>
             </div>

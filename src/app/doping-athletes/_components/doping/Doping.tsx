@@ -1,20 +1,22 @@
 import styles from "./Doping.module.css";
-import {useEffect, useState} from "react";
+
+import {useState} from "react";
 
 import {DopingAthleteType} from "@/app/doping-athletes/_types.tsx";
 import {Pagination} from "@/_ui/pagination/Pagination.tsx";
+import {useEffectIgnoreFirstRender} from "@/_hook/useEffectIgnoreFirstRender.tsx";
 
+
+const itemsPerPage = 9;
 
 type Props = {
     dopingAthletes: DopingAthleteType[];
 }
 
 export function Doping({dopingAthletes}: Props) {
-    const itemsPerPage = 9;
-
     const [currentPage, setCurrentPage] = useState(1);
 
-    useEffect(() => {
+    useEffectIgnoreFirstRender(() => {
         setCurrentPage(1);
     }, [dopingAthletes]);
 

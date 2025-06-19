@@ -1,0 +1,9 @@
+.container {
+    background-color: var(--button);
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 10px;
+    height: 24px;
+    font: 400 14px Montserrat, sans-serif;
+}

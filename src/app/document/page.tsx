@@ -1,6 +1,6 @@
 'use client'
 
-import {memo, use, useEffect, useState} from "react";
+import {memo, use, useState} from "react";
 import {open, save} from "@tauri-apps/plugin-dialog";
 
 import {
@@ -18,45 +18,36 @@ import {AthletesTable} from "@/app/document/_components/athletes-table/AthletesT
 import ModalContextProvider, {ModalContext} from "@/app/document/_context/modal-context.tsx";
 import {useNavigationData} from "@/_hook/useNavigationData.tsx";
 import {Modal} from "@/app/document/_modal/Modal/Modal.tsx";
+import {useEffectIgnoreFirstRender} from "@/_hook/useEffectIgnoreFirstRender.tsx";
 import {DopingAthleteType} from "@/app/doping-athletes/_types.tsx";
 
 
 export const DocumentPage = memo(function DocumentPage() {
     const data = useNavigationData<{ sports: SportType[], document: DocumentType, dopingAthletes: DopingAthleteType[] }>();
-
     return (
         <ModalContextProvider>
-            <Menu document={data.document} sports={data.sports} dopingAthletes={data.dopingAthletes}/>
+            <Menu document={data.document} sports={data.sports}/>
         </ModalContextProvider>
     )
 })
 
-function Menu(props: { document: DocumentType, sports: SportType[], dopingAthletes: DopingAthleteType[] }) {
+function Menu(props: { document: DocumentType, sports: SportType[] }) {
     const [document, setDocument] = useState<DocumentType>(props.document);
-
     const [selectIDs, setSelectIDs] = useState<Set<number>>(new Set());
-    const [needUpdate, setNeedUpdate] = useState<boolean>(false);
 
     const [modalState, modalDispatch] = use(ModalContext)
 
-    useEffect(() => {
-        if (!needUpdate)
-            return
+    const update = async () => {
+        const documentData = await getDocument(document.id)
+        setDocument(documentData)
+    }
 
-        (async () => {
-            const document_ = await getDocument(document.id)
-            setDocument(document_)
-
-            setNeedUpdate(false);
-        })()
-    }, [needUpdate]);
-
-    useEffect(() => {
+    useEffectIgnoreFirstRender(() => {
         const timer = setTimeout(() => {
             (async () => {
                 await updateDocument(document.id, document.title, document.sports_category_id!);
             })();
-        }, 100);
+        }, 500);
 
         return () => clearTimeout(timer);
     }, [document.title, document.sports_category_id]);
@@ -70,7 +61,7 @@ function Menu(props: { document: DocumentType, sports: SportType[], dopingAthlet
             {
                 title: 'Сохранить как',
                 defaultPath: document.title,
-                filters: [{name: 'Файл JSON', extensions: ['json']}]
+                filters: [{name: 'Remaster документ', extensions: ['rmd']}]
             }
         );
         if (!path) return
@@ -104,21 +95,25 @@ function Menu(props: { document: DocumentType, sports: SportType[], dopingAthlet
                 title: 'Открытие файла',
                 multiple: false,
                 directory: false,
-                filters: [{name: 'Файл JSON', extensions: ['json']}]
+                filters: [{name: 'Remaster атлеты', extensions: ['rma']}]
             }
         );
         if (!path) return
 
         await uploadAthletes(document.id, path)
-        setNeedUpdate(true);
+        await update();
     }
 
     const downloadAthletesOnClick = async () => {
+        if (selectIDs.size === 0) {
+            return
+        }
+
         const path = await save(
             {
                 title: 'Сохранить как',
                 defaultPath: `${document.title} (Атлеты)`,
-                filters: [{name: 'Файл JSON', extensions: ['json']}]
+                filters: [{name: 'Remaster атлеты', extensions: ['rma']}]
             }
         );
         if (!path) return
@@ -128,9 +123,13 @@ function Menu(props: { document: DocumentType, sports: SportType[], dopingAthlet
     }
 
     const removeAthletesOnClick = async () => {
+        if (selectIDs.size === 0) {
+            return
+        }
+
         await removeAthletes(Array.from(selectIDs));
         setSelectIDs(new Set());
-        setNeedUpdate(true);
+        await update();
     }
 
     const titleChange = (value: string) => {
@@ -164,10 +163,8 @@ function Menu(props: { document: DocumentType, sports: SportType[], dopingAthlet
             />
             {
                 (modalState.mode !== 'CLOSE') && <Modal
-                    setNeedUpdate={setNeedUpdate}
+                    update={update}
                     documentId={props.document.id}
-                    sports={props.sports}
-                    dopingAthletes={props.dopingAthletes}
                 />
             }
         </>

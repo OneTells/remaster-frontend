@@ -1,7 +1,8 @@
 'use client'
 
 import React, {createContext, ReactNode, useReducer} from 'react'
-import {AthleteType} from "@/app/document/_types.tsx";
+
+import {AthleteType, DopingCheckerType, ResultCheckerType} from "@/app/document/_types.tsx";
 
 
 type NullableFields<T, K extends keyof T> = {
@@ -19,9 +20,11 @@ type State = {
 } | {
     mode: 'CHECK_DOPING_MENU';
     athlete: AthleteType | DefaultAthleteType
+    dopingCheckerData: DopingCheckerType;
 } | {
     mode: 'CHECK_RESULT_MENU';
     athlete: AthleteType | DefaultAthleteType
+    resultCheckerData: ResultCheckerType;
 } | {
     mode: 'CLOSE';
 };
@@ -35,10 +38,15 @@ type Action = {
     mode: 'OPEN_EDIT_MENU';
 } | {
     mode: 'OPEN_CHECK_DOPING_MENU';
+    dopingCheckerData: DopingCheckerType;
 } | {
     mode: 'OPEN_CHECK_RESULT_MENU';
+    resultCheckerData: ResultCheckerType;
 } | {
     mode: 'CLOSE';
+} | {
+    mode: 'UPDATE_DATA_IN_DOPING_MENU';
+    dopingCheckerData: DopingCheckerType;
 };
 
 type ModalContextType = [State, React.ActionDispatch<[action: Action]>]
@@ -49,10 +57,14 @@ export const ModalContext = createContext<ModalContextType>(undefined);
 
 function reducer(state: State, action: Action): State {
     if (action.mode === 'OPEN_MODAL') {
-        return {mode: 'EDIT_MENU', athlete: action.athlete}
+        return {
+            mode: 'EDIT_MENU',
+            athlete: action.athlete
+        }
     } else if (action.mode === 'CREATE_NEW_ATHLETE') {
         return {
-            mode: 'EDIT_MENU', athlete: {
+            mode: 'EDIT_MENU',
+            athlete: {
                 full_name: '',
                 birth_date: '',
                 sport_id: null,
@@ -66,19 +78,39 @@ function reducer(state: State, action: Action): State {
         if (state.mode === 'CLOSE')
             throw new Error('Unexpected mode: ' + state.mode);
 
-        return {mode: 'EDIT_MENU', athlete: state.athlete}
+        return {
+            mode: 'EDIT_MENU',
+            athlete: state.athlete
+        }
     } else if (action.mode === 'OPEN_CHECK_DOPING_MENU') {
-        if (state.mode === 'CLOSE')
+        if (state.mode !== 'EDIT_MENU')
             throw new Error('Unexpected mode: ' + state.mode);
 
-        return {mode: 'CHECK_DOPING_MENU', athlete: state.athlete}
+        return {
+            mode: 'CHECK_DOPING_MENU',
+            athlete: state.athlete,
+            dopingCheckerData: action.dopingCheckerData
+        }
     } else if (action.mode === 'OPEN_CHECK_RESULT_MENU') {
-        if (state.mode === 'CLOSE')
+        if (state.mode !== 'EDIT_MENU')
             throw new Error('Unexpected mode: ' + state.mode);
 
-        return {mode: 'CHECK_RESULT_MENU', athlete: state.athlete}
+        return {
+            mode: 'CHECK_RESULT_MENU',
+            athlete: state.athlete,
+            resultCheckerData: action.resultCheckerData
+        }
     } else if (action.mode === 'CLOSE') {
         return action
+    } else if (action.mode === 'UPDATE_DATA_IN_DOPING_MENU') {
+        if (state.mode !== 'CHECK_DOPING_MENU')
+            throw new Error('Unexpected mode: ' + state.mode);
+
+        return {
+            mode: 'CHECK_DOPING_MENU',
+            athlete: state.athlete,
+            dopingCheckerData: action.dopingCheckerData
+        }
     }
 
     return state

@@ -1,21 +1,22 @@
 import styles from "./Doping.module.css";
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
+
+import {useEffect, useState} from "react";
 
 import {DopingAthleteType} from "@/app/doping-athletes/_types.tsx";
 import {Pagination} from "@/_ui/pagination/Pagination.tsx";
 import {CheckBox} from "@/app/document/_components/check-box/CheckBox.tsx";
 
 
+const itemsPerPage = 7;
+
 type Props = {
     dopingAthletes: DopingAthleteType[];
 
     selectId: number | null;
-    setSelectId: Dispatch<SetStateAction<number | null>>;
+    setSelectId: (value: number | null) => void;
 }
 
 export function Doping({dopingAthletes, selectId, setSelectId}: Props) {
-    const itemsPerPage = 7;
-
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
@@ -71,7 +72,7 @@ export function Doping({dopingAthletes, selectId, setSelectId}: Props) {
                                         <CheckBox
                                             checked={selectId == dopingAthlete.id}
                                             onChange={
-                                                () => setSelectId(value => value === dopingAthlete.id ? null : dopingAthlete.id)
+                                                () => setSelectId(selectId === dopingAthlete.id ? null : dopingAthlete.id)
                                             }
                                         />
                                     )}

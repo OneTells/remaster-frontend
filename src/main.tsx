@@ -12,7 +12,7 @@ import {DocumentsPage} from "@/app/documents/page.tsx";
 import {DocumentPage} from "@/app/document/page.tsx";
 import {DopingAthletesPage} from "@/app/doping-athletes/page.tsx";
 import {NewDocumentPage} from "@/app/new-document/page.tsx";
-import SportResultPage from "@/app/sport-result/page.tsx";
+import {SportResultPage} from "@/app/sport-result/page.tsx";
 import {DatabasesPage} from "@/app/databases/page.tsx";
 
 

@@ -1,6 +1,6 @@
 'use client'
 
-import {memo, useEffect, useState} from "react";
+import {memo, useState} from "react";
 
 import {getDocuments} from "@/app/documents/_api.tsx";
 import {DocumentType} from "@/app/documents/_types.tsx";
@@ -16,24 +16,16 @@ export const DocumentsPage = memo(function DocumentsPage() {
 
 function Menu(props: { documents: DocumentType[] }) {
     const [documents, setDocuments] = useState<DocumentType[]>(props.documents);
-
     const [selectIDs, setSelectIDs] = useState<Set<number>>(new Set());
-    const [needUpdate, setNeedUpdate] = useState<boolean>(false);
 
-    useEffect(() => {
-        if (!needUpdate)
-            return
-
-        (async () => {
-            const documents = await getDocuments()
-            setDocuments(documents)
-            setNeedUpdate(false);
-        })()
-    }, [needUpdate]);
+    const update = async () => {
+        const documents = await getDocuments()
+        setDocuments(documents)
+    }
 
     return (
         <>
-            <ActionBar selectIDs={selectIDs} setSelectIDs={setSelectIDs} setNeedUpdate={setNeedUpdate}/>
+            <ActionBar selectIDs={selectIDs} setSelectIDs={setSelectIDs} update={update}/>
             <Documents documents={documents} selectIDs={selectIDs} setSelectIDs={setSelectIDs}/>
         </>
     )

@@ -1,26 +1,17 @@
 import styles from "./DownBar.module.css";
-import {Select} from "@/_ui/select/Select.tsx";
-import {Dispatch, SetStateAction} from "react";
-// import React, { useState } from "react";
 
-const options = [
-    {id: 2, label: '1 спортивный'},
-    {id: 1, label: 'КМС'},
-];
 
 type Props = {
-    sportsRankId: number | null,
-    setSportsRankId: Dispatch<SetStateAction<number | null>>,
+    isDopingCheckPassed: boolean | null
 }
 
-export function DownBar(props: Props) {
-    
+export const DownBar = ({isDopingCheckPassed}: Props) => {
     return (
-        <div className={styles["container"]}>
-            <div>
-                <p>Спортивный разряд</p>
-                <Select options={options} selectedOptionId={props.sportsRankId} setSelectedOptionId={props.setSportsRankId}/>
-            </div>
+        <div className={styles['field']}>
+            <p>Присвоить разряд:</p>
+            <p style={{color: isDopingCheckPassed === null ? '#e8ff00' : isDopingCheckPassed ? '#4CAF50' : '#f44336'}}>
+                {isDopingCheckPassed === null ? 'Нет данных' : isDopingCheckPassed ? 'Да' : 'Нет'}
+            </p>
         </div>
-    );
-}
+    )
+};

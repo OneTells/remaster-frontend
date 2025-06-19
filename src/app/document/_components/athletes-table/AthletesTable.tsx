@@ -1,12 +1,15 @@
 import styles from "./AthletesTable.module.css";
 
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import {Dispatch, SetStateAction, useState} from "react";
 
 import {Pagination} from "@/_ui/pagination/Pagination.tsx";
 import {AthleteType, SportType} from "@/app/document/_types.tsx";
 import {CheckBox} from "@/app/document/_components/check-box/CheckBox.tsx";
 import {EditIcon} from "@/_assets/edit_icon.tsx";
+import {useEffectIgnoreFirstRender} from "@/_hook/useEffectIgnoreFirstRender.tsx";
 
+
+const itemsPerPage = 8;
 
 type Props = {
     athletes: AthleteType[];
@@ -19,11 +22,9 @@ type Props = {
 };
 
 export function AthletesTable({athletes, selectIDs, setSelectIDs, athleteModalOpen, sports}: Props) {
-    const itemsPerPage = 8;
-
     const [currentPage, setCurrentPage] = useState(1);
 
-    useEffect(() => {
+    useEffectIgnoreFirstRender(() => {
         setCurrentPage(1);
     }, [athletes]);
 

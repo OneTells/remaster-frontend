@@ -28,3 +28,12 @@ export type ActionBarDocumentType = {
     title: string,
     sports_category_id: number | null
 }
+
+export type DopingCheckerType = {
+    full_name: string;
+    selectId: number | null;
+}
+
+export type ResultCheckerType = {
+
+}

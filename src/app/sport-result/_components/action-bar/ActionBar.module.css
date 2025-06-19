@@ -1,0 +1,28 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+
+    height: 44px;
+}
+
+.title {
+    flex: 0 0 auto;
+    padding: 0;
+    margin: 0;
+    font: 20px Montserrat, sans-serif;
+    color: var(--foreground);
+
+    display: flex;
+    align-items: center; /* Центрирование по вертикали */
+    justify-content: center; /* Центрирование по горизонтали (опционально) */
+
+    height: 100%;
+}
+
+.field {
+    display: flex;
+    gap: 10px;
+
+    height: 100%;
+}

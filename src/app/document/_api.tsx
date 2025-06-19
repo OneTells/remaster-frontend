@@ -1,4 +1,4 @@
-import {AthleteType, DocumentType, SportType} from "@/app/document/_types.tsx";
+import {AthleteType, DocumentType, DopingCheckerType, ResultCheckerType, SportType} from "@/app/document/_types.tsx";
 import {API_URL} from "@/config.tsx";
 
 
@@ -75,7 +75,7 @@ export async function createAthlete(documentId: number, data: AthleteType): Prom
 }
 
 export async function getSports(): Promise<SportType[]> {
-    const response = await fetch(`${API_URL}/sports`)
+    const response = await fetch(`${API_URL}/sports/`)
     return (await response.json()).data
 }
 
@@ -114,6 +114,27 @@ export async function uploadAthletes(documentId: number, path: string): Promise<
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({'path': path})
+        }
+    );
+}
+
+export async function getDopingCheckerData(athleteID: number): Promise<DopingCheckerType | null> {
+    const response = await fetch(`${API_URL}/athletes/${athleteID}/doping`);
+     return (await response.json()).data
+}
+
+export async function getResultCheckerData(athleteID: number): Promise<ResultCheckerType | null> {
+    const response = await fetch(`${API_URL}/athletes/${athleteID}/result`);
+     return (await response.json()).data
+}
+
+export async function updateCheckerData(slug: string, athleteID: number, data: DopingCheckerType | ResultCheckerType): Promise<void> {
+    await fetch(
+        `${API_URL}/athletes/${athleteID}/${slug}`,
+        {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
         }
     );
 }

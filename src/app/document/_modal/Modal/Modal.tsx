@@ -1,25 +1,22 @@
 import styles from "./Modal.module.css";
 
-import {Dispatch, SetStateAction, use, useEffect, useRef, useState} from "react";
+import {use, useEffect, useRef, useState} from "react";
 
 import {DefaultAthleteType, ModalContext} from "@/app/document/_context/modal-context.tsx";
-import {AthleteType, SportType} from "@/app/document/_types.tsx";
+import {AthleteType} from "@/app/document/_types.tsx";
 import {WindowCloseIcon} from "@/_assets/window_close_icon.tsx";
 import {AthleteModal} from "@/app/document/_modal/AthleteModal/AthleteModal.tsx";
 import {DopingAthletesModal} from "@/app/document/_modal/DopingAthletesModal/DopingAthletesModal.tsx";
-import {DopingAthleteType} from "@/app/doping-athletes/_types.tsx";
 import {updateAthletes} from "@/app/document/_api.tsx";
+import {useEffectIgnoreFirstRender} from "@/_hook/useEffectIgnoreFirstRender.tsx";
 
 
 type Props = {
     documentId: number;
-    setNeedUpdate: Dispatch<SetStateAction<boolean>>;
-
-    sports: SportType[]
-    dopingAthletes: DopingAthleteType[]
+    update: () => Promise<void>;
 }
 
-export function Modal({documentId, setNeedUpdate, sports, dopingAthletes}: Props) {
+export function Modal({documentId, update}: Props) {
     const [state, modalDispatch] = use(ModalContext);
 
     if (state.mode === 'CLOSE')
@@ -35,19 +32,21 @@ export function Modal({documentId, setNeedUpdate, sports, dopingAthletes}: Props
                 modalDispatch({mode: 'CLOSE'})
         };
 
-        document.addEventListener('click', handleClickOutside);
-        return () => document.removeEventListener('click', handleClickOutside)
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside)
     }, []);
 
-    useEffect(() => {
-        if (!('id' in state.athlete)) {
-            return;
-        }
+    useEffectIgnoreFirstRender(() => {
+        if (!('id' in state.athlete)) return;
 
-        (async () => {
-            await updateAthletes((state.athlete as AthleteType).id, athleteData as AthleteType);
-            setNeedUpdate(true);
-        })();
+        const timer = setTimeout(() => {
+            (async () => {
+                await updateAthletes((state.athlete as AthleteType).id, athleteData as AthleteType);
+                await update();
+            })();
+        }, 500);
+
+        return () => clearTimeout(timer);
     }, [athleteData]);
 
     return (
@@ -60,9 +59,8 @@ export function Modal({documentId, setNeedUpdate, sports, dopingAthletes}: Props
                 </div>
                 {
                     (state.mode === 'EDIT_MENU') && <AthleteModal
-                        setNeedUpdate={setNeedUpdate}
+                        update={update}
                         documentId={documentId}
-                        sports={sports}
                         athlete={athleteData}
                         setAthlete={setAthleteData}
                     />
@@ -71,7 +69,6 @@ export function Modal({documentId, setNeedUpdate, sports, dopingAthletes}: Props
                     (state.mode === 'CHECK_DOPING_MENU') && <DopingAthletesModal
                         athlete={athleteData}
                         setAthlete={setAthleteData}
-                        dopingAthletes={dopingAthletes}
                     />
                 }
             </div>

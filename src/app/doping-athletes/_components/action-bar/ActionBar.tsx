@@ -1,6 +1,7 @@
 import styles from "./ActionBar.module.css";
 
 import React from "react";
+
 import {FiltersType} from "@/app/doping-athletes/_types.tsx";
 
 
@@ -33,7 +34,7 @@ export function ActionBar({filters, setFilters}: Props) {
                 <input
                     type="date"
                     max={new Date().toISOString().split('T')[0]}
-                    onChange={handleDateChange} style={{height: "44px", paddingRight: "10px"}}
+                    onChange={handleDateChange} style={{height: "44px", paddingRight: "10px", width: "120px"}}
                 />
             </div>
         </div>

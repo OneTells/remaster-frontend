@@ -23,7 +23,7 @@ export function Navigation() {
                     <DopingIcon/>
                 </div>
             </Tooltip>
-            <Tooltip text={'Проверка на результат'} position={'right'} width={75}>
+            <Tooltip text={'Проверка по результату'} position={'right'} width={75}>
                 <div className={styles['button']} onClick={() => navigate("/sport-result")}>
                     <SportResultIcon/>
                 </div>

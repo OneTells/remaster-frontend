@@ -1,6 +1,7 @@
 import styles from "./ActionBar.module.css";
 
 import {Dispatch, SetStateAction} from "react";
+import {open} from "@tauri-apps/plugin-dialog";
 
 import {UploadIcon} from "@/_assets/upload_icon";
 import {RemoveIcon} from "@/_assets/remove_icon";
@@ -8,13 +9,12 @@ import {createDocumentFromFile, deleteDocuments} from "@/app/documents/_api.tsx"
 import {Button} from "@/_ui/button/Button.tsx";
 import {Tooltip} from "@/_ui/tooltip/Tooltip.tsx";
 import {useNavigation} from "@/_hook/useNavigation.tsx";
-import {open} from "@tauri-apps/plugin-dialog";
 
 
 type Props = {
-    selectIDs: Set<number>,
-    setSelectIDs: Dispatch<SetStateAction<Set<number>>>
-    setNeedUpdate: Dispatch<SetStateAction<boolean>>
+    selectIDs: Set<number>;
+    setSelectIDs: Dispatch<SetStateAction<Set<number>>>;
+    update: () => Promise<void>;
 }
 
 export function ActionBar(props: Props) {
@@ -30,7 +30,7 @@ export function ActionBar(props: Props) {
                 title: 'Открытие файла',
                 multiple: false,
                 directory: false,
-                filters: [{name: 'Файл JSON', extensions: ['json']}]
+                filters: [{name: 'Remaster документ', extensions: ['rmd']}]
             }
         );
 
@@ -39,14 +39,15 @@ export function ActionBar(props: Props) {
         }
 
         await createDocumentFromFile(path);
-        props.setSelectIDs(new Set());
-        props.setNeedUpdate(true);
+
+        await props.update();
     }
 
     const removeDocument = async () => {
         await deleteDocuments(props.selectIDs);
         props.setSelectIDs(new Set());
-        props.setNeedUpdate(true);
+
+        await props.update();
     }
 
     return (
