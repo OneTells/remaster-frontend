@@ -10,26 +10,14 @@ type Props = {
 };
 
 export function DateInput({data, setData, style}: Props) {
-    const today = new Date().toISOString().split('T')[0];
-
-    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedDate = e.target.value;
-
-        if (selectedDate <= today) {
-            setData(selectedDate);
-        }
-    };
-
     return (
         <input
             type="date"
-            max={today}
+            max={new Date().toISOString().split('T')[0]}
             value={data}
-            onChange={handleDateChange}
+            onChange={(e) => setData(e.target.value)}
             className={styles['container']}
             style={style}
-            onKeyDown={(e) => e.preventDefault()}
-            onPaste={(e) => e.preventDefault()}
         />
     );
 }
