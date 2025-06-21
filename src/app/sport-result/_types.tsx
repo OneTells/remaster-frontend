@@ -15,6 +15,7 @@ export type SportsProgrammingDataType = {
 export type ComputerSportsType = {
     competition_statuses: CompetitionStatusType[];
     disciplines: DisciplineType[];
+    disciplines_with_mandatory_participation: number[];
 }
 
 export type InitDataType = ComputerSportsType | SportsProgrammingDataType;
