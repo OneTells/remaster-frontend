@@ -13,7 +13,7 @@ export function NumberInput({data, setData, style}: Props) {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
 
-        if (value === '' || /^[0-9]{0,6}$/.test(value)) {
+        if (/^[0-9]{0,6}$/.test(value)) {
             setData(value);
         }
     };

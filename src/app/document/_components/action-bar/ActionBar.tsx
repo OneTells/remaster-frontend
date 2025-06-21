@@ -60,7 +60,7 @@ export function ActionBar(props: Props) {
                     options={options}
                     selectedOptionId={props.document.sports_category_id}
                     setSelectedOptionId={props.sportsCategoryIdChange}
-                    style={{ width: '200px' }}
+                    style={{width: '200px'}}
                 />
                 <div style={{display: 'flex', justifyContent: 'flex-end', flex: 1, gap: '5px'}}>
                     <Button style={{height: '44px', padding: '10px 20px'}} onClick={props.createAthlete}>

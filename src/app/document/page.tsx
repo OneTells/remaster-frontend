@@ -70,6 +70,10 @@ function Menu(props: { document: DocumentType, sports: SportType[] }) {
     }
 
     const createOrderOnClick = async () => {
+        if (document.athletes.length === 0) {
+            return
+        }
+
         const options = [
             {id: 2, label: 'Первый спортивный'},
             {id: 1, label: 'КМС'},
