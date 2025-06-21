@@ -1,0 +1,13 @@
+.section {
+    border: 4px solid #3a3b40;
+    border-radius: 10px;
+    padding: 16px;
+    margin: 0 0 20px;
+}
+
+.legend {
+    padding: 0 8px;
+    font-size: 16px;
+    color: #ffffff;
+    font-weight: 500;
+}

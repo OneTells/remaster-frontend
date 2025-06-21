@@ -6,7 +6,7 @@ type Props = {
         sportId: number | null,
         sportData: Awaited<ReturnType<typeof getSportData>> | null
     };
-    setIsDopingCheckPassed: (data: any) => Promise<void>;
+    sendDataForCheck: (data: any) => Promise<void>;
 }
 
 export function Athletics(_props: Props) {

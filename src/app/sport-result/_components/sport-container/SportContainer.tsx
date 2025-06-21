@@ -17,16 +17,21 @@ export function SportContainer(props: Props) {
     if (props.data.sportCategoryId === null)
         return <div style={{height: '100%'}}/>
 
-    const setIsDopingCheckPassed = async (data: any) => {
+    const sendDataForCheck = async (data: any | null) => {
+        if (data === null) {
+            props.setIsDopingCheckPassed(null)
+            return
+        }
+
         const isSportsCategoryGranted = await checkResult(props.data.sportId!, data)
         props.setIsDopingCheckPassed(isSportsCategoryGranted)
     };
 
     return (
         <div className={styles["container"]}>
-            {props.data.sportId === 1 && <Athletics data={props.data} setIsDopingCheckPassed={setIsDopingCheckPassed}/>}
-            {props.data.sportId === 2 && <SportsProgramming data={props.data} setIsDopingCheckPassed={setIsDopingCheckPassed}/>}
-            {props.data.sportId === 3 && <ComputerSports data={props.data as any} setIsDopingCheckPassed={setIsDopingCheckPassed}/>}
+            {props.data.sportId === 1 && <Athletics data={props.data as any} sendDataForCheck={sendDataForCheck}/>}
+            {props.data.sportId === 2 && <SportsProgramming data={props.data as any} sendDataForCheck={sendDataForCheck}/>}
+            {props.data.sportId === 3 && <ComputerSports data={props.data as any} sendDataForCheck={sendDataForCheck}/>}
         </div>
     );
 }

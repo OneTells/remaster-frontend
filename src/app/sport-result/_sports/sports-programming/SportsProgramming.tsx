@@ -1,37 +1,41 @@
 import {useEffect, useState} from "react";
 
-import {getSportData} from "@/app/sport-result/_api.tsx";
 import {Select} from "@/_ui/select/Select.tsx";
 import {DateInput} from "@/_ui/date-input/DateInput.tsx";
 import {NumberInput} from "@/_ui/number-input/NumberInput.tsx";
+import {SportsProgrammingDataType} from "@/app/sport-result/_types.tsx";
+import {Section} from "@/_ui/section/Section.tsx";
+import {InlineGroup} from "@/_ui/inline-group/InlineGroup.tsx";
 
 
 type Props = {
     data: {
-        sportCategoryId: number | null,
-        sportId: number | null,
-        sportData: Awaited<ReturnType<typeof getSportData>> | null
+        sportCategoryId: number,
+        sportId: number,
+        sportData: SportsProgrammingDataType
     };
-    setIsDopingCheckPassed: (data: any) => Promise<void>;
+    sendDataForCheck: (data: any | null) => Promise<void>;
 }
 
 export function SportsProgramming(props: Props) {
     const [data, setData] = useState<{
-        competitionStatusId: number | null;
         birthDate: string;
+        competitionStatusId: number | null;
         place: number | undefined
     }>({
-        competitionStatusId: null,
         birthDate: '',
+        competitionStatusId: null,
         place: 0
     });
 
     useEffect(() => {
-        if (data.competitionStatusId === null || data.birthDate === '' || data.place === 0)
-            return
-
         (async () => {
-            await props.setIsDopingCheckPassed({
+            if (data.competitionStatusId === null || data.birthDate === '' || data.place === 0) {
+                await props.sendDataForCheck(null)
+                return
+            }
+
+            await props.sendDataForCheck({
                 'sports_category_id': props.data.sportCategoryId,
                 'competition_status_id': data.competitionStatusId,
                 'birth_date': new Date(data.birthDate).toISOString(),
@@ -42,20 +46,18 @@ export function SportsProgramming(props: Props) {
 
     return (
         <>
-            <fieldset style={{borderRadius: '10px'}}>
-                <legend>Информация об атлете</legend>
-                <div style={{display: 'flex', flexDirection: 'row', gap: '10px'}}>
+            <Section title="Информация об атлете">
+                <InlineGroup>
                     <p style={{width: '165px'}}>Дата рождения</p>
                     <DateInput
                         data={data.birthDate}
                         setData={(date) => setData(prev => ({...prev, birthDate: date}))}
                         style={{width: '100px'}}
                     />
-                </div>
-            </fieldset>
-            <fieldset style={{marginTop: '20px', borderRadius: '10px'}}>
-                <legend>Информация о соревнованиях</legend>
-                <div style={{display: 'flex', flexDirection: 'row', gap: '10px'}}>
+                </InlineGroup>
+            </Section>
+            <Section title="Информация о соревнованиях" style={{marginTop: '20px'}}>
+                <InlineGroup>
                     <p style={{width: '165px'}}>Статус соревнований</p>
                     <Select
                         options={props.data.sportData!.competition_statuses.map(({name, ...rest}) => ({...rest, label: name}))}
@@ -63,19 +65,18 @@ export function SportsProgramming(props: Props) {
                         setSelectedOptionId={(id) => setData(prev => ({...prev, competitionStatusId: id}))}
                         style={{width: '500px'}}
                     />
-                </div>
-            </fieldset>
-            <fieldset style={{marginTop: '20px', borderRadius: '10px'}}>
-                <legend>Информация о результате</legend>
-                <div style={{display: 'flex', flexDirection: 'row', gap: '10px'}}>
+                </InlineGroup>
+            </Section>
+            <Section title="Информация о результате" style={{marginTop: '20px'}}>
+                <InlineGroup>
                     <p style={{width: '165px'}}>Занятое место</p>
                     <NumberInput
                         data={data.place}
                         setData={(place) => setData(prev => ({...prev, place: Number(place)}))}
                         style={{width: '100px'}}
                     />
-                </div>
-            </fieldset>
+                </InlineGroup>
+            </Section>
         </>
     );
 }
