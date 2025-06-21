@@ -26,9 +26,11 @@ export const useNavigation = () => {
                 const sports = await getSports();
                 state = {sports: sports};
             } else if (to.startsWith('/documents/')) {
-                const document = await getDocument(params['id'])
-                const sports = await getSports();
-                const dopingAthletes = await getDopingAthletes()
+                const [document, sports, dopingAthletes] = await Promise.all([
+                    getDocument(params['id']),
+                    getSports(),
+                    getDopingAthletes()
+                ]);
                 state = {sports: sports, document: document, dopingAthletes: dopingAthletes};
             }
 
