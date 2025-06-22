@@ -1,4 +1,6 @@
 import {getSportData} from "@/app/sport-result/_api.tsx";
+import {InlineGroup} from "@/_ui/inline-group/InlineGroup.tsx";
+
 
 type Props = {
     data: {
@@ -10,7 +12,14 @@ type Props = {
 }
 
 export function Athletics(_props: Props) {
+
+
     return (
-        <p>Легкая атлетика</p>
+        <>
+            <InlineGroup>
+                <p style={{width: '200px'}}>Спортивная дисциплина</p>
+
+            </InlineGroup>
+        </>
     );
 }
