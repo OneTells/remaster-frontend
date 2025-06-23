@@ -27,6 +27,8 @@ export function Select({
     disabled = false,
     className = '',
 }: Props) {
+    disabled = disabled || options.length === 0;
+
     const ref = useRef<HTMLDivElement>(null);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -35,7 +37,7 @@ export function Select({
             setIsOpen(false);
             return;
         }
-        
+
         const handleClickOutside = (event: MouseEvent) => {
             if (ref.current && !ref.current.contains(event.target as Node)) {
                 setIsOpen(false);
@@ -60,28 +62,28 @@ export function Select({
     const selectedOption = options.find((option) => option.id === selectedOptionId);
 
     return (
-        <div 
-            className={`${styles.container} ${className} ${disabled ? styles.disabled : ''}`} 
+        <div
+            className={`${styles.container} ${className} ${disabled ? styles.disabled : ''}`}
             style={style}
             aria-disabled={disabled}
         >
-            <div 
-                ref={ref} 
-                className={`${styles.input} ${isOpen ? styles.open : ''} ${disabled ? styles.disabled : ''}`} 
+            <div
+                ref={ref}
+                className={`${styles.input} ${isOpen ? styles.open : ''} ${disabled ? styles.disabledCursor : ''}`}
                 onClick={handleToggle}
                 aria-expanded={isOpen}
                 aria-disabled={disabled}
             >
-                <span className={`${styles['selected-value']} ${disabled ? styles.disabled : ''}`}>
+                <span className={`${styles['selected-value']} ${disabled ? styles.disabledCursor : ''}`}>
                     {selectedOption?.label || placeholder}
                 </span>
                 <div className={styles['input-suffix']}>
-                    <div className={`${styles.arrow} ${isOpen ? styles.rotated : ''} ${disabled ? styles.disabled : ''}`}>
+                    <div className={`${styles.arrow} ${isOpen ? styles.rotated : ''} ${disabled ? styles.disabledCursor : ''}`}>
                         <ShowMore style={{ width: '14px', height: '14px' }} />
                     </div>
                 </div>
             </div>
-            
+
             {isOpen && !disabled && (
                 <div className={`${styles.modal} ${isOpen ? styles.visible : ''}`}>
                     <div 

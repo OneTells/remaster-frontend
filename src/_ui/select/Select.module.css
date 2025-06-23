@@ -9,7 +9,7 @@
     --primary-color: var(--foreground);
     --text-primary: #F9FAFB;
     --text-muted: #9CA3AF;
-    --bg-color: #28292e;
+
     --border-color: var(--button);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.2), 0 4px 6px -4px rgb(0 0 0 / 0.2);
 }
@@ -17,7 +17,7 @@
 /* Input Field */
 .input {
     height: 44px;
-    background: var(--bg-color);
+    background: var(--button);
     padding: 0 12px;
     border: none;
     border-radius: var(--border-radius);
@@ -141,5 +141,9 @@
 .disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    pointer-events: none;
+    color: #666666;
+}
+
+.disabledCursor {
+    cursor: not-allowed;
 }

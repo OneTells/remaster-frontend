@@ -4,7 +4,7 @@ import {getDocuments} from "@/app/documents/_api.tsx";
 import {getDopingAthletes} from "@/app/doping-athletes/_api.tsx";
 import {getDatabases} from "@/app/databases/_api.tsx";
 import {ModuleType, SportType} from "@/app/document/_types.tsx";
-import {getDocument, getMunicipalities, getOrganizations} from "@/app/document/_api.tsx";
+import {getDocument, getModules, getMunicipalities, getOrganizations} from "@/app/document/_api.tsx";
 
 
 type DataType = (
@@ -21,6 +21,7 @@ type DataType = (
     dopingAthletes: Awaited<ReturnType<typeof getDopingAthletes>>,
     organizations: Awaited<ReturnType<typeof getOrganizations>>,
     municipalities: Awaited<ReturnType<typeof getMunicipalities>>,
+    modules: Awaited<ReturnType<typeof getModules>>,
 }
     )
 
