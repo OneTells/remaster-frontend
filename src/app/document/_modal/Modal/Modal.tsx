@@ -42,6 +42,9 @@ export function Modal({documentId, update}: Props) {
 
         const timer = setTimeout(() => {
             (async () => {
+                if (!Object.values(athleteData).every(val => val !== null && val !== ''))
+                    return;
+
                 await updateAthletes((state.athlete as AthleteType).id, athleteData as AthleteType);
                 await update();
             })();

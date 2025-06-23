@@ -1,3 +1,17 @@
+import {ModuleType} from "@/app/document/_types.tsx";
+import {getModuleData} from "@/app/sport-result/_api.tsx";
+
+
+export type SportResultDataType = {
+    module: ModuleType | null;
+    sportCategoryId: number | null;
+}
+
+export type ModuleDataType<T> = {
+    initData: Awaited<ReturnType<typeof getModuleData>> | null;
+    state: T;
+}
+
 export type CompetitionStatusType = {
     id: number;
     name: string;

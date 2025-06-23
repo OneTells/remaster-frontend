@@ -8,16 +8,18 @@ type Props = {
     style?: React.CSSProperties,
     onClick?: MouseEventHandler<any> | undefined,
     onDoubleClick?: MouseEventHandler<any> | undefined,
-    className?: string
+    className?: string,
+    disabled?: boolean
 }
 
 export function Button(props: Props) {
     return (
         <button
-            className={styles["button"] + (props.className ? ` ${props.className}` : "")}
-            {...(props.style ? {style: props.style} : {})}
-            {...(props.onClick ? {onClick: props.onClick} : {})}
-            {...(props.onDoubleClick ? {onDoubleClick: props.onDoubleClick} : {})}
+            className={`${styles["button"]} ${props.className || ''} ${props.disabled ? styles.disabled : ''}`}
+            style={props.style}
+            onClick={props.onClick}
+            onDoubleClick={props.onDoubleClick}
+            disabled={props.disabled}
         >
             {props.children}
         </button>

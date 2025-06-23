@@ -151,12 +151,14 @@ function Menu(props: { document: DocumentType, sports: SportType[] }) {
                 titleChange={titleChange}
                 sportsCategoryIdChange={sportsCategoryIdChange}
                 downloadDocument={downloadDocumentOnClick}
-                createOrder={createOrderOnClick}
                 createAthlete={createAthleteOnClick}
                 uploadAthletes={uploadAthletesOnClick}
                 downloadAthletes={downloadAthletesOnClick}
                 removeAthletes={removeAthletesOnClick}
-                createOrderOnClick={createOrderOnClick}
+                createOrder={createOrderOnClick}
+                createOrderDisabled={document.athletes.length === 0}
+                downloadAthletesDisabled={selectIDs.size === 0}
+                removeAthletesDisabled={selectIDs.size === 0}
             />
             <AthletesTable
                 athletes={document.athletes}

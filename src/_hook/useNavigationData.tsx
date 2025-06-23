@@ -24,7 +24,7 @@ type DataType = (
 }
     )
 
-export function useNavigationData<T extends DataType>(): T {
+export function useNavigationData<T extends Partial<DataType>>(): T {
     const location = useLocation();
     return location.state! as T;
 }

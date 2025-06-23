@@ -1,53 +1,53 @@
-import {useState} from "react";
-
 import {Select} from "@/_ui/select/Select.tsx";
 import {DateInput} from "@/_ui/date-input/DateInput.tsx";
 import {NumberInput} from "@/_ui/number-input/NumberInput.tsx";
-import {SportsProgrammingDataType} from "@/app/sport-result/_types.tsx";
+import {SportResultDataType, SportsProgrammingDataType} from "@/app/sport-result/_types.tsx";
 import {Section} from "@/_ui/section/Section.tsx";
 import {InlineGroup} from "@/_ui/inline-group/InlineGroup.tsx";
 import {useEffectIgnoreFirstRender} from "@/_hook/useEffectIgnoreFirstRender.tsx";
-import {ModuleType} from "@/app/document/_types.tsx";
 
+
+type DataType = {
+    birthDate: string;
+
+    competitionStatusId: number;
+    disciplineId: number;
+
+    place: number;
+}
 
 type Props = {
-    data: {
-        sportCategoryId: number,
-        module: ModuleType,
-        moduleData: SportsProgrammingDataType
-    };
+    data: { [K in keyof SportResultDataType]: NonNullable<SportResultDataType[K]> };
+    initData: SportsProgrammingDataType
+
+    state: Partial<DataType>
+    updateState: (state: Partial<DataType>) => void;
+
     sendDataForCheck: (data: any | null) => Promise<void>;
 }
 
-export function SportsProgramming(props: Props) {
-    const [data, setData] = useState<{
-        birthDate: string;
-        competitionStatusId: number | null;
-        disciplineId: number | null;
-        place: number | undefined
-    }>({
-        birthDate: '',
-        competitionStatusId: null,
-        disciplineId: null,
-        place: 0
-    });
-
+export function SportsProgramming({data, initData, state, updateState, sendDataForCheck}: Props) {
     useEffectIgnoreFirstRender(() => {
         (async () => {
-            if (data.competitionStatusId === null || data.birthDate === '' || data.place === 0) {
-                await props.sendDataForCheck(null)
+            if (
+                (state.birthDate || '') === ''
+                || state.competitionStatusId === undefined
+                || state.disciplineId === undefined
+                || (state.place || 0) === 0
+            ) {
+                await sendDataForCheck(null)
                 return
             }
 
-            await props.sendDataForCheck({
-                'sports_category_id': props.data.sportCategoryId,
-                'competition_status_id': data.competitionStatusId,
-                'discipline_id': data.disciplineId,
-                'birth_date': new Date(data.birthDate).toISOString(),
-                'place': data.place
+            await sendDataForCheck({
+                'sports_category_id': data.sportCategoryId,
+                'competition_status_id': state.competitionStatusId,
+                'discipline_id': state.disciplineId,
+                'birth_date': new Date(state.birthDate!).toISOString(),
+                'place': state.place!
             })
         })()
-    }, [data]);
+    }, [state, data.sportCategoryId]);
 
     return (
         <>
@@ -55,8 +55,8 @@ export function SportsProgramming(props: Props) {
                 <InlineGroup>
                     <p style={{width: '150px'}}>Дата рождения</p>
                     <DateInput
-                        data={data.birthDate}
-                        setData={(date) => setData(prev => ({...prev, birthDate: date}))}
+                        data={state.birthDate || ''}
+                        setData={(date) => updateState({birthDate: date})}
                         style={{width: '100px'}}
                     />
                 </InlineGroup>
@@ -65,18 +65,18 @@ export function SportsProgramming(props: Props) {
                 <InlineGroup>
                     <p style={{width: '200px'}}>Статус соревнований</p>
                     <Select
-                        options={props.data.moduleData.competition_statuses.map(({name, ...rest}) => ({...rest, label: name}))}
-                        selectedOptionId={data.competitionStatusId}
-                        setSelectedOptionId={(id) => setData(prev => ({...prev, competitionStatusId: id}))}
+                        options={initData.competition_statuses.map(({name, ...rest}) => ({...rest, label: name}))}
+                        selectedOptionId={state.competitionStatusId || null}
+                        setSelectedOptionId={(id) => updateState({competitionStatusId: id})}
                         style={{width: '400px'}}
                     />
                 </InlineGroup>
                 <InlineGroup style={{marginTop: '10px'}}>
                     <p style={{width: '200px'}}>Спортивная дисциплина</p>
                     <Select
-                        options={props.data.moduleData.disciplines.map(({name, ...rest}) => ({...rest, label: name}))}
-                        selectedOptionId={data.disciplineId}
-                        setSelectedOptionId={(id) => setData(prev => ({...prev, disciplineId: id}))}
+                        options={initData.disciplines.map(({name, ...rest}) => ({...rest, label: name}))}
+                        selectedOptionId={state.disciplineId || null}
+                        setSelectedOptionId={(id) => updateState({disciplineId: id})}
                         style={{width: '400px'}}
                     />
                 </InlineGroup>
@@ -85,8 +85,8 @@ export function SportsProgramming(props: Props) {
                 <InlineGroup>
                     <p style={{width: '150px'}}>Занятое место</p>
                     <NumberInput
-                        data={data.place}
-                        setData={(place) => setData(prev => ({...prev, place: Number(place)}))}
+                        data={state.place || 0}
+                        setData={(place) => updateState({place: Number(place)})}
                         style={{width: '100px'}}
                     />
                 </InlineGroup>

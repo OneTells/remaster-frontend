@@ -34,7 +34,7 @@ export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
         throw new Error('Unexpected mode: ' + state.mode);
 
     const createOnClick = async () => {
-        if (!Object.values(athlete).every(val => val !== null))
+        if (!Object.values(athlete).every(val => val !== null && val !== ''))
             return;
 
         await createAthlete(documentId, athlete as AthleteType, state.athlete.doping_data, state.athlete.result_data);
@@ -159,19 +159,25 @@ export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
                 <Button
                     style={{height: '44px', padding: '10px 20px', width: '100%'}}
                     onClick={async () => modalDispatch({mode: 'OPEN_CHECK_DOPING_MENU'})}
+                    disabled={athlete.birth_date === ''}
                 >
                     Проверить на допинг
                 </Button>
                 <Button
                     style={{height: '44px', padding: '10px 20px', width: '100%'}}
                     onClick={async () => modalDispatch({mode: 'OPEN_CHECK_RESULT_MENU'})}
+                    disabled={athlete.sport_id === null}
                 >
                     Проверить по результату
                 </Button>
             </div>
             {
                 !('id' in state.athlete) && (
-                    <Button style={{height: '44px', padding: '10px 20px'}} onClick={createOnClick}>
+                    <Button
+                        style={{height: '44px', padding: '10px 20px'}}
+                        onClick={createOnClick}
+                        disabled={!Object.values(athlete).every(val => val !== null && val !== '')}
+                    >
                         Создать атлета
                     </Button>
                 )

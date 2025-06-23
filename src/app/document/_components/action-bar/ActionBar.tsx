@@ -22,7 +22,10 @@ type Props = {
     uploadAthletes?: () => void;
     downloadAthletes?: () => void;
     removeAthletes?: () => void;
-    createOrderOnClick?: () => void;
+
+    createOrderDisabled?: boolean;
+    downloadAthletesDisabled?: boolean;
+    removeAthletesDisabled?: boolean;
 }
 
 export function ActionBar(props: Props) {
@@ -43,12 +46,20 @@ export function ActionBar(props: Props) {
                 />
                 <div className={styles['container']}>
                     <Tooltip text={'Выгрузить документ в файл'} position={'left'}>
-                        <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={props.downloadDocument}>
+                        <Button
+                            style={{height: '44px', width: '44px', padding: '10px'}}
+                            onClick={props.downloadDocument}
+                            disabled={props.downloadDocument === undefined}
+                        >
                             <DownloadIcon/>
                         </Button>
                     </Tooltip>
                     <Tooltip text={'Сформировать приказ'} position={'bottom'} align={'start'}>
-                        <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={props.createOrderOnClick}>
+                        <Button
+                            style={{height: '44px', width: '44px', padding: '10px'}}
+                            onClick={props.createOrder}
+                            disabled={props.createOrderDisabled !== false}
+                        >
                             <DocumentIcon/>
                         </Button>
                     </Tooltip>
@@ -63,21 +74,37 @@ export function ActionBar(props: Props) {
                     style={{width: '200px'}}
                 />
                 <div style={{display: 'flex', justifyContent: 'flex-end', flex: 1, gap: '5px'}}>
-                    <Button style={{height: '44px', padding: '10px 20px'}} onClick={props.createAthlete}>
+                    <Button
+                        style={{height: '44px', padding: '10px 20px'}}
+                        onClick={props.createAthlete}
+                        disabled={props.createAthlete === undefined}
+                    >
                         Новый участник
                     </Button>
                     <Tooltip text={'Добавить участников из файла'}>
-                        <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={props.uploadAthletes}>
+                        <Button
+                            style={{height: '44px', width: '44px', padding: '10px'}}
+                            onClick={props.uploadAthletes}
+                            disabled={props.uploadAthletes === undefined}
+                        >
                             <UploadIcon/>
                         </Button>
                     </Tooltip>
                     <Tooltip text={'Выгрузить участников в файл'}>
-                        <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={props.downloadAthletes}>
+                        <Button
+                            style={{height: '44px', width: '44px', padding: '10px'}}
+                            onClick={props.downloadAthletes}
+                            disabled={props.downloadAthletesDisabled !== false}
+                        >
                             <DownloadIcon/>
                         </Button>
                     </Tooltip>
                     <Tooltip text={'Удалить участников'} align={'start'}>
-                        <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={props.removeAthletes}>
+                        <Button
+                            style={{height: '44px', width: '44px', padding: '10px'}}
+                            onClick={props.removeAthletes}
+                            disabled={props.removeAthletesDisabled !== false}
+                        >
                             <RemoveIcon/>
                         </Button>
                     </Tooltip>

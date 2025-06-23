@@ -1,13 +1,15 @@
-import {ModuleType} from "@/app/document/_types.tsx";
-import {AthleticsResultType} from "@/app/sport-result/_types.tsx";
+import {AthleticsResultType, SportResultDataType} from "@/app/sport-result/_types.tsx";
 
+
+type DataType = {}
 
 type Props = {
-    data: {
-        sportCategoryId: number;
-        module: ModuleType;
-        moduleData: AthleticsResultType;
-    };
+    data: { [K in keyof SportResultDataType]: NonNullable<SportResultDataType[K]> };
+    initData: AthleticsResultType
+
+    state: Partial<DataType>
+    updateState: (state: Partial<DataType>) => void;
+
     sendDataForCheck: (data: any | null) => Promise<void>;
 }
 

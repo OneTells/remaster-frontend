@@ -1,133 +1,121 @@
 import {InlineGroup} from "@/_ui/inline-group/InlineGroup.tsx";
-import {ModuleType} from "@/app/document/_types.tsx";
-import {AthleticsPlaceType} from "@/app/sport-result/_types.tsx";
-import {useState} from "react";
-
+import {AthleticsPlaceType, SportResultDataType} from "@/app/sport-result/_types.tsx";
 import {Section} from "@/_ui/section/Section.tsx";
 import {DateInput} from "@/_ui/date-input/DateInput.tsx";
 import {Select} from "@/_ui/select/Select.tsx";
 import {NumberInput} from "@/_ui/number-input/NumberInput.tsx";
 import {useEffectIgnoreFirstRender} from "@/_hook/useEffectIgnoreFirstRender.tsx";
-
 import {CheckBox} from "@/app/document/_components/check-box/CheckBox.tsx";
 import {getAdditionalConditionsData} from "@/app/sport-result/_sports/athletics-place/_api.tsx";
 import {AdditionalConditionsType} from "@/app/sport-result/_sports/athletics-place/_types.tsx";
 
 
+type DataType = {
+    birthDate: string;
+
+    competitionStatusId: number;
+    disciplineId: number;
+
+    place: number;
+
+    firstCondition: boolean;
+    secondCondition: boolean;
+
+    additional_conditions: AdditionalConditionsType;
+}
+
 type Props = {
-    data: {
-        sportCategoryId: number;
-        module: ModuleType;
-        moduleData: AthleticsPlaceType;
-    };
+    data: { [K in keyof SportResultDataType]: NonNullable<SportResultDataType[K]> };
+    initData: AthleticsPlaceType
+
+    state: Partial<DataType>
+    updateState: (state: Partial<DataType>) => void;
+
     sendDataForCheck: (data: any | null) => Promise<void>;
 }
 
-export function AthleticsPlace(props: Props) {
-    const [data, setData] = useState<{
-        birthDate: string;
-        competitionStatusId: number | null;
-        disciplineId: number | null;
-        place: number;
-
-        firstCondition: boolean | null;
-        secondCondition: boolean | null;
-
-        additional_conditions: AdditionalConditionsType | null;
-    }>({
-        birthDate: '',
-        competitionStatusId: null,
-        disciplineId: null,
-        place: 0,
-
-        firstCondition: null,
-        secondCondition: null,
-
-        additional_conditions: null
-    });
-
+export function AthleticsPlace({data, initData, state, updateState, sendDataForCheck}: Props) {
     useEffectIgnoreFirstRender(() => {
         const timer = setTimeout(() => {
             (async () => {
                 if (
-                    data.birthDate === ''
-                    || data.competitionStatusId === null
-                    || data.disciplineId === null
-                    || data.place === 0
+                    (state.birthDate || '') === ''
+                    || state.competitionStatusId === undefined
+                    || state.disciplineId === undefined
+                    || (state.place || 0) === 0
                 ) {
-                    setData(prev => ({...prev, firstCondition: null, secondCondition: null}))
+                    updateState({firstCondition: undefined, secondCondition: undefined})
                     return
                 }
 
-                const additionalConditions = await getAdditionalConditionsData(props.data.module.id, {
-                    'sports_category_id': props.data.sportCategoryId,
-                    'birth_date': new Date(data.birthDate).toISOString(),
-                    'competition_status_id': data.competitionStatusId,
-                    'discipline_id': data.disciplineId,
-                    'place': data.place
-                })
+                const additionalConditions = await getAdditionalConditionsData(
+                    data.module.id,
+                    {
+                        'sports_category_id': data.sportCategoryId,
+                        'birth_date': new Date(state.birthDate!).toISOString(),
+                        'competition_status_id': state.competitionStatusId,
+                        'discipline_id': state.disciplineId,
+                        'place': state.place!
+                    }
+                )
 
-                if (data.firstCondition === null && additionalConditions.additional_conditions.length !== 0)
-                    setData(prev => ({
-                        ...prev,
-                        firstCondition: false,
-                        additional_conditions: additionalConditions
-                    }))
-                else if (data.firstCondition !== null && !(additionalConditions.additional_conditions.length !== 0))
-                    setData(prev => ({...prev, firstCondition: null, additional_condition: null}))
+                if (state.firstCondition === undefined && additionalConditions.additional_conditions.length !== 0)
+                    updateState({firstCondition: false, additional_conditions: additionalConditions})
+                else if (state.firstCondition !== undefined && !(additionalConditions.additional_conditions.length !== 0))
+                    updateState({firstCondition: undefined, additional_conditions: undefined})
 
                 if (
-                    data.secondCondition === null
-                    && props.data.moduleData.disciplines_with_minimum_number_of_participants.includes(data.disciplineId)
-                    && props.data.sportCategoryId === 1
+                    state.secondCondition === undefined
+                    && initData.disciplines_with_minimum_number_of_participants.includes(state.disciplineId)
+                    && data.sportCategoryId === 1
                 )
-                    setData(prev => ({...prev, secondCondition: false}))
+                    updateState({secondCondition: false})
                 else if (
-                    data.secondCondition !== null
+                    state.secondCondition !== undefined
                     && !(
-                        props.data.moduleData.disciplines_with_minimum_number_of_participants.includes(data.disciplineId)
-                        && props.data.sportCategoryId === 1
+                        initData.disciplines_with_minimum_number_of_participants.includes(state.disciplineId)
+                        && data.sportCategoryId === 1
                     )
                 )
-                    setData(prev => ({...prev, secondCondition: null}))
+                    updateState({secondCondition: undefined})
 
             })();
         }, 300);
 
         return () => clearTimeout(timer);
-    }, [data, props.data.sportCategoryId]);
+    }, [data, data.sportCategoryId]);
 
     useEffectIgnoreFirstRender(() => {
         const timer = setTimeout(() => {
             (async () => {
                 if (
-                    data.birthDate === ''
-                    || data.competitionStatusId === null
-                    || data.disciplineId === null
-                    || data.place === 0
+                    (state.birthDate || '') === ''
+                    || state.competitionStatusId === undefined
+                    || state.disciplineId === undefined
+                    || (state.place || 0) === 0
                 ) {
-                    await props.sendDataForCheck(null)
+                    await sendDataForCheck(null)
                     return
                 }
 
-                await props.sendDataForCheck({
-                    'sports_category_id': props.data.sportCategoryId,
+                await sendDataForCheck({
+                    'sports_category_id': data.sportCategoryId,
 
-                    'birth_date': new Date(data.birthDate).toISOString(),
+                    'birth_date': new Date(state.birthDate!).toISOString(),
 
-                    'competition_status_id': data.competitionStatusId,
-                    'discipline_id': data.disciplineId,
+                    'competition_status_id': state.competitionStatusId,
+                    'discipline_id': state.disciplineId,
 
-                    'place': data.place,
+                    'place': state.place!,
 
-                    'first_condition': data.firstCondition,
-                    'second_condition': data.secondCondition
+                    'first_condition': state.firstCondition,
+                    'second_condition': state.secondCondition
                 })
             })();
         }, 300);
 
         return () => clearTimeout(timer);
-    }, [data, props.data.sportCategoryId]);
+    }, [data, data.sportCategoryId]);
 
     return (
         <>
@@ -135,8 +123,8 @@ export function AthleticsPlace(props: Props) {
                 <InlineGroup>
                     <p style={{width: '150px'}}>Дата рождения</p>
                     <DateInput
-                        data={data.birthDate}
-                        setData={(date) => setData(prev => ({...prev, birthDate: date}))}
+                        data={state.birthDate || ''}
+                        setData={(date) => updateState({birthDate: date})}
                         style={{width: '100px'}}
                     />
                 </InlineGroup>
@@ -145,18 +133,17 @@ export function AthleticsPlace(props: Props) {
                 <InlineGroup>
                     <p style={{width: '200px'}}>Статус соревнований</p>
                     <Select
-                        options={props.data.moduleData.competition_statuses.map(({name, ...rest}) => ({...rest, label: name}))}
-                        selectedOptionId={data.competitionStatusId}
-                        setSelectedOptionId={(id) => setData(prev => ({...prev, competitionStatusId: id}))}
-                        style={{width: '400px'}}
+                        options={initData.competition_statuses.map(({name, ...rest}) => ({...rest, label: name}))}
+                        selectedOptionId={state.competitionStatusId || null}
+                        setSelectedOptionId={(id) => updateState({competitionStatusId: id})} style={{width: '400px'}}
                     />
                 </InlineGroup>
                 <InlineGroup style={{marginTop: '10px'}}>
                     <p style={{width: '200px'}}>Спортивная дисциплина</p>
                     <Select
-                        options={props.data.moduleData.disciplines.map(({name, ...rest}) => ({...rest, label: name}))}
-                        selectedOptionId={data.disciplineId}
-                        setSelectedOptionId={(id) => setData(prev => ({...prev, disciplineId: id}))}
+                        options={initData.disciplines.map(({name, ...rest}) => ({...rest, label: name}))}
+                        selectedOptionId={state.disciplineId || null}
+                        setSelectedOptionId={(id) => updateState({disciplineId: id})}
                         style={{width: '400px'}}
                     />
                 </InlineGroup>
@@ -165,54 +152,55 @@ export function AthleticsPlace(props: Props) {
                 <InlineGroup>
                     <p style={{width: '150px'}}>Занятое место</p>
                     <NumberInput
-                        data={data.place}
-                        setData={(place) => setData(prev => ({...prev, place: Number(place)}))}
+                        data={state.place || 0}
+                        setData={(place) => updateState({place: Number(place)})}
                         style={{width: '100px'}}
                     />
                 </InlineGroup>
             </Section>
             {
-                (
-                    data.firstCondition !== null
-                    || data.secondCondition !== null
-                ) && (
+                (state.firstCondition !== undefined || state.secondCondition !== undefined)
+                && (
                     <Section title="Дополнительные условия" style={{marginTop: '20px'}}>
-                        {data.firstCondition !== null && (
+                        {state.firstCondition !== undefined && (
                             <InlineGroup style={{marginLeft: '10px'}}>
                                 <CheckBox
-                                    checked={data.firstCondition}
-                                    onChange={() => setData(prev => ({...prev, firstCondition: !prev.firstCondition}))}
+                                    checked={state.firstCondition}
+                                    onChange={() => updateState({firstCondition: !state.firstCondition})}
                                 />
                                 <p style={{width: '100%'}}>{
-                                    data.additional_conditions!.additional_conditions.map(({subject_from, min_participants}, index) => {
-                                        let text: string[] = []
+                                    state.additional_conditions!.additional_conditions.map(
+                                        ({subject_from, min_participants}, index) => {
+                                            let text: string[] = []
 
-                                        if (min_participants !== null)
-                                            text.push(`Количество участников (не менее ${min_participants}).`)
+                                            if (min_participants !== null)
+                                                text.push(`Количество участников (не менее ${min_participants}).`)
 
-                                        if (subject_from !== null) {
-                                            text.push(
-                                                'Количество субъектов Российской Федерации, которые ' +
-                                                `представляют спортсмены в виде программы, не менее ${subject_from}.`
+                                            if (subject_from !== null) {
+                                                text.push(
+                                                    'Количество субъектов Российской Федерации, которые ' +
+                                                    `представляют спортсмены в виде программы, не менее ${subject_from}.`
+                                                )
+                                            }
+
+                                            return (
+                                                <>
+                                                    {index !== 0 && <><br/><br/>ИЛИ<br/><br/></>}
+                                                    <span key={index}>
+                                                        {state.additional_conditions!.additional_conditions.length === 1 ? '' : `${index + 1}.`}
+                                                        {text.join(' ')}
+                                                    </span>
+                                                </>
                                             )
-                                        }
-
-                                        return (<>
-                                            {index !== 0 && <><br/><br/>ИЛИ<br/><br/></>}
-                                            <span key={index}>
-                                                {data.additional_conditions!.additional_conditions.length === 1 ? '' : `${index + 1}.`}
-                                                {text.join(' ')}
-                                            </span>
-                                        </>)
-                                    })
+                                        })
                                 }</p>
                             </InlineGroup>
                         )}
-                        {data.secondCondition !== null && (
+                        {state.secondCondition !== undefined && (
                             <InlineGroup style={{marginLeft: '10px'}}>
                                 <CheckBox
-                                    checked={data.secondCondition}
-                                    onChange={() => setData(prev => ({...prev, secondCondition: !prev.secondCondition}))}
+                                    checked={state.secondCondition}
+                                    onChange={() => updateState({secondCondition: !state.secondCondition})}
                                 />
                                 <p style={{width: '100%'}}>
                                     Не менее пяти участников, имеющих не ниже КМС
@@ -221,7 +209,6 @@ export function AthleticsPlace(props: Props) {
                         )}
                     </Section>
                 )
-
             }
         </>
     );

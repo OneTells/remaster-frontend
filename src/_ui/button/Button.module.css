@@ -16,3 +16,9 @@
 .button:hover {
     background: var(--element-hover);
 }
+
+.button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    color: #666666;
+}

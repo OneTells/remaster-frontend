@@ -66,8 +66,6 @@ export async function createAthlete(
     dopingCheckerData: DopingCheckerType,
     resultCheckerData: ResultCheckerType
 ): Promise<number> {
-    console.log(dopingCheckerData)
-
     const response = await fetch(
         `${API_URL}/documents/${documentId}/athletes`,
         {

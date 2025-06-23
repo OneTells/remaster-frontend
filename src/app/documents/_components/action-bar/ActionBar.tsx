@@ -56,12 +56,20 @@ export function ActionBar(props: Props) {
                 Новый документ
             </Button>
             <Tooltip text={'Загрузить из файла'} position={'bottom'} width={70}>
-                <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={uploadDocument}>
+                <Button
+                    style={{height: '44px', width: '44px', padding: '10px'}}
+                    onClick={uploadDocument}
+                    disabled={props.selectIDs.size === 0}
+                >
                     <UploadIcon/>
                 </Button>
             </Tooltip>
             <Tooltip text={'Удалить документы'} position={'bottom'} width={70} align={'start'}>
-                <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={removeDocument}>
+                <Button
+                    style={{height: '44px', width: '44px', padding: '10px'}}
+                    onClick={removeDocument}
+                    disabled={props.selectIDs.size === 0}
+                >
                     <RemoveIcon/>
                 </Button>
             </Tooltip>
