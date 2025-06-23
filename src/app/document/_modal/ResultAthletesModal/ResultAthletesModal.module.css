@@ -1,0 +1,129 @@
+/* ResultAthletesModal.module.css */
+.container {
+    width: 80vw;
+    height: 75vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 0 15px;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+
+    margin-top: 5px;
+}
+
+.mainContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /*overflow: auto;*/
+    /*padding: 0 15px;*/
+}
+
+.footer {
+    padding: 16px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+.footerLeft {
+    margin-right: auto;
+}
+
+.button {
+    height: 44px;
+    padding: 10px 20px;
+}
+
+/* Existing navigation styles */
+.navSidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-radius: 12px;
+    height: 100%;
+}
+
+.navItem {
+    width: 40px;
+    height: 40px;
+
+    min-width: 40px;
+    min-height: 40px;
+
+    border-radius: 8px;
+    background-color: #2d2e33;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s;
+    padding: 0;
+}
+
+.navItem:hover {
+    background-color: #4A5568;
+}
+
+.navItem.active {
+    background-color: #4a6cf5;
+}
+
+.addButton {
+    background-color: transparent;
+    border: 1px dashed #4A5568;
+    color: #718096;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.addButton:hover {
+    background-color: rgba(74, 85, 104, 0.2);
+    color: white;
+}
+
+.navSidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-radius: 12px;
+    height: 100%;
+    overflow-y: auto;  /* Enable vertical scrolling */
+    padding-right: 8px;  /* Add some padding for scrollbar */
+    min-width: 56px;  /* Ensure minimum width */
+}
+
+/* Style the scrollbar */
+.navSidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.navSidebar::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+}
+
+.navSidebar::-webkit-scrollbar-thumb {
+    background-color: #4A5568;
+    border-radius: 3px;
+}
+
+.navSidebar::-webkit-scrollbar-thumb:hover {
+    background-color: #718096;
+}
+
+/*!* Ensure the add button stays at the bottom *!*/
+/*.navSidebar > button:last-child {*/
+/*    margin-top: auto;*/
+/*    margin-bottom: 8px;*/
+/*}*/
