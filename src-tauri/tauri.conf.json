@@ -37,13 +37,13 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
+    "resources": {
+      "../libraries/_internal": "_internal/"
+    },
     "externalBin": [
       "../binaries/api"
     ],
     "windows": {
-      "webviewInstallMode": {
-        "type": "offlineInstaller"
-      },
       "nsis": {
         "installerIcon": "icons/icon.ico",
         "languages": [

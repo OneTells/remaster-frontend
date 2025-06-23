@@ -6,17 +6,15 @@ import {useNavigation} from "@/_hook/useNavigation.tsx";
 import {createDocument} from "@/app/new-document/_api.tsx";
 import {AthletesTable} from "@/app/document/_components/athletes-table/AthletesTable.tsx";
 import {ActionBar} from "@/app/document/_components/action-bar/ActionBar.tsx";
-import {ActionBarDocumentType, SportType} from "@/app/document/_types.tsx";
-import {useNavigationData} from "@/_hook/useNavigationData.tsx";
+import {ActionBarDocumentType} from "@/app/document/_types.tsx";
 import {useEffectIgnoreFirstRender} from "@/_hook/useEffectIgnoreFirstRender.tsx";
 
 
 export const NewDocumentPage = memo(function NewDocumentPage() {
-    const data = useNavigationData<{ sports: SportType[] }>();
-    return <Menu sports={data.sports}/>
+    return <Menu/>
 })
 
-function Menu({sports}: { sports: SportType[] }) {
+function Menu() {
     const navigate = useNavigation();
 
     const [document, setDocument] = useState<ActionBarDocumentType>({
@@ -54,7 +52,6 @@ function Menu({sports}: { sports: SportType[] }) {
                 setSelectIDs={() => {
                 }}
                 athletes={[]}
-                sports={sports}
             />
         </>
     );

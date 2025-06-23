@@ -1,28 +1,29 @@
+import {InlineGroup} from "@/_ui/inline-group/InlineGroup.tsx";
+import {ModuleType} from "@/app/document/_types.tsx";
+import {AthleticsPlaceType} from "@/app/sport-result/_types.tsx";
 import {useState} from "react";
 
+import {Section} from "@/_ui/section/Section.tsx";
 import {DateInput} from "@/_ui/date-input/DateInput.tsx";
 import {Select} from "@/_ui/select/Select.tsx";
 import {NumberInput} from "@/_ui/number-input/NumberInput.tsx";
-import {CheckBox} from "@/app/document/_components/check-box/CheckBox.tsx";
-import {ComputerSportsType} from "@/app/sport-result/_types.tsx";
-import {Section} from "@/_ui/section/Section";
-import {InlineGroup} from "@/_ui/inline-group/InlineGroup";
-import {getAdditionalConditionsData} from "@/app/sport-result/_sports/computer-sports/_api.tsx";
-import {AdditionalConditionsType} from "@/app/sport-result/_sports/computer-sports/_types.tsx";
 import {useEffectIgnoreFirstRender} from "@/_hook/useEffectIgnoreFirstRender.tsx";
-import {ModuleType} from "@/app/document/_types.tsx";
+
+import {CheckBox} from "@/app/document/_components/check-box/CheckBox.tsx";
+import {getAdditionalConditionsData} from "@/app/sport-result/_sports/athletics-place/_api.tsx";
+import {AdditionalConditionsType} from "@/app/sport-result/_sports/athletics-place/_types.tsx";
 
 
 type Props = {
     data: {
         sportCategoryId: number;
         module: ModuleType;
-        moduleData: ComputerSportsType;
+        moduleData: AthleticsPlaceType;
     };
     sendDataForCheck: (data: any | null) => Promise<void>;
 }
 
-export function ComputerSports(props: Props) {
+export function AthleticsPlace(props: Props) {
     const [data, setData] = useState<{
         birthDate: string;
         competitionStatusId: number | null;
@@ -31,7 +32,6 @@ export function ComputerSports(props: Props) {
 
         firstCondition: boolean | null;
         secondCondition: boolean | null;
-        thirdCondition: boolean | null;
 
         additional_conditions: AdditionalConditionsType | null;
     }>({
@@ -42,7 +42,6 @@ export function ComputerSports(props: Props) {
 
         firstCondition: null,
         secondCondition: null,
-        thirdCondition: null,
 
         additional_conditions: null
     });
@@ -56,12 +55,13 @@ export function ComputerSports(props: Props) {
                     || data.disciplineId === null
                     || data.place === 0
                 ) {
-                    setData(prev => ({...prev, firstCondition: null, secondCondition: null, thirdCondition: null}))
+                    setData(prev => ({...prev, firstCondition: null, secondCondition: null}))
                     return
                 }
 
                 const additionalConditions = await getAdditionalConditionsData(props.data.module.id, {
                     'sports_category_id': props.data.sportCategoryId,
+                    'birth_date': new Date(data.birthDate).toISOString(),
                     'competition_status_id': data.competitionStatusId,
                     'discipline_id': data.disciplineId,
                     'place': data.place
@@ -78,19 +78,18 @@ export function ComputerSports(props: Props) {
 
                 if (
                     data.secondCondition === null
-                    && props.data.moduleData.disciplines_with_mandatory_participation.includes(data.disciplineId)
+                    && props.data.moduleData.disciplines_with_minimum_number_of_participants.includes(data.disciplineId)
+                    && props.data.sportCategoryId === 1
                 )
                     setData(prev => ({...prev, secondCondition: false}))
                 else if (
                     data.secondCondition !== null
-                    && !props.data.moduleData.disciplines_with_mandatory_participation.includes(data.disciplineId)
+                    && !(
+                        props.data.moduleData.disciplines_with_minimum_number_of_participants.includes(data.disciplineId)
+                        && props.data.sportCategoryId === 1
+                    )
                 )
                     setData(prev => ({...prev, secondCondition: null}))
-
-                if (data.thirdCondition === null && data.place! >= 9 && props.data.sportCategoryId === 2)
-                    setData(prev => ({...prev, thirdCondition: false}))
-                else if (data.thirdCondition !== null && !(data.place! >= 9 && props.data.sportCategoryId === 2))
-                    setData(prev => ({...prev, thirdCondition: null}))
 
             })();
         }, 300);
@@ -122,8 +121,7 @@ export function ComputerSports(props: Props) {
                     'place': data.place,
 
                     'first_condition': data.firstCondition,
-                    'second_condition': data.secondCondition,
-                    'third_condition': data.thirdCondition
+                    'second_condition': data.secondCondition
                 })
             })();
         }, 300);
@@ -177,7 +175,6 @@ export function ComputerSports(props: Props) {
                 (
                     data.firstCondition !== null
                     || data.secondCondition !== null
-                    || data.thirdCondition !== null
                 ) && (
                     <Section title="Дополнительные условия" style={{marginTop: '20px'}}>
                         {data.firstCondition !== null && (
@@ -187,23 +184,17 @@ export function ComputerSports(props: Props) {
                                     onChange={() => setData(prev => ({...prev, firstCondition: !prev.firstCondition}))}
                                 />
                                 <p style={{width: '100%'}}>{
-                                    data.additional_conditions!.additional_conditions.map(({subject, min_won_matches}, index) => {
+                                    data.additional_conditions!.additional_conditions.map(({subject_from, min_participants}, index) => {
                                         let text: string[] = []
 
-                                        if (min_won_matches !== null)
-                                            text.push(`Количество выигранных матчей (не менее ${min_won_matches}).`)
+                                        if (min_participants !== null)
+                                            text.push(`Количество участников (не менее ${min_participants}).`)
 
-                                        if (subject !== null) {
+                                        if (subject_from !== null) {
                                             text.push(
-                                                data.additional_conditions!.is_internally_subject
-                                                    ? 'Количество субъектов Российской Федерации, которые представляют спортсмены в виде программы, '
-                                                    : 'Количество стран, которые представляют спортсмены в виде программы, '
+                                                'Количество субъектов Российской Федерации, которые ' +
+                                                `представляют спортсмены в виде программы, не менее ${subject_from}.`
                                             )
-
-                                            if (subject.subject_to === null)
-                                                text[text.length - 1] += `не менее ${subject.subject_from}.`
-                                            else
-                                                text[text.length - 1] += `${subject.subject_from}-${subject.subject_to}.`
                                         }
 
                                         return (<>
@@ -224,21 +215,7 @@ export function ComputerSports(props: Props) {
                                     onChange={() => setData(prev => ({...prev, secondCondition: !prev.secondCondition}))}
                                 />
                                 <p style={{width: '100%'}}>
-                                    В составе команды необходимо участвовать не менее, чем в 100% матчей,
-                                    проведенных командой, в соответствующем спортивном соревновании.
-                                </p>
-                            </InlineGroup>
-                        )}
-                        {data.thirdCondition !== null && (
-                            <InlineGroup style={{marginLeft: '10px'}}>
-                                <CheckBox
-                                    checked={data.thirdCondition}
-                                    onChange={() => setData(prev => ({...prev, thirdCondition: !prev.thirdCondition}))}
-                                />
-                                <p style={{width: '100%'}}>
-                                    Требование за 9 место и ниже, если за такие места в спортивном соревновании
-                                    предусмотрены спортивные разряды, выполняется при участии в соответствующем
-                                    виде программы не менее 64 спортсменов.
+                                    Не менее пяти участников, имеющих не ниже КМС
                                 </p>
                             </InlineGroup>
                         )}

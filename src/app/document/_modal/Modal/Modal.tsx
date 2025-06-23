@@ -7,8 +7,9 @@ import {AthleteType} from "@/app/document/_types.tsx";
 import {WindowCloseIcon} from "@/_assets/window_close_icon.tsx";
 import {AthleteModal} from "@/app/document/_modal/AthleteModal/AthleteModal.tsx";
 import {DopingAthletesModal} from "@/app/document/_modal/DopingAthletesModal/DopingAthletesModal.tsx";
-import {updateAthletes} from "@/app/document/_api.tsx";
+import {updateAthletes, updateCheckerData} from "@/app/document/_api.tsx";
 import {useEffectIgnoreFirstRender} from "@/_hook/useEffectIgnoreFirstRender.tsx";
+import {ResultAthletesModal} from "@/app/document/_modal/ResultAthletesModal/ResultAthletesModal.tsx";
 
 
 type Props = {
@@ -44,10 +45,36 @@ export function Modal({documentId, update}: Props) {
                 await updateAthletes((state.athlete as AthleteType).id, athleteData as AthleteType);
                 await update();
             })();
-        }, 500);
+        }, 300);
 
         return () => clearTimeout(timer);
     }, [athleteData]);
+
+    useEffectIgnoreFirstRender(() => {
+        if (!('id' in state.athlete)) return;
+
+        const timer = setTimeout(() => {
+            (async () => {
+                await updateCheckerData('doping', (state.athlete as AthleteType).id, state.athlete.doping_data);
+                await update();
+            })();
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [state.athlete.doping_data]);
+
+    useEffectIgnoreFirstRender(() => {
+        if (!('id' in state.athlete)) return;
+
+        const timer = setTimeout(() => {
+            (async () => {
+                await updateCheckerData('result', (state.athlete as AthleteType).id, state.athlete.doping_data);
+                await update();
+            })();
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [state.athlete.doping_data]);
 
     return (
         <div className={styles["modal"]} ref={ref}>
@@ -67,6 +94,12 @@ export function Modal({documentId, update}: Props) {
                 }
                 {
                     (state.mode === 'CHECK_DOPING_MENU') && <DopingAthletesModal
+                        athlete={athleteData}
+                        setAthlete={setAthleteData}
+                    />
+                }
+                {
+                    (state.mode === 'CHECK_RESULT_MENU') && <ResultAthletesModal
                         athlete={athleteData}
                         setAthlete={setAthleteData}
                     />

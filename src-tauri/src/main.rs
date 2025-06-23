@@ -1,7 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::sync::{Arc, Mutex};
-use tauri::{Manager, RunEvent, process::current_binary, Env};
+use tauri::{Manager, RunEvent};
 use tauri_plugin_shell::process::{CommandChild};
 use tauri_plugin_shell::ShellExt;
 
@@ -16,14 +16,11 @@ fn spawn_sidecar(app_handle: tauri::AppHandle) -> Result<(), String> {
         }
     }
 
-    let current_binary_path = current_binary(&Env::default()).unwrap();
-
     // Spawn sidecar
     let (mut _rx, child) = app_handle
         .shell()
         .sidecar("api")
         .map_err(|e| e.to_string())?
-        .args(["--work-directory", current_binary_path.to_str().expect("REASON")])
         .spawn()
         .map_err(|e| e.to_string())?;
 

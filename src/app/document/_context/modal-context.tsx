@@ -2,7 +2,7 @@
 
 import React, {createContext, ReactNode, useReducer} from 'react'
 
-import {AthleteType, DopingCheckerType, ResultCheckerType} from "@/app/document/_types.tsx";
+import {AthleteType, DopingCheckerType} from "@/app/document/_types.tsx";
 
 
 type NullableFields<T, K extends keyof T> = {
@@ -10,8 +10,8 @@ type NullableFields<T, K extends keyof T> = {
 };
 
 export type DefaultAthleteType = (
-    Omit<AthleteType, 'id' | 'sport_id' | 'is_sports_category_granted' | 'is_doping_check_passed'>
-    & NullableFields<AthleteType, 'sport_id' | 'is_sports_category_granted' | 'is_doping_check_passed'>
+    Omit<AthleteType, 'id' | 'sport_id' | 'is_sports_category_granted' | 'is_doping_check_passed' | 'municipality_id' | 'organization_id'>
+    & NullableFields<AthleteType, 'sport_id' | 'is_sports_category_granted' | 'is_doping_check_passed' | 'municipality_id' | 'organization_id'>
     );
 
 type State = {
@@ -20,11 +20,9 @@ type State = {
 } | {
     mode: 'CHECK_DOPING_MENU';
     athlete: AthleteType | DefaultAthleteType
-    dopingCheckerData: DopingCheckerType;
 } | {
     mode: 'CHECK_RESULT_MENU';
     athlete: AthleteType | DefaultAthleteType
-    resultCheckerData: ResultCheckerType;
 } | {
     mode: 'CLOSE';
 };
@@ -38,10 +36,8 @@ type Action = {
     mode: 'OPEN_EDIT_MENU';
 } | {
     mode: 'OPEN_CHECK_DOPING_MENU';
-    dopingCheckerData: DopingCheckerType;
 } | {
     mode: 'OPEN_CHECK_RESULT_MENU';
-    resultCheckerData: ResultCheckerType;
 } | {
     mode: 'CLOSE';
 } | {
@@ -59,7 +55,7 @@ function reducer(state: State, action: Action): State {
     if (action.mode === 'OPEN_MODAL') {
         return {
             mode: 'EDIT_MENU',
-            athlete: action.athlete
+            athlete: action.athlete,
         }
     } else if (action.mode === 'CREATE_NEW_ATHLETE') {
         return {
@@ -68,10 +64,12 @@ function reducer(state: State, action: Action): State {
                 full_name: '',
                 birth_date: '',
                 sport_id: null,
-                municipality: '',
-                organization: '',
+                municipality_id: null,
+                organization_id: null,
                 is_sports_category_granted: null,
                 is_doping_check_passed: null,
+                doping_data: {full_name: '', selectId: null},
+                result_data: {}
             }
         }
     } else if (action.mode === 'OPEN_EDIT_MENU') {
@@ -88,8 +86,7 @@ function reducer(state: State, action: Action): State {
 
         return {
             mode: 'CHECK_DOPING_MENU',
-            athlete: state.athlete,
-            dopingCheckerData: action.dopingCheckerData
+            athlete: state.athlete
         }
     } else if (action.mode === 'OPEN_CHECK_RESULT_MENU') {
         if (state.mode !== 'EDIT_MENU')
@@ -97,8 +94,7 @@ function reducer(state: State, action: Action): State {
 
         return {
             mode: 'CHECK_RESULT_MENU',
-            athlete: state.athlete,
-            resultCheckerData: action.resultCheckerData
+            athlete: state.athlete
         }
     } else if (action.mode === 'CLOSE') {
         return action
@@ -108,8 +104,7 @@ function reducer(state: State, action: Action): State {
 
         return {
             mode: 'CHECK_DOPING_MENU',
-            athlete: state.athlete,
-            dopingCheckerData: action.dopingCheckerData
+            athlete: {...state.athlete, doping_data: action.dopingCheckerData},
         }
     }
 

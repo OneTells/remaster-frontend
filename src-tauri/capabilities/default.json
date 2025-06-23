@@ -15,20 +15,12 @@
     "dialog:allow-open",
     "dialog:default",
     {
-      "identifier": "shell:allow-execute",
+      "identifier": "opener:allow-open-path",
       "allow": [
         {
-          "args": [
-            "--work-directory",
-            {
-              "validator": "\\S+"
-            }
-          ],
-          "name": "api",
-          "sidecar": true
+          "path": "$RESOURCE/**/*"
         }
       ]
-    },
-    "shell:allow-open"
+    }
   ]
 }

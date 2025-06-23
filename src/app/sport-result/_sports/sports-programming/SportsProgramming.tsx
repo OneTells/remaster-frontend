@@ -7,13 +7,14 @@ import {SportsProgrammingDataType} from "@/app/sport-result/_types.tsx";
 import {Section} from "@/_ui/section/Section.tsx";
 import {InlineGroup} from "@/_ui/inline-group/InlineGroup.tsx";
 import {useEffectIgnoreFirstRender} from "@/_hook/useEffectIgnoreFirstRender.tsx";
+import {ModuleType} from "@/app/document/_types.tsx";
 
 
 type Props = {
     data: {
         sportCategoryId: number,
-        sportId: number,
-        sportData: SportsProgrammingDataType
+        module: ModuleType,
+        moduleData: SportsProgrammingDataType
     };
     sendDataForCheck: (data: any | null) => Promise<void>;
 }
@@ -22,10 +23,12 @@ export function SportsProgramming(props: Props) {
     const [data, setData] = useState<{
         birthDate: string;
         competitionStatusId: number | null;
+        disciplineId: number | null;
         place: number | undefined
     }>({
         birthDate: '',
         competitionStatusId: null,
+        disciplineId: null,
         place: 0
     });
 
@@ -39,6 +42,7 @@ export function SportsProgramming(props: Props) {
             await props.sendDataForCheck({
                 'sports_category_id': props.data.sportCategoryId,
                 'competition_status_id': data.competitionStatusId,
+                'discipline_id': data.disciplineId,
                 'birth_date': new Date(data.birthDate).toISOString(),
                 'place': data.place
             })
@@ -61,10 +65,19 @@ export function SportsProgramming(props: Props) {
                 <InlineGroup>
                     <p style={{width: '200px'}}>Статус соревнований</p>
                     <Select
-                        options={props.data.sportData!.competition_statuses.map(({name, ...rest}) => ({...rest, label: name}))}
+                        options={props.data.moduleData.competition_statuses.map(({name, ...rest}) => ({...rest, label: name}))}
                         selectedOptionId={data.competitionStatusId}
                         setSelectedOptionId={(id) => setData(prev => ({...prev, competitionStatusId: id}))}
-                        style={{width: '500px'}}
+                        style={{width: '400px'}}
+                    />
+                </InlineGroup>
+                <InlineGroup style={{marginTop: '10px'}}>
+                    <p style={{width: '200px'}}>Спортивная дисциплина</p>
+                    <Select
+                        options={props.data.moduleData.disciplines.map(({name, ...rest}) => ({...rest, label: name}))}
+                        selectedOptionId={data.disciplineId}
+                        setSelectedOptionId={(id) => setData(prev => ({...prev, disciplineId: id}))}
+                        style={{width: '400px'}}
                     />
                 </InlineGroup>
             </Section>

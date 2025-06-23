@@ -48,6 +48,7 @@
 .hierarchical-text-container {
     box-sizing: border-box;
     width: 100%;
+    max-width: 342px;
     color: white;
 }
 

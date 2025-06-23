@@ -5,11 +5,14 @@ export type AthleteType = {
     birth_date: string,
     sport_id: number,
 
-    municipality: string,
-    organization: string,
+    municipality_id: number,
+    organization_id: number,
 
     is_sports_category_granted: boolean,
     is_doping_check_passed: boolean
+
+    doping_data: DopingCheckerType,
+    result_data: ResultCheckerType
 }
 
 export type DocumentType = {
@@ -34,6 +37,21 @@ export type DopingCheckerType = {
     selectId: number | null;
 }
 
-export type ResultCheckerType = {
+export type ResultCheckerType = {}
 
+export type ModuleType = {
+    id: number,
+    title: string,
+    sport_id: number
+}
+
+export type OrganizationType = {
+    id: number,
+    title: string,
+    sport_id: number
+}
+
+export type MunicipalityType = {
+    id: number,
+    title: string,
 }

@@ -160,7 +160,6 @@ function Menu(props: { document: DocumentType, sports: SportType[] }) {
             />
             <AthletesTable
                 athletes={document.athletes}
-                sports={props.sports}
                 selectIDs={selectIDs}
                 setSelectIDs={setSelectIDs}
                 athleteModalOpen={athleteModalOpen}

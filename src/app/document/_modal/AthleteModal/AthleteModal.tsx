@@ -3,8 +3,8 @@ import styles from "./AthleteModal.module.css";
 import React, {use} from "react";
 
 import {DefaultAthleteType, ModalContext} from "@/app/document/_context/modal-context.tsx";
-import {AthleteType, DocumentType, SportType} from "@/app/document/_types.tsx";
-import {createAthlete, getDopingCheckerData, getResultCheckerData} from "@/app/document/_api.tsx";
+import {AthleteType, DocumentType, MunicipalityType, OrganizationType, SportType} from "@/app/document/_types.tsx";
+import {createAthlete} from "@/app/document/_api.tsx";
 import {Select} from "@/_ui/select/Select.tsx";
 import {Button} from "@/_ui/button/Button.tsx";
 import {useNavigationData} from "@/_hook/useNavigationData.tsx";
@@ -20,7 +20,13 @@ type Props = {
 }
 
 export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
-    const data = useNavigationData<{ sports: SportType[], document: DocumentType, dopingAthletes: DopingAthleteType[] }>();
+    const data = useNavigationData<{
+        sports: SportType[],
+        document: DocumentType,
+        dopingAthletes: DopingAthleteType[],
+        organizations: OrganizationType[],
+        municipalities: MunicipalityType[]
+    }>();
 
     const [state, modalDispatch] = use(ModalContext);
 
@@ -31,7 +37,7 @@ export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
         if (!Object.values(athlete).every(val => val !== null))
             return;
 
-        await createAthlete(documentId, athlete as AthleteType);
+        await createAthlete(documentId, athlete as AthleteType, state.athlete.doping_data, state.athlete.result_data);
         await update();
 
         modalDispatch({mode: 'CLOSE'});
@@ -82,22 +88,27 @@ export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
                         образование
                     </p>
                     <div className={styles["hierarchical-text-container"]}>
-                        <input
-                            value={athlete.municipality}
-                            type={styles["text"]}
-                            className={styles["input-field-with-border-radius"]}
-                            onChange={(e) => setAthlete(prev => ({...prev, 'municipality': e.target.value}))}
+                        <Select
+                            options={data.municipalities.map(({title, ...rest}) => ({...rest, label: title}))}
+                            selectedOptionId={athlete.municipality_id}
+                            setSelectedOptionId={(id) => setAthlete(prev => ({...prev, 'municipality_id': id}))}
+                            style={{width: '100%'}}
                         />
                     </div>
                 </div>
                 <div className={styles["info-block"]}>
                     <p className={styles["text"]}>Организация</p>
                     <div className={styles["hierarchical-text-container"]}>
-                        <input
-                            value={athlete.organization}
-                            type={styles["text"]}
-                            className={styles["input-field-with-border-radius"]}
-                            onChange={(e) => setAthlete(prev => ({...prev, 'organization': e.target.value}))}
+                        <Select
+                            options={
+                                data.organizations
+                                    .filter(org => org.sport_id === athlete.sport_id)
+                                    .map(({title, ...rest}) => ({...rest, label: title}))
+                            }
+                            selectedOptionId={athlete.organization_id}
+                            setSelectedOptionId={(id) => setAthlete(prev => ({...prev, 'organization_id': id}))}
+                            style={{width: '100%'}}
+                            disabled={athlete.sport_id === null}
                         />
                     </div>
                 </div>
@@ -147,40 +158,13 @@ export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
             <div style={{flexDirection: 'row', display: 'flex', gap: '10px', marginTop: '5px'}}>
                 <Button
                     style={{height: '44px', padding: '10px 20px', width: '100%'}}
-                    onClick={async () => {
-                        let dopingCheckerData = null;
-
-                        if (('id' in state.athlete)) {
-                            dopingCheckerData = await getDopingCheckerData((athlete as AthleteType).id)
-                        }
-
-                        if (dopingCheckerData === null) {
-                            dopingCheckerData = {full_name: '', selectId: null}
-                        }
-
-                        modalDispatch({
-                            mode: 'OPEN_CHECK_DOPING_MENU',
-                            dopingCheckerData: dopingCheckerData
-                        })
-                    }}
+                    onClick={async () => modalDispatch({mode: 'OPEN_CHECK_DOPING_MENU'})}
                 >
                     Проверить на допинг
                 </Button>
                 <Button
                     style={{height: '44px', padding: '10px 20px', width: '100%'}}
-                    onClick={async () => {
-                        let resultCheckerData = null;
-
-                        if (('id' in state.athlete)) {
-                            resultCheckerData = await getResultCheckerData((athlete as AthleteType).id)
-                        }
-
-                        if (resultCheckerData === null) {
-                            resultCheckerData = {}
-                        }
-
-                        modalDispatch({mode: 'OPEN_CHECK_RESULT_MENU', resultCheckerData: resultCheckerData});
-                    }}
+                    onClick={async () => modalDispatch({mode: 'OPEN_CHECK_RESULT_MENU'})}
                 >
                     Проверить по результату
                 </Button>

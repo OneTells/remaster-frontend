@@ -23,13 +23,16 @@ export function Databases(props: { data: DatabasesType[] }) {
         return acc;
     }, {});
 
-    const download = (slug: string, title: string, filters: DialogFilter[]) => {
+    const download = (slug: string, fileName: string | null, filters: DialogFilter[]) => {
         return (
             async () => {
+                if (fileName === null)
+                    return
+
                 const path = await save(
                     {
                         title: 'Сохранить как',
-                        defaultPath: title,
+                        defaultPath: fileName,
                         filters: filters
                     }
                 );
@@ -73,42 +76,45 @@ export function Databases(props: { data: DatabasesType[] }) {
                 date={dataById['orders'].date}
                 title={dataById['orders'].title}
                 upload={upload('orders', [{name: 'Документ Word', extensions: ['docx']}])}
-                download={download('orders', dataById['orders'].title, [{name: 'Документ Word', extensions: ['docx']}])}
+                download={download('orders', dataById['orders'].file_name, [{name: 'Документ Word', extensions: ['docx']}])}
             />
             <Panel
                 date={dataById['doping-athletes'].date}
                 title={dataById['doping-athletes'].title}
-                upload={upload('doping-athletes', [{name: 'Документ Excel', extensions: ['xls', 'xlsx']}])}
+                upload={upload('doping-athletes', [{name: 'Документ Excel', extensions: ['xlsx']}])}
                 download={
                     download(
-                        'doping-athletes', dataById['doping-athletes'].title,
-                        [{name: 'Документ Excel', extensions: ['xls', 'xlsx']}]
+                        'doping-athletes', dataById['doping-athletes'].file_name,
+                        [{name: 'Документ Excel', extensions: ['xlsx']}]
                     )
                 }
             />
             <Panel
                 date={dataById['athletics'].date}
                 title={dataById['athletics'].title}
-                upload={() => {
-                }}
-                download={() => {
-                }}
+                upload={upload('athletics', [{name: 'Документ Excel', extensions: ['xlsx', 'xls']}])}
+                download={download(
+                    'athletics', dataById['athletics'].file_name,
+                    [{name: 'Документ Excel', extensions: ['xlsx', 'xls']}]
+                )}
             />
             <Panel
                 date={dataById['programming'].date}
                 title={dataById['programming'].title}
-                upload={() => {
-                }}
-                download={() => {
-                }}
+                upload={upload('programming', [{name: 'Документ Excel', extensions: ['xls', 'xlsx']}])}
+                download={download(
+                    'programming', dataById['programming'].file_name,
+                    [{name: 'Документ Excel', extensions: ['xlsx', 'xls']}]
+                )}
             />
             <Panel
                 date={dataById['computer-sport'].date}
                 title={dataById['computer-sport'].title}
-                upload={() => {
-                }}
-                download={() => {
-                }}
+                upload={upload('computer-sport', [{name: 'Документ Excel', extensions: ['xls', 'xlsx']}])}
+                download={download(
+                    'computer-sport', dataById['computer-sport'].file_name,
+                    [{name: 'Документ Excel', extensions: ['xlsx', 'xls']}]
+                )}
             />
         </div>
     );

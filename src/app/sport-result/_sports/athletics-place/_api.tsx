@@ -1,5 +1,5 @@
-import {AdditionalConditionsType} from "@/app/sport-result/_sports/computer-sports/_types.tsx";
 import {API_URL} from "@/config.tsx";
+import {AdditionalConditionsType} from "@/app/sport-result/_sports/athletics-place/_types.tsx";
 
 
 export async function getAdditionalConditionsData(moduleId: number, data: any): Promise<AdditionalConditionsType> {

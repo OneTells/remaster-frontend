@@ -3,7 +3,7 @@ import {useNavigate} from "react-router";
 import {getDocuments} from "@/app/documents/_api.tsx";
 import {getDopingAthletes} from "@/app/doping-athletes/_api.tsx";
 import {getDatabases} from "@/app/databases/_api.tsx";
-import {getDocument, getSports} from "@/app/document/_api.tsx";
+import {getDocument, getModules, getMunicipalities, getOrganizations, getSports} from "@/app/document/_api.tsx";
 
 
 export const useNavigation = () => {
@@ -20,18 +20,25 @@ export const useNavigation = () => {
             } else if (to === '/databases') {
                 state = await getDatabases()
             } else if (to === '/documents/new') {
-                const sports = await getSports();
-                state = {sports: sports};
+                state = {};
             } else if (to === '/sport-result') {
-                const sports = await getSports();
-                state = {sports: sports};
+                const modules = await getModules();
+                state = {modules: modules};
             } else if (to.startsWith('/documents/')) {
-                const [document, sports, dopingAthletes] = await Promise.all([
+                const [document, sports, dopingAthletes, organizations, municipalities] = await Promise.all([
                     getDocument(params['id']),
                     getSports(),
-                    getDopingAthletes()
+                    getDopingAthletes(),
+                    getOrganizations(),
+                    getMunicipalities()
                 ]);
-                state = {sports: sports, document: document, dopingAthletes: dopingAthletes};
+                state = {
+                    sports: sports,
+                    document: document,
+                    dopingAthletes: dopingAthletes,
+                    organizations: organizations,
+                    municipalities: municipalities
+                };
             }
 
             await navigate(to, {state: state});

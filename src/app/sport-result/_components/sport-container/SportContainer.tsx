@@ -1,15 +1,21 @@
 import styles from "./SportContainer.module.css"
 
-import React from "react";
+import React, {useEffect} from "react";
 
-import {Athletics} from "@/app/sport-result/_sports/athletics/Athletics.tsx";
+import {AthleticsPlace} from "@/app/sport-result/_sports/athletics-place/AthleticsPlace.tsx";
 import {SportsProgramming} from "@/app/sport-result/_sports/sports-programming/SportsProgramming.tsx";
-import {checkResult, getSportData} from "@/app/sport-result/_api.tsx";
+import {checkResult, getModuleData} from "@/app/sport-result/_api.tsx";
 import {ComputerSports} from "@/app/sport-result/_sports/computer-sports/ComputerSports.tsx";
+import {ModuleType} from "@/app/document/_types.tsx";
+import {AthleticsResult} from "@/app/sport-result/_sports/athletics-result/AthleticsResult.tsx";
 
 
 type Props = {
-    data: { sportCategoryId: number | null, sportId: number | null, sportData: Awaited<ReturnType<typeof getSportData>> | null };
+    data: {
+        sportCategoryId: number | null,
+        module: ModuleType | null,
+        moduleData: Awaited<ReturnType<typeof getModuleData>> | null
+    };
     setIsDopingCheckPassed: React.Dispatch<React.SetStateAction<boolean | null>>
 }
 
@@ -23,15 +29,24 @@ export function SportContainer(props: Props) {
             return
         }
 
-        const isSportsCategoryGranted = await checkResult(props.data.sportId!, data)
+        const isSportsCategoryGranted = await checkResult(props.data.module!.id, data)
         props.setIsDopingCheckPassed(isSportsCategoryGranted)
     };
 
+    useEffect(() => {
+        props.setIsDopingCheckPassed(null);
+    }, [props.data.module?.id])
+
     return (
         <div className={styles["container"]}>
-            {props.data.sportId === 1 && <Athletics data={props.data as any} sendDataForCheck={sendDataForCheck}/>}
-            {props.data.sportId === 2 && <SportsProgramming data={props.data as any} sendDataForCheck={sendDataForCheck}/>}
-            {props.data.sportId === 3 && <ComputerSports data={props.data as any} sendDataForCheck={sendDataForCheck}/>}
+            {props.data.module?.id === 1 &&
+                <AthleticsResult data={props.data as any} sendDataForCheck={sendDataForCheck} key={props.data.module?.id}/>}
+            {props.data.module?.id === 2 &&
+                <AthleticsPlace data={props.data as any} sendDataForCheck={sendDataForCheck} key={props.data.module?.id}/>}
+            {props.data.module?.id === 3 &&
+                <SportsProgramming data={props.data as any} sendDataForCheck={sendDataForCheck} key={props.data.module?.id}/>}
+            {props.data.module?.id === 4 &&
+                <ComputerSports data={props.data as any} sendDataForCheck={sendDataForCheck} key={props.data.module?.id}/>}
         </div>
     );
 }

@@ -3,8 +3,8 @@ import {useLocation} from "react-router";
 import {getDocuments} from "@/app/documents/_api.tsx";
 import {getDopingAthletes} from "@/app/doping-athletes/_api.tsx";
 import {getDatabases} from "@/app/databases/_api.tsx";
-import {SportType} from "@/app/document/_types.tsx";
-import {getDocument} from "@/app/document/_api.tsx";
+import {ModuleType, SportType} from "@/app/document/_types.tsx";
+import {getDocument, getMunicipalities, getOrganizations} from "@/app/document/_api.tsx";
 
 
 type DataType = (
@@ -13,11 +13,14 @@ type DataType = (
         | typeof getDopingAthletes
         | typeof getDatabases
         )>>
-    | { sports: SportType[] }
+    | {}
+    | { modules: ModuleType[] }
     | {
     sports: SportType[],
     document: Awaited<ReturnType<typeof getDocument>>,
-    dopingAthletes: Awaited<ReturnType<typeof getDopingAthletes>>
+    dopingAthletes: Awaited<ReturnType<typeof getDopingAthletes>>,
+    organizations: Awaited<ReturnType<typeof getOrganizations>>,
+    municipalities: Awaited<ReturnType<typeof getMunicipalities>>,
 }
     )
 

@@ -3,17 +3,18 @@ import styles from "./AthletesTable.module.css";
 import {Dispatch, SetStateAction, useState} from "react";
 
 import {Pagination} from "@/_ui/pagination/Pagination.tsx";
-import {AthleteType, SportType} from "@/app/document/_types.tsx";
+import {AthleteType, DocumentType, MunicipalityType, OrganizationType, SportType} from "@/app/document/_types.tsx";
 import {CheckBox} from "@/app/document/_components/check-box/CheckBox.tsx";
 import {EditIcon} from "@/_assets/edit_icon.tsx";
 import {useEffectIgnoreFirstRender} from "@/_hook/useEffectIgnoreFirstRender.tsx";
+import {useNavigationData} from "@/_hook/useNavigationData.tsx";
+import {DopingAthleteType} from "@/app/doping-athletes/_types.tsx";
 
 
 const itemsPerPage = 8;
 
 type Props = {
     athletes: AthleteType[];
-    sports: SportType[];
 
     selectIDs: Set<number>;
     setSelectIDs: Dispatch<SetStateAction<Set<number>>>;
@@ -21,7 +22,15 @@ type Props = {
     athleteModalOpen?: (id: number) => () => void;
 };
 
-export function AthletesTable({athletes, selectIDs, setSelectIDs, athleteModalOpen, sports}: Props) {
+export function AthletesTable({athletes, selectIDs, setSelectIDs, athleteModalOpen}: Props) {
+    const data = useNavigationData<{
+        sports: SportType[],
+        document: DocumentType,
+        dopingAthletes: DopingAthleteType[],
+        organizations: OrganizationType[],
+        municipalities: MunicipalityType[]
+    }>();
+
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffectIgnoreFirstRender(() => {
@@ -73,7 +82,9 @@ export function AthletesTable({athletes, selectIDs, setSelectIDs, athleteModalOp
                             !doping && styles.empty
                         ].filter(Boolean).join(' ');
 
-                        const sportName = (doping && sports.find(sport => sport.id === doping.sport_id)?.name) || '';
+                        const sportName = (doping && data.sports.find(sport => sport.id === doping.sport_id)?.name) || '';
+                        const municipalityName = (doping && data.municipalities.find(municipality => municipality.id === doping.municipality_id)?.title) || '';
+                        const organizationName = (doping && data.organizations.find(organization => organization.id === doping.organization_id)?.title) || '';
 
                         return (
                             <tr key={doping ? `row-${doping.id}` : `empty-${index}`} className={rowClasses}>
@@ -99,11 +110,11 @@ export function AthletesTable({athletes, selectIDs, setSelectIDs, athleteModalOp
                                 <td className={styles.tableCell} title={sportName}>
                                     {sportName}
                                 </td>
-                                <td className={styles.tableCell} title={doping?.municipality}>
-                                    {doping?.municipality || ''}
+                                <td className={styles.tableCell} title={municipalityName}>
+                                    {municipalityName}
                                 </td>
-                                <td className={styles.tableCell} title={doping?.organization}>
-                                    {doping?.organization || ''}
+                                <td className={styles.tableCell} title={organizationName}>
+                                    {organizationName}
                                 </td>
                                 <td className={`${styles.tableCell} ${styles.center} ${
                                     doping ? (doping.is_sports_category_granted ? styles.statusGranted : styles.statusNotGranted) : ''
