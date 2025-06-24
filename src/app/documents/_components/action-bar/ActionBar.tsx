@@ -59,7 +59,6 @@ export function ActionBar(props: Props) {
                 <Button
                     style={{height: '44px', width: '44px', padding: '10px'}}
                     onClick={uploadDocument}
-                    disabled={props.selectIDs.size === 0}
                 >
                     <UploadIcon/>
                 </Button>
