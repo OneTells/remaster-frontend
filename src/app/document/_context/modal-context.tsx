@@ -2,7 +2,7 @@
 
 import React, {createContext, ReactNode, useReducer} from 'react'
 
-import {AthleteType, DopingCheckerType} from "@/app/document/_types.tsx";
+import {AthleteType, DopingCheckerType, ResultCheckerType} from "@/app/document/_types.tsx";
 
 
 type NullableFields<T, K extends keyof T> = {
@@ -42,7 +42,13 @@ type Action = {
     mode: 'CLOSE';
 } | {
     mode: 'UPDATE_DATA_IN_DOPING_MENU';
-    dopingCheckerData: DopingCheckerType;
+    dopingCheckerData: Partial<DopingCheckerType>;
+} | {
+    mode: 'UPDATE_ATHLETE_DATA';
+    athlete: Partial<AthleteType>;
+} | {
+    mode: 'UPDATE_DATA_IN_RESULT_MENU';
+    resultCheckerData: Partial<ResultCheckerType>;
 };
 
 type ModalContextType = [State, React.ActionDispatch<[action: Action]>]
@@ -69,7 +75,15 @@ function reducer(state: State, action: Action): State {
                 is_sports_category_granted: null,
                 is_doping_check_passed: null,
                 doping_data: {full_name: '', selectId: null},
-                result_data: {}
+                result_data: {
+                    moduleTabs: [{
+                        module: null,
+                        initData: null,
+                        state: {},
+                        isDopingCheckPassed: null
+                    }],
+                    activeTab: 0
+                }
             }
         }
     } else if (action.mode === 'OPEN_EDIT_MENU') {
@@ -103,8 +117,24 @@ function reducer(state: State, action: Action): State {
             throw new Error('Unexpected mode: ' + state.mode);
 
         return {
-            mode: 'CHECK_DOPING_MENU',
-            athlete: {...state.athlete, doping_data: action.dopingCheckerData},
+            mode: state.mode,
+            athlete: {...state.athlete, doping_data: {...state.athlete.doping_data, ...action.dopingCheckerData}},
+        }
+    } else if (action.mode === 'UPDATE_ATHLETE_DATA') {
+        if (state.mode === 'CLOSE')
+            throw new Error('Unexpected mode: ' + state.mode);
+
+        return {
+            mode: state.mode,
+            athlete: {...state.athlete, ...action.athlete}
+        }
+    } else if (action.mode === 'UPDATE_DATA_IN_RESULT_MENU') {
+        if (state.mode !== 'CHECK_RESULT_MENU')
+            throw new Error('Unexpected mode: ' + state.mode);
+
+        return {
+            mode: state.mode,
+            athlete: {...state.athlete, result_data: {...state.athlete.result_data, ...action.resultCheckerData}},
         }
     }
 

@@ -1,8 +1,8 @@
 import styles from "./Modal.module.css";
 
-import {use, useEffect, useRef, useState} from "react";
+import {use, useEffect, useRef} from "react";
 
-import {DefaultAthleteType, ModalContext} from "@/app/document/_context/modal-context.tsx";
+import {ModalContext} from "@/app/document/_context/modal-context.tsx";
 import {AthleteType} from "@/app/document/_types.tsx";
 import {WindowCloseIcon} from "@/_assets/window_close_icon.tsx";
 import {AthleteModal} from "@/app/document/_modal/AthleteModal/AthleteModal.tsx";
@@ -15,17 +15,16 @@ import {ResultAthletesModal} from "@/app/document/_modal/ResultAthletesModal/Res
 type Props = {
     documentId: number;
     update: () => Promise<void>;
+    sportCategoryId: number
 }
 
-export function Modal({documentId, update}: Props) {
+export function Modal({documentId, update, sportCategoryId}: Props) {
     const [state, modalDispatch] = use(ModalContext);
 
     if (state.mode === 'CLOSE')
         throw new Error('Unexpected mode: ' + state.mode);
 
     const ref = useRef<HTMLDivElement>(null);
-
-    const [athleteData, setAthleteData] = useState<DefaultAthleteType | AthleteType>(state.athlete);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -42,16 +41,54 @@ export function Modal({documentId, update}: Props) {
 
         const timer = setTimeout(() => {
             (async () => {
-                if (!Object.values(athleteData).every(val => val !== null && val !== ''))
+                if (!Object.values(state.athlete).every(val => val !== null && val !== ''))
                     return;
 
-                await updateAthletes((state.athlete as AthleteType).id, athleteData as AthleteType);
+                await updateAthletes((state.athlete as AthleteType).id, state.athlete as AthleteType);
                 await update();
             })();
         }, 300);
 
         return () => clearTimeout(timer);
-    }, [athleteData]);
+    }, [state.athlete]);
+
+    useEffectIgnoreFirstRender(() => {
+        const timer = setTimeout(() => {
+            (async () => {
+                modalDispatch({
+                    mode: 'UPDATE_ATHLETE_DATA',
+                    athlete: {
+                        doping_data: {full_name: '', selectId: null}
+                    }
+                })
+            })();
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [state.athlete.birth_date]);
+
+    useEffectIgnoreFirstRender(() => {
+        const timer = setTimeout(() => {
+            (async () => {
+                modalDispatch({
+                    mode: 'UPDATE_ATHLETE_DATA',
+                    athlete: {
+                        result_data: {
+                            moduleTabs: [{
+                                module: null,
+                                initData: null,
+                                state: {},
+                                isDopingCheckPassed: null
+                            }],
+                            activeTab: 0
+                        }
+                    }
+                })
+            })();
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [state.athlete.sport_id]);
 
     useEffectIgnoreFirstRender(() => {
         if (!('id' in state.athlete)) return;
@@ -71,13 +108,13 @@ export function Modal({documentId, update}: Props) {
 
         const timer = setTimeout(() => {
             (async () => {
-                await updateCheckerData('result', (state.athlete as AthleteType).id, state.athlete.doping_data);
+                await updateCheckerData('result', (state.athlete as AthleteType).id, state.athlete.result_data);
                 await update();
             })();
         }, 300);
 
         return () => clearTimeout(timer);
-    }, [state.athlete.doping_data]);
+    }, [state.athlete.result_data]);
 
     return (
         <div className={styles["modal"]} ref={ref}>
@@ -87,26 +124,9 @@ export function Modal({documentId, update}: Props) {
                         <WindowCloseIcon/>
                     </button>
                 </div>
-                {
-                    (state.mode === 'EDIT_MENU') && <AthleteModal
-                        update={update}
-                        documentId={documentId}
-                        athlete={athleteData}
-                        setAthlete={setAthleteData}
-                    />
-                }
-                {
-                    (state.mode === 'CHECK_DOPING_MENU') && <DopingAthletesModal
-                        athlete={athleteData}
-                        setAthlete={setAthleteData}
-                    />
-                }
-                {
-                    (state.mode === 'CHECK_RESULT_MENU') && <ResultAthletesModal
-                        athlete={athleteData}
-                        setAthlete={setAthleteData}
-                    />
-                }
+                {(state.mode === 'EDIT_MENU') && <AthleteModal update={update} documentId={documentId}/>}
+                {(state.mode === 'CHECK_DOPING_MENU') && <DopingAthletesModal/>}
+                {(state.mode === 'CHECK_RESULT_MENU') && <ResultAthletesModal sportCategoryId={sportCategoryId}/>}
             </div>
         </div>
     )

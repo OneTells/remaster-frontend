@@ -13,7 +13,7 @@
     -ms-user-select: none;
 }
 
-.button:hover {
+.button:hover:not(:disabled) {
     background: var(--element-hover);
 }
 

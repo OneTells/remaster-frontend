@@ -1,9 +1,9 @@
 import styles from "./AthleteModal.module.css";
 
-import React, {use} from "react";
+import {use} from "react";
 
-import {DefaultAthleteType, ModalContext} from "@/app/document/_context/modal-context.tsx";
-import {AthleteType, DocumentType, MunicipalityType, OrganizationType, SportType} from "@/app/document/_types.tsx";
+import {ModalContext} from "@/app/document/_context/modal-context.tsx";
+import {AthleteType, DocumentType, ModuleType, MunicipalityType, OrganizationType, SportType} from "@/app/document/_types.tsx";
 import {createAthlete} from "@/app/document/_api.tsx";
 import {Select} from "@/_ui/select/Select.tsx";
 import {Button} from "@/_ui/button/Button.tsx";
@@ -14,18 +14,16 @@ import {DopingAthleteType} from "@/app/doping-athletes/_types.tsx";
 type Props = {
     documentId: number;
     update: () => Promise<void>;
-
-    athlete: DefaultAthleteType | AthleteType;
-    setAthlete: React.Dispatch<React.SetStateAction<DefaultAthleteType | AthleteType>>;
 }
 
-export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
+export function AthleteModal({documentId, update}: Props) {
     const data = useNavigationData<{
         sports: SportType[],
         document: DocumentType,
         dopingAthletes: DopingAthleteType[],
         organizations: OrganizationType[],
-        municipalities: MunicipalityType[]
+        municipalities: MunicipalityType[],
+        modules: ModuleType[]
     }>();
 
     const [state, modalDispatch] = use(ModalContext);
@@ -34,10 +32,10 @@ export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
         throw new Error('Unexpected mode: ' + state.mode);
 
     const createOnClick = async () => {
-        if (!Object.values(athlete).every(val => val !== null && val !== ''))
+        if (!Object.values(state.athlete).every(val => val !== null && val !== ''))
             return;
 
-        await createAthlete(documentId, athlete as AthleteType, state.athlete.doping_data, state.athlete.result_data);
+        await createAthlete(documentId, state.athlete as AthleteType, state.athlete.doping_data, state.athlete.result_data);
         await update();
 
         modalDispatch({mode: 'CLOSE'});
@@ -50,8 +48,13 @@ export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
                     <p className={styles["text"]}>ФИО</p>
                     <div className={styles["hierarchical-text-container"]}>
                         <input
-                            value={athlete.full_name}
-                            onChange={(e) => setAthlete(prev => ({...prev, 'full_name': e.target.value}))}
+                            value={state.athlete.full_name}
+                            onChange={(e) => {
+                                modalDispatch({
+                                    mode: 'UPDATE_ATHLETE_DATA',
+                                    athlete: {'full_name': e.target.value}
+                                });
+                            }}
                             type={styles["text"]}
                             className={styles["input-field-with-border-radius"]}
                         />
@@ -65,8 +68,13 @@ export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
                             max={new Date().toISOString().split('T')[0]}
                             className={styles["input-field-with-border-radius"]}
                             style={{height: "44px", paddingRight: "10px", colorScheme: 'dark'}}
-                            value={athlete.birth_date}
-                            onChange={(e) => setAthlete(prev => ({...prev, 'birth_date': e.target.value}))}
+                            value={state.athlete.birth_date}
+                            onChange={(e) => {
+                                modalDispatch({
+                                    mode: 'UPDATE_ATHLETE_DATA',
+                                    athlete: {'birth_date': e.target.value}
+                                });
+                            }}
                         />
                     </div>
                 </div>
@@ -75,8 +83,13 @@ export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
                     <div className={styles["hierarchical-text-container"]}>
                         <Select
                             options={data.sports.map(({name, ...rest}) => ({...rest, label: name}))}
-                            selectedOptionId={athlete.sport_id}
-                            setSelectedOptionId={(id) => setAthlete(prev => ({...prev, 'sport_id': id}))}
+                            selectedOptionId={state.athlete.sport_id}
+                            setSelectedOptionId={(id) => {
+                                modalDispatch({
+                                    mode: 'UPDATE_ATHLETE_DATA',
+                                    athlete: {'sport_id': id}
+                                });
+                            }}
                             style={{width: '100%'}}
                         />
                     </div>
@@ -90,8 +103,13 @@ export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
                     <div className={styles["hierarchical-text-container"]}>
                         <Select
                             options={data.municipalities.map(({title, ...rest}) => ({...rest, label: title}))}
-                            selectedOptionId={athlete.municipality_id}
-                            setSelectedOptionId={(id) => setAthlete(prev => ({...prev, 'municipality_id': id}))}
+                            selectedOptionId={state.athlete.municipality_id}
+                            setSelectedOptionId={(id) => {
+                                modalDispatch({
+                                    mode: 'UPDATE_ATHLETE_DATA',
+                                    athlete: {'municipality_id': id}
+                                });
+                            }}
                             style={{width: '100%'}}
                         />
                     </div>
@@ -102,13 +120,18 @@ export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
                         <Select
                             options={
                                 data.organizations
-                                    .filter(org => org.sport_id === athlete.sport_id)
+                                    .filter(org => org.sport_id === state.athlete.sport_id)
                                     .map(({title, ...rest}) => ({...rest, label: title}))
                             }
-                            selectedOptionId={athlete.organization_id}
-                            setSelectedOptionId={(id) => setAthlete(prev => ({...prev, 'organization_id': id}))}
+                            selectedOptionId={state.athlete.organization_id}
+                            setSelectedOptionId={(id) => {
+                                modalDispatch({
+                                    mode: 'UPDATE_ATHLETE_DATA',
+                                    athlete: {'organization_id': id}
+                                });
+                            }}
                             style={{width: '100%'}}
-                            disabled={athlete.sport_id === null}
+                            disabled={state.athlete.sport_id === null}
                         />
                     </div>
                 </div>
@@ -121,14 +144,16 @@ export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
                                 {id: 2, label: 'Нет'},
                             ]}
                             selectedOptionId={
-                                athlete.is_sports_category_granted !== null
-                                    ? (athlete.is_sports_category_granted ? 1 : 2)
+                                state.athlete.is_sports_category_granted !== null
+                                    ? (state.athlete.is_sports_category_granted ? 1 : 2)
                                     : null
                             }
-                            setSelectedOptionId={(id) => setAthlete(prev => ({
-                                ...prev,
-                                'is_sports_category_granted': id === 1
-                            }))}
+                            setSelectedOptionId={(id) => {
+                                modalDispatch({
+                                    mode: 'UPDATE_ATHLETE_DATA',
+                                    athlete: {'is_sports_category_granted': id === 1}
+                                });
+                            }}
                             style={{width: '100%'}}
                         />
                     </div>
@@ -142,14 +167,16 @@ export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
                                 {id: 2, label: 'Положительный'},
                             ]}
                             selectedOptionId={
-                                athlete.is_doping_check_passed !== null
-                                    ? (athlete.is_doping_check_passed ? 1 : 2)
+                                state.athlete.is_doping_check_passed !== null
+                                    ? (state.athlete.is_doping_check_passed ? 1 : 2)
                                     : null
                             }
-                            setSelectedOptionId={(id) => setAthlete(prev => ({
-                                ...prev,
-                                'is_doping_check_passed': id === 1
-                            }))}
+                            setSelectedOptionId={(id) => {
+                                modalDispatch({
+                                    mode: 'UPDATE_ATHLETE_DATA',
+                                    athlete: {'is_doping_check_passed': id === 1}
+                                });
+                            }}
                             style={{width: '100%'}}
                         />
                     </div>
@@ -159,14 +186,17 @@ export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
                 <Button
                     style={{height: '44px', padding: '10px 20px', width: '100%'}}
                     onClick={async () => modalDispatch({mode: 'OPEN_CHECK_DOPING_MENU'})}
-                    disabled={athlete.birth_date === ''}
+                    disabled={state.athlete.birth_date === ''}
                 >
                     Проверить на допинг
                 </Button>
                 <Button
                     style={{height: '44px', padding: '10px 20px', width: '100%'}}
                     onClick={async () => modalDispatch({mode: 'OPEN_CHECK_RESULT_MENU'})}
-                    disabled={athlete.sport_id === null}
+                    disabled={
+                        state.athlete.sport_id === null
+                        || data.modules.filter(module => module.sport_id === state.athlete.sport_id).length === 0
+                    }
                 >
                     Проверить по результату
                 </Button>
@@ -176,7 +206,7 @@ export function AthleteModal({documentId, update, athlete, setAthlete}: Props) {
                     <Button
                         style={{height: '44px', padding: '10px 20px'}}
                         onClick={createOnClick}
-                        disabled={!Object.values(athlete).every(val => val !== null && val !== '')}
+                        disabled={!Object.values(state.athlete).every(val => val !== null && val !== '')}
                     >
                         Создать атлета
                     </Button>

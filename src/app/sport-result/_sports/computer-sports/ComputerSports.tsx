@@ -2,7 +2,7 @@ import {DateInput} from "@/_ui/date-input/DateInput.tsx";
 import {Select} from "@/_ui/select/Select.tsx";
 import {NumberInput} from "@/_ui/number-input/NumberInput.tsx";
 import {CheckBox} from "@/app/document/_components/check-box/CheckBox.tsx";
-import {ComputerSportsType, SportResultDataType} from "@/app/sport-result/_types.tsx";
+import {ComputerSportsType, ModuleProps} from "@/app/sport-result/_types.tsx";
 import {Section} from "@/_ui/section/Section";
 import {InlineGroup} from "@/_ui/inline-group/InlineGroup";
 import {getAdditionalConditionsData} from "@/app/sport-result/_sports/computer-sports/_api.tsx";
@@ -25,17 +25,9 @@ type DataType = {
     additional_conditions: AdditionalConditionsType;
 }
 
-type Props = {
-    data: { [K in keyof SportResultDataType]: NonNullable<SportResultDataType[K]> };
-    initData: ComputerSportsType
+type Props = ModuleProps<DataType, ComputerSportsType>
 
-    state: Partial<DataType>
-    updateState: (state: Partial<DataType>) => void;
-
-    sendDataForCheck: (data: any | null) => Promise<void>;
-}
-
-export function ComputerSports({data, initData, state, updateState, sendDataForCheck}: Props) {
+export function ComputerSports({module, sportCategoryId, initData, state, updateState, sendDataForCheck}: Props) {
     useEffectIgnoreFirstRender(() => {
         const timer = setTimeout(() => {
             (async () => {
@@ -50,9 +42,9 @@ export function ComputerSports({data, initData, state, updateState, sendDataForC
                 }
 
                 const additionalConditions = await getAdditionalConditionsData(
-                    data.module.id,
+                    module.id,
                     {
-                        'sports_category_id': data.sportCategoryId,
+                        'sports_category_id': sportCategoryId,
                         'competition_status_id': state.competitionStatusId,
                         'discipline_id': state.disciplineId,
                         'place': state.place!
@@ -75,15 +67,15 @@ export function ComputerSports({data, initData, state, updateState, sendDataForC
                 )
                     updateState({secondCondition: undefined})
 
-                if (state.thirdCondition === undefined && (state.place || 0) >= 9 && data.sportCategoryId === 2)
+                if (state.thirdCondition === undefined && (state.place || 0) >= 9 && sportCategoryId === 2)
                     updateState({thirdCondition: false});
-                else if (state.thirdCondition !== undefined && !((state.place || 0) >= 9 && data.sportCategoryId === 2))
+                else if (state.thirdCondition !== undefined && !((state.place || 0) >= 9 && sportCategoryId === 2))
                     updateState({thirdCondition: undefined})
             })();
         }, 300);
 
         return () => clearTimeout(timer);
-    }, [state, data.sportCategoryId]);
+    }, [state, sportCategoryId]);
 
     useEffectIgnoreFirstRender(() => {
         const timer = setTimeout(() => {
@@ -99,7 +91,7 @@ export function ComputerSports({data, initData, state, updateState, sendDataForC
                 }
 
                 await sendDataForCheck({
-                    'sports_category_id': data.sportCategoryId,
+                    'sports_category_id': sportCategoryId,
 
                     'birth_date': new Date(state.birthDate!).toISOString(),
 
@@ -116,7 +108,7 @@ export function ComputerSports({data, initData, state, updateState, sendDataForC
         }, 300);
 
         return () => clearTimeout(timer);
-    }, [state, data.sportCategoryId]);
+    }, [state, sportCategoryId]);
 
     return (
         <>
@@ -132,7 +124,7 @@ export function ComputerSports({data, initData, state, updateState, sendDataForC
             </Section>
             <Section title="Информация о соревнованиях" style={{marginTop: '20px'}}>
                 <InlineGroup>
-                    <p style={{width: '200px'}}>Статус соревнований</p>
+                    <p style={{width: '190px'}}>Статус соревнований</p>
                     <Select
                         options={initData.competition_statuses.map(({name, ...rest}) => ({...rest, label: name}))}
                         selectedOptionId={state.competitionStatusId || null}
@@ -141,7 +133,7 @@ export function ComputerSports({data, initData, state, updateState, sendDataForC
                     />
                 </InlineGroup>
                 <InlineGroup style={{marginTop: '10px'}}>
-                    <p style={{width: '200px'}}>Спортивная дисциплина</p>
+                    <p style={{width: '190px'}}>Спортивная дисциплина</p>
                     <Select
                         options={initData.disciplines.map(({name, ...rest}) => ({...rest, label: name}))}
                         selectedOptionId={state.disciplineId || null}

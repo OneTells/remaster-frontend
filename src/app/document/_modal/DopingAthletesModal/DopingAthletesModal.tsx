@@ -1,7 +1,7 @@
-import React, {use} from "react";
+import {use} from "react";
 
-import {DefaultAthleteType, ModalContext} from "@/app/document/_context/modal-context.tsx";
-import {AthleteType, DocumentType, SportType} from "@/app/document/_types.tsx";
+import {ModalContext} from "@/app/document/_context/modal-context.tsx";
+import {DocumentType, SportType} from "@/app/document/_types.tsx";
 import {Button} from "@/_ui/button/Button.tsx";
 import {ActionBar} from "@/app/document/_modal/DopingAthletesModal/_components/action-bar/ActionBar.tsx";
 import {Doping} from "@/app/document/_modal/DopingAthletesModal/_components/doping/Doping.tsx";
@@ -9,12 +9,7 @@ import {useNavigationData} from "@/_hook/useNavigationData.tsx";
 import {DopingAthleteType} from "@/app/doping-athletes/_types.tsx";
 
 
-type Props = {
-    athlete: DefaultAthleteType | AthleteType;
-    setAthlete: React.Dispatch<React.SetStateAction<DefaultAthleteType | AthleteType>>;
-}
-
-export function DopingAthletesModal({athlete, setAthlete}: Props) {
+export function DopingAthletesModal() {
     const data = useNavigationData<{ sports: SportType[], document: DocumentType, dopingAthletes: DopingAthleteType[] }>();
 
     const [state, modalDispatch] = use(ModalContext);
@@ -25,14 +20,14 @@ export function DopingAthletesModal({athlete, setAthlete}: Props) {
     const setSelectId = (selectId: number | null) => {
         modalDispatch({
             mode: 'UPDATE_DATA_IN_DOPING_MENU',
-            dopingCheckerData: {...state.athlete.doping_data, selectId: selectId}
+            dopingCheckerData: {selectId: selectId}
         });
     }
 
     const setName = (name: string) => {
         modalDispatch({
             mode: 'UPDATE_DATA_IN_DOPING_MENU',
-            dopingCheckerData: {...state.athlete.doping_data, full_name: name, selectId: null}
+            dopingCheckerData: {full_name: name, selectId: null}
         });
     }
 
@@ -41,7 +36,10 @@ export function DopingAthletesModal({athlete, setAthlete}: Props) {
     }
 
     const saveOnClick = async () => {
-        setAthlete(value => ({...value, is_doping_check_passed: state.athlete.doping_data.selectId === null}));
+        modalDispatch({
+            mode: 'UPDATE_ATHLETE_DATA',
+            athlete: {'is_doping_check_passed': state.athlete.doping_data.selectId === null}
+        });
         modalDispatch({mode: 'OPEN_EDIT_MENU'});
     };
 
@@ -49,9 +47,9 @@ export function DopingAthletesModal({athlete, setAthlete}: Props) {
         const matchesName = !state.athlete.doping_data.full_name
             || dopingAthlete.full_name.toLowerCase().includes(state.athlete.doping_data.full_name.toLowerCase());
 
-        const matchesDate = !athlete.birth_date
+        const matchesDate = !state.athlete.birth_date
             || (dopingAthlete.birth_date
-                && (dopingAthlete.birth_date === new Date(athlete.birth_date).toLocaleDateString('ru-RU'))
+                && (dopingAthlete.birth_date === new Date(state.athlete.birth_date).toLocaleDateString('ru-RU'))
             );
 
         return matchesName && matchesDate;
@@ -62,7 +60,7 @@ export function DopingAthletesModal({athlete, setAthlete}: Props) {
             <ActionBar
                 name={state.athlete.doping_data.full_name}
                 setName={setName}
-                date={athlete.birth_date}
+                date={state.athlete.birth_date}
             />
             <Doping
                 dopingAthletes={filteredAthletes}

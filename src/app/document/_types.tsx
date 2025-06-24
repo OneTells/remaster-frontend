@@ -1,3 +1,5 @@
+import {getModuleData} from "@/app/sport-result/_api.tsx";
+
 export type AthleteType = {
     id: number,
 
@@ -37,7 +39,17 @@ export type DopingCheckerType = {
     selectId: number | null;
 }
 
-export type ResultCheckerType = {}
+export type ModuleTabType = {
+    module: ModuleType | null;
+    initData: Awaited<ReturnType<typeof getModuleData>> | null;
+    state: any;
+    isDopingCheckPassed: boolean | null
+}
+
+export type ResultCheckerType = {
+    moduleTabs: ModuleTabType[];
+    activeTab: number;
+}
 
 export type ModuleType = {
     id: number,

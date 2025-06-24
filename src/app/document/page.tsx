@@ -170,6 +170,7 @@ function Menu(props: { document: DocumentType, sports: SportType[] }) {
                 (modalState.mode !== 'CLOSE') && <Modal
                     update={update}
                     documentId={props.document.id}
+                    sportCategoryId={document.sports_category_id}
                 />
             }
         </>

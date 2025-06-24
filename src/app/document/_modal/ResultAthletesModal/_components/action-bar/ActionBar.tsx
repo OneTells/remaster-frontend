@@ -9,19 +9,19 @@ import {Tooltip} from "@/_ui/tooltip/Tooltip.tsx";
 import {Button} from "@/_ui/button/Button.tsx";
 import {DocumentIcon} from "@/_assets/document_icon.tsx";
 import {getDatabases} from "@/app/databases/_api.tsx";
+import {RemoveIcon} from "@/_assets/remove_icon.tsx";
 
 
 type Props = {
     module: ModuleType | null;
-    sportCategoryId: number | null;
-
     selectModule: (moduleId: number) => Promise<void>;
-    selectSportCategoryId: (sportCategoryId: number) => Promise<void>;
 
     modules: ModuleType[]
+
+    removeTab: () => void;
 }
 
-export const ActionBar = ({module, sportCategoryId, selectModule, selectSportCategoryId, modules}: Props) => {
+export const ActionBar = ({module, selectModule, modules, removeTab}: Props) => {
     const openDocument = async () => {
         if (!module) {
             return;
@@ -37,7 +37,6 @@ export const ActionBar = ({module, sportCategoryId, selectModule, selectSportCat
         const database = databases.find((database) => database.slug === slug)
 
         const extension = database!.file_name!.slice(database!.file_name!.lastIndexOf('.') + 1)
-
         await openPath(`${await resourceDir()}/_internal/resources/${slug}.${extension}`);
     }
 
@@ -53,18 +52,6 @@ export const ActionBar = ({module, sportCategoryId, selectModule, selectSportCat
                 />
             </div>
             <div className={styles['field']}>
-                <p className={styles['title']}>Спортивный разряд</p>
-                <Select
-                    options={[
-                        {id: 2, label: '1 спортивный'},
-                        {id: 1, label: 'КМС'},
-                    ]}
-                    selectedOptionId={sportCategoryId}
-                    setSelectedOptionId={selectSportCategoryId}
-                    style={{width: '200px', height: '100%'}}
-                />
-            </div>
-            <div className={styles['field']}>
                 <Tooltip
                     text={
                         module?.id
@@ -77,6 +64,18 @@ export const ActionBar = ({module, sportCategoryId, selectModule, selectSportCat
                 >
                     <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={openDocument}>
                         <DocumentIcon/>
+                    </Button>
+                </Tooltip>
+            </div>
+            <div className={styles['field']}>
+                <Tooltip
+                    text='Удалить вкладку'
+                    position={'bottom'}
+                    align={'start'}
+                    width={'100px'}
+                >
+                    <Button style={{height: '44px', width: '44px', padding: '10px'}} onClick={removeTab}>
+                        <RemoveIcon/>
                     </Button>
                 </Tooltip>
             </div>

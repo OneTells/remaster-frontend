@@ -1,5 +1,5 @@
 import {InlineGroup} from "@/_ui/inline-group/InlineGroup.tsx";
-import {AthleticsPlaceType, SportResultDataType} from "@/app/sport-result/_types.tsx";
+import {AthleticsPlaceType, ModuleProps} from "@/app/sport-result/_types.tsx";
 import {Section} from "@/_ui/section/Section.tsx";
 import {DateInput} from "@/_ui/date-input/DateInput.tsx";
 import {Select} from "@/_ui/select/Select.tsx";
@@ -24,17 +24,9 @@ type DataType = {
     additional_conditions: AdditionalConditionsType;
 }
 
-type Props = {
-    data: { [K in keyof SportResultDataType]: NonNullable<SportResultDataType[K]> };
-    initData: AthleticsPlaceType
+type Props = ModuleProps<DataType, AthleticsPlaceType>
 
-    state: Partial<DataType>
-    updateState: (state: Partial<DataType>) => void;
-
-    sendDataForCheck: (data: any | null) => Promise<void>;
-}
-
-export function AthleticsPlace({data, initData, state, updateState, sendDataForCheck}: Props) {
+export function AthleticsPlace({module, sportCategoryId, initData, state, updateState, sendDataForCheck}: Props) {
     useEffectIgnoreFirstRender(() => {
         const timer = setTimeout(() => {
             (async () => {
@@ -49,9 +41,9 @@ export function AthleticsPlace({data, initData, state, updateState, sendDataForC
                 }
 
                 const additionalConditions = await getAdditionalConditionsData(
-                    data.module.id,
+                    module.id,
                     {
-                        'sports_category_id': data.sportCategoryId,
+                        'sports_category_id': sportCategoryId,
                         'birth_date': new Date(state.birthDate!).toISOString(),
                         'competition_status_id': state.competitionStatusId,
                         'discipline_id': state.disciplineId,
@@ -67,14 +59,14 @@ export function AthleticsPlace({data, initData, state, updateState, sendDataForC
                 if (
                     state.secondCondition === undefined
                     && initData.disciplines_with_minimum_number_of_participants.includes(state.disciplineId)
-                    && data.sportCategoryId === 1
+                    && sportCategoryId === 1
                 )
                     updateState({secondCondition: false})
                 else if (
                     state.secondCondition !== undefined
                     && !(
                         initData.disciplines_with_minimum_number_of_participants.includes(state.disciplineId)
-                        && data.sportCategoryId === 1
+                        && sportCategoryId === 1
                     )
                 )
                     updateState({secondCondition: undefined})
@@ -83,7 +75,7 @@ export function AthleticsPlace({data, initData, state, updateState, sendDataForC
         }, 300);
 
         return () => clearTimeout(timer);
-    }, [data, data.sportCategoryId]);
+    }, [state, sportCategoryId]);
 
     useEffectIgnoreFirstRender(() => {
         const timer = setTimeout(() => {
@@ -99,7 +91,7 @@ export function AthleticsPlace({data, initData, state, updateState, sendDataForC
                 }
 
                 await sendDataForCheck({
-                    'sports_category_id': data.sportCategoryId,
+                    'sports_category_id': sportCategoryId,
 
                     'birth_date': new Date(state.birthDate!).toISOString(),
 
@@ -115,7 +107,7 @@ export function AthleticsPlace({data, initData, state, updateState, sendDataForC
         }, 300);
 
         return () => clearTimeout(timer);
-    }, [data, data.sportCategoryId]);
+    }, [state, sportCategoryId]);
 
     return (
         <>
@@ -131,7 +123,7 @@ export function AthleticsPlace({data, initData, state, updateState, sendDataForC
             </Section>
             <Section title="Информация о соревнованиях" style={{marginTop: '20px'}}>
                 <InlineGroup>
-                    <p style={{width: '200px'}}>Статус соревнований</p>
+                    <p style={{width: '190px'}}>Статус соревнований</p>
                     <Select
                         options={initData.competition_statuses.map(({name, ...rest}) => ({...rest, label: name}))}
                         selectedOptionId={state.competitionStatusId || null}
@@ -139,7 +131,7 @@ export function AthleticsPlace({data, initData, state, updateState, sendDataForC
                     />
                 </InlineGroup>
                 <InlineGroup style={{marginTop: '10px'}}>
-                    <p style={{width: '200px'}}>Спортивная дисциплина</p>
+                    <p style={{width: '190px'}}>Спортивная дисциплина</p>
                     <Select
                         options={initData.disciplines.map(({name, ...rest}) => ({...rest, label: name}))}
                         selectedOptionId={state.disciplineId || null}

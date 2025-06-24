@@ -1,16 +1,5 @@
 import {ModuleType} from "@/app/document/_types.tsx";
-import {getModuleData} from "@/app/sport-result/_api.tsx";
 
-
-export type SportResultDataType = {
-    module: ModuleType | null;
-    sportCategoryId: number | null;
-}
-
-export type ModuleDataType<T> = {
-    initData: Awaited<ReturnType<typeof getModuleData>> | null;
-    state: T;
-}
 
 export type CompetitionStatusType = {
     id: number;
@@ -47,3 +36,15 @@ export type InitDataType = (
     | AthleticsPlaceType
     | AthleticsResultType
     );
+
+export type ModuleProps<DataType, InitDataType> = {
+    module: ModuleType;
+    sportCategoryId: number;
+
+    initData: InitDataType;
+
+    state: Partial<DataType>
+    updateState: (state: Partial<DataType>) => void;
+
+    sendDataForCheck: (data: any | null) => Promise<void>;
+}
