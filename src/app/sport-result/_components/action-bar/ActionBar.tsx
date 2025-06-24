@@ -50,6 +50,7 @@ export const ActionBar = ({module, sportCategoryId, selectModule, selectSportCat
                     options={modules.map(({title, id}) => ({id: id, label: title}))}
                     selectedOptionId={module?.id || null}
                     setSelectedOptionId={selectModule}
+                    searchable={true}
                 />
             </div>
             <div className={styles['field']}>

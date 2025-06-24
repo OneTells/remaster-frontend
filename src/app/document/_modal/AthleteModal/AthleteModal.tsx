@@ -91,6 +91,7 @@ export function AthleteModal({documentId, update}: Props) {
                                 });
                             }}
                             style={{width: '100%'}}
+                            searchable={true}
                         />
                     </div>
                 </div>
@@ -111,6 +112,7 @@ export function AthleteModal({documentId, update}: Props) {
                                 });
                             }}
                             style={{width: '100%'}}
+                            searchable={true}
                         />
                     </div>
                 </div>
