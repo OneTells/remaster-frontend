@@ -1,10 +1,10 @@
 import styles from "./Select.module.css";
 
 import React, {useEffect, useMemo, useRef, useState} from "react";
+import {v4 as uuidv4} from 'uuid';
 
 import {SelectOptionType} from "@/_ui/select/_types.tsx";
 import {ShowMore} from "@/_assets/show_more.tsx";
-import {SearchIcon} from "@/_assets/search_icon.tsx"; // Make sure you have a Search icon component
 
 
 type Props = {
@@ -20,19 +20,23 @@ type Props = {
     searchPlaceholder?: string;
 }
 
-export function Select({
-                           options,
-                           selectedOptionId,
-                           setSelectedOptionId,
-                           style,
-                           maxVisibleItems = 5,
-                           placeholder = 'Не выбрано',
-                           disabled = false,
-                           className = '',
-                           searchable = false,
-                           searchPlaceholder = 'Поиск...',
-                       }: Props) {
+export function Select(
+    {
+        options,
+        selectedOptionId,
+        setSelectedOptionId,
+        style,
+        maxVisibleItems = 5,
+        placeholder = 'Не выбрано',
+        disabled = false,
+        className = '',
+        searchable = false,
+        searchPlaceholder = 'Поиск...',
+    }: Props) {
     disabled = disabled || options.length === 0;
+
+    const [selectId] = useState(() => uuidv4());
+
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const searchInputRef = useRef<HTMLInputElement>(null);
@@ -53,7 +57,8 @@ export function Select({
         }
 
         const handleClickOutside = (event: MouseEvent) => {
-            if (ref.current && !ref.current.contains(event.target as Node)) {
+            if (!ref.current!.contains(event.target as Node) && (event.target as Element).id !== selectId) {
+                console.log('clicked outside')
                 setIsOpen(false);
             }
         };
@@ -76,8 +81,11 @@ export function Select({
     };
 
     const handleToggle = () => {
-        if (disabled) return;
+        if (disabled)
+            return;
+
         setIsOpen(!isOpen);
+
         if (!isOpen) {
             setSearchTerm('');
         }
@@ -87,45 +95,50 @@ export function Select({
 
     return (
         <div
+            ref={ref}
             className={`${styles.container} ${className} ${disabled ? styles.disabled : ''}`}
             style={style}
             aria-disabled={disabled}
         >
             <div
-                ref={ref}
                 className={`${styles.input} ${isOpen ? styles.open : ''} ${disabled ? styles.disabledCursor : ''}`}
-                onClick={handleToggle}
                 aria-expanded={isOpen}
                 aria-disabled={disabled}
+                onClick={isOpen ? undefined : handleToggle}
             >
-                <span className={`${styles['selected-value']} ${disabled ? styles.disabledCursor : ''}`}>
-                    {selectedOption?.label || placeholder}
-                </span>
+                {isOpen && searchable ? (
+                    <div className={styles.searchContainer} onClick={(e) => e.stopPropagation()}>
+                        <input
+                            ref={searchInputRef}
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className={styles.searchInput}
+                            placeholder={searchPlaceholder || placeholder}
+                            onClick={(e) => e.stopPropagation()}
+                            autoFocus
+                        />
+                    </div>
+                ) : (
+                    <span
+                        id={selectId}
+                        className={`${styles['selected-value']} ${disabled ? styles.disabledCursor : ''}`}
+                        onClick={handleToggle}
+                    >
+                        {selectedOption?.label || placeholder}
+                    </span>
+                )}
                 <div className={styles['input-suffix']}>
-                    <div className={`${styles.arrow} ${isOpen ? styles.rotated : ''} ${disabled ? styles.disabledCursor : ''}`}>
+                    <div
+                        className={`${styles.arrow} ${isOpen ? styles.rotated : ''} ${disabled ? styles.disabledCursor : ''}`}
+                        onClick={handleToggle}
+                    >
                         <ShowMore style={{width: '14px', height: '14px'}}/>
                     </div>
                 </div>
             </div>
-
             {isOpen && !disabled && (
                 <div className={`${styles.modal} ${isOpen ? styles.visible : ''}`}>
-                    {searchable && (
-                        <div className={styles.searchContainer}>
-                            <div className={styles.searchIcon} style={{height: '16px', width: '16px'}}>
-                                <SearchIcon/>
-                            </div>
-                            <input
-                                ref={searchInputRef}
-                                type="text"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className={styles.searchInput}
-                                placeholder={searchPlaceholder}
-                                onClick={(e) => e.stopPropagation()}
-                            />
-                        </div>
-                    )}
                     <div
                         className={styles['options-container']}
                         style={{'--max-height': `${maxVisibleItems * 40}px`} as React.CSSProperties}

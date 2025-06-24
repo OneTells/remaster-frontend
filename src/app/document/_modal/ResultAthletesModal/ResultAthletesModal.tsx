@@ -156,7 +156,7 @@ export const ResultAthletesModal = ({sportCategoryId}: Props) => {
         })
     };
 
-    const updateState = (state: Partial<any>) => {
+    const updateState = (state_: Partial<any>) => {
         modalDispatch({
             mode: 'UPDATE_DATA_IN_RESULT_MENU',
             resultCheckerData: {
@@ -164,7 +164,7 @@ export const ResultAthletesModal = ({sportCategoryId}: Props) => {
                     ...state.athlete.result_data.moduleTabs.slice(0, state.athlete.result_data.activeTab),
                     {
                         ...state.athlete.result_data.moduleTabs[state.athlete.result_data.activeTab],
-                        state: {...state.athlete.result_data.moduleTabs[state.athlete.result_data.activeTab].state, ...state}
+                        state: {...state.athlete.result_data.moduleTabs[state.athlete.result_data.activeTab].state, ...state_}
                     },
                     ...state.athlete.result_data.moduleTabs.slice(state.athlete.result_data.activeTab + 1)
                 ]

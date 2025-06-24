@@ -41,6 +41,8 @@
     text-overflow: ellipsis;
     margin-right: 8px;
     color: var(--text-primary);
+
+    padding-left: 2px;
 }
 
 .input-suffix {
@@ -150,7 +152,9 @@
 
 .searchContainer {
     position: relative;
-    border-bottom: 1px solid white;
+    border: none;
+    width: calc(100% - 8px);
+    margin-right: 8px;
 }
 
 .searchIcon {
@@ -161,15 +165,36 @@
 }
 
 .searchInput {
+    padding: 0 0 0 2px;
+
     border: none;
 
     background-color: var(--button);
     color: var(--foreground);
 
-    width: calc(100% - 40px);
-    padding: 8px 8px 8px 32px;
-    border-radius: 4px;
+    width: calc(100%);
+    /*padding: 8px 8px 8px 32px;*/
+    /*border-radius: 4px;*/
     outline: none;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    font-size: 0.9375rem;
+    line-height: 1.375rem;
+}
+
+.noResults {
+    padding: 12px;
+    color: #64748b;
+    text-align: center;
+    font-size: 14px;
+}
+
+.searchInput::placeholder {
+    color: inherit;
+    opacity: 0.7;
 }
 
 .noResults {
