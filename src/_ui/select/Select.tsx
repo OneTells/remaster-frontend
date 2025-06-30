@@ -58,7 +58,6 @@ export function Select(
 
         const handleClickOutside = (event: MouseEvent) => {
             if (!ref.current!.contains(event.target as Node) && (event.target as Element).id !== selectId) {
-                console.log('clicked outside')
                 setIsOpen(false);
             }
         };

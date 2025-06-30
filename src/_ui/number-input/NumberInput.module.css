@@ -7,3 +7,9 @@
     height: 24px;
     font: 400 14px Montserrat, sans-serif;
 }
+
+.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    color: #666666;
+}

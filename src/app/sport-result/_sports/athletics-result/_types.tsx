@@ -1,9 +1,9 @@
 export type AdditionalConditionType = {
-    subject_from: number | null;
-    min_participants: number | null;
+    id: number;
+    name: string;
 }
 
 export type AdditionalConditionsType = {
-    is_internally_subject: boolean;
-    additional_conditions: AdditionalConditionType[];
+    system_count: 'meter' | 'second';
+    contents: AdditionalConditionType[];
 }

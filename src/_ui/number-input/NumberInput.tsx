@@ -4,16 +4,19 @@ import React from "react";
 
 
 type Props = {
-    data: number | undefined;
+    data: number | string | undefined;
     setData: (data: string) => void;
     style?: React.CSSProperties;
+    disabled?: boolean;
+    allowDecimal?: boolean;
 };
 
-export function NumberInput({data, setData, style}: Props) {
+export function NumberInput({data, setData, style, disabled = false, allowDecimal = false}: Props) {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
+        const pattern = allowDecimal ? /^\d*\.?\d{0,2}$/ : /^[0-9]{0,6}$/;
 
-        if (/^[0-9]{0,6}$/.test(value)) {
+        if (pattern.test(value)) {
             setData(value);
         }
     };
@@ -23,8 +26,9 @@ export function NumberInput({data, setData, style}: Props) {
             type="text"
             value={data}
             onChange={handleChange}
-            className={styles['container']}
+            className={`${styles.container} ${disabled ? styles.disabled : ''}`}
             style={style}
+            disabled={disabled}
         />
     );
 }

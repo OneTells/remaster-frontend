@@ -26,8 +26,6 @@ export const ResultAthletesModal = ({sportCategoryId}: Props) => {
     const modules = data.modules.filter(module => module.sport_id === state.athlete.sport_id);
 
     useEffect(() => {
-        console.log(modules)
-
         if (
             modules.length > 1
             || state.athlete.result_data.moduleTabs.length > 1

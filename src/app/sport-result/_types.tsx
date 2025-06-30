@@ -6,10 +6,16 @@ export type CompetitionStatusType = {
     name: string;
 }
 
-type DisciplineType = {
+export type DisciplineType = {
     id: number;
     name: string;
 }
+
+export type DisciplineContentType = {
+    id: number;
+    name: string;
+}
+
 
 export type SportsProgrammingDataType = {
     competition_statuses: CompetitionStatusType[];
@@ -28,7 +34,7 @@ export type AthleticsPlaceType = {
     disciplines_with_minimum_number_of_participants: number[];
 }
 
-export type AthleticsResultType = {}
+export type AthleticsResultType = {id: number, name: string}[]
 
 export type InitDataType = (
     ComputerSportsType
