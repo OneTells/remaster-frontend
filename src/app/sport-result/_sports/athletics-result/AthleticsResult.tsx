@@ -53,7 +53,13 @@ export function AthleticsResult({module, sportCategoryId, initData, state, updat
                 }
 
                 const disciplines = await getAdditionalConditionsDisciplineData(module.id, {'sex_id': state.sexId})
-                updateState({disciplines: disciplines})
+                updateState({
+                    disciplines: disciplines,
+                    disciplineContents: undefined,
+                    result: undefined,
+                    disciplineId: undefined,
+                    disciplineContentId: undefined
+                })
             })();
         }, 300);
 
@@ -98,10 +104,11 @@ export function AthleticsResult({module, sportCategoryId, initData, state, updat
                     (state.birthDate || '') === ''
                     || (state.disciplineContentId === undefined && state.disciplineContents !== undefined)
                     || (state.disciplineId === undefined)
+                    || (state.result === undefined)
                     || (
-                        state.result!.si === 'meter'
-                            ? state.result!.kilometers * 1000 + Number(state.result!.meters)
-                            : state.result!.hours * 3600 + state.result!.minutes * 60 + Number(state.result!.seconds)
+                        state.result.si === 'meter'
+                            ? state.result.kilometers * 1000 + Number(state.result.meters)
+                            : state.result.hours * 3600 + state.result.minutes * 60 + Number(state.result.seconds)
                     ) === 0
                     || state.firstCondition === undefined
                 ) {
@@ -118,9 +125,9 @@ export function AthleticsResult({module, sportCategoryId, initData, state, updat
                     'content_id': state.disciplineContentId,
 
                     'result': (
-                        state.result!.si === 'meter'
-                            ? state.result!.kilometers * 1000 + Number(state.result!.meters)
-                            : state.result!.hours * 3600 + state.result!.minutes * 60 + Number(state.result!.seconds)
+                        state.result.si === 'meter'
+                            ? state.result.kilometers * 1000 + Number(state.result.meters)
+                            : state.result.hours * 3600 + state.result.minutes * 60 + Number(state.result.seconds)
                     ),
 
                     'first_condition': state.firstCondition,

@@ -85,9 +85,18 @@ export function AthleteModal({documentId, update}: Props) {
                             options={data.sports.map(({name, ...rest}) => ({...rest, label: name}))}
                             selectedOptionId={state.athlete.sport_id}
                             setSelectedOptionId={(id) => {
+                                const organization = data.organizations.filter(org => org.sport_id === id)
+
+                                if (organization.length != 1) {
+                                    modalDispatch({
+                                        mode: 'UPDATE_ATHLETE_DATA',
+                                        athlete: {'sport_id': id}
+                                    });
+                                }
+
                                 modalDispatch({
                                     mode: 'UPDATE_ATHLETE_DATA',
-                                    athlete: {'sport_id': id}
+                                    athlete: {'sport_id': id, 'organization_id': organization[0].id}
                                 });
                             }}
                             style={{width: '100%'}}

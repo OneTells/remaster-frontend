@@ -126,7 +126,23 @@ function reducer(state: State, action: Action): State {
 
         return {
             mode: state.mode,
-            athlete: {...state.athlete, ...action.athlete}
+            athlete: {
+                ...state.athlete,
+                ...action.athlete,
+                result_data: {
+                    ...state.athlete.result_data,
+                    ...(
+                        action.athlete.birth_date !== undefined
+                            ? {
+                                moduleTabs: state.athlete.result_data.moduleTabs.map(moduleTab => ({
+                                    ...moduleTab,
+                                    state: {...moduleTab.state, birthDate: action.athlete.birth_date}
+                                }))
+                            }
+                            : {}
+                    )
+                }
+            },
         }
     } else if (action.mode === 'UPDATE_DATA_IN_RESULT_MENU') {
         if (state.mode !== 'CHECK_RESULT_MENU')
@@ -134,7 +150,23 @@ function reducer(state: State, action: Action): State {
 
         return {
             mode: state.mode,
-            athlete: {...state.athlete, result_data: {...state.athlete.result_data, ...action.resultCheckerData}},
+            athlete: {
+                ...state.athlete,
+                result_data: {
+                    ...state.athlete.result_data,
+                    ...action.resultCheckerData,
+                    ...(
+                        state.athlete.birth_date !== undefined
+                            ? {
+                                moduleTabs: (action.resultCheckerData.moduleTabs || state.athlete.result_data.moduleTabs).map(moduleTab => ({
+                                    ...moduleTab,
+                                    state: {...moduleTab.state, birthDate: state.athlete.birth_date}
+                                }))
+                            }
+                            : {}
+                    )
+                }
+            },
         }
     }
 

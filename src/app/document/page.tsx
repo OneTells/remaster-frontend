@@ -81,7 +81,7 @@ function Menu(props: { document: DocumentType, sports: SportType[] }) {
 
         const path = await save({
             title: 'Сохранить как',
-            defaultPath: `${document.title} (${options.find((option) => option.id === document.sports_category_id)?.label})`,
+            defaultPath: `${options.find((option) => option.id === document.sports_category_id)?.label} приказ`,
             filters: [{name: 'Документ Word', extensions: ['docx']}]
         });
         if (!path) return
